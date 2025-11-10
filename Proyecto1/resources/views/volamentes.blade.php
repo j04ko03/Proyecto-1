@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Volamentes</title>
-    <link rel="stylesheet" href="css/estilos/style.css">
+    <link rel="stylesheet" href="{{ asset('css/estilos/style.css') }}">
 </head>
 <body>
 
@@ -17,6 +17,6 @@
     <button id="btnSiguiente">Siguiente</button>
 
 
-    <script src="js/scriptJuegos/volamentes.js"></script>
+    <script src="{{ asset('js/scriptJuegos/volamentes.js') }}"></script>
 </body>
 </html>
