@@ -27,7 +27,7 @@ h1{
     color: white;
     font-family: 'Pixelify Sans', sans-serif;
     font-weight: 700;
-    font-size: 6vw; /* relativo al ancho de pantalla */
+    font-size: 100px !important; /* relativo al ancho de pantalla */
     background: linear-gradient(135deg, #F28918 32%, #8C4F0E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -35,4 +35,13 @@ h1{
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
     border: 1px solid yellow;
+}
+
+.arroba{
+    font-size: 120px !important;
+    background: #8BBF5E;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }

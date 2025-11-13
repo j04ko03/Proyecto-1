@@ -10,7 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- CSS base -->
     <link rel="stylesheet" href="{{ asset('assets/css/layoutPublicoPrivado.css') }}">
@@ -24,7 +24,7 @@
     <!-- Contenido principal -->
     <main class="main-content">
         <div class="contenedorTitulo">
-            <h1>Bienvenid@ Gamer</h1>
+            <h1>Bienvenid<span class="arroba">@</span> Gamer</h1>
         </div>
         @yield('content')
     </main>
