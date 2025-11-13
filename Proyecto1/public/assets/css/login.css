@@ -29,10 +29,10 @@
 
 .avion {
   position: absolute;
-  right: -60px;  /* sale un poco fuera del contenedor */
+  right: -290px;  /* sale un poco fuera del contenedor */
   top: 50%;
   transform: translateY(-50%);
-  width: 120px;
+  width: 580px;
   user-select: none;  /* para que no se seleccione */
 }
 
