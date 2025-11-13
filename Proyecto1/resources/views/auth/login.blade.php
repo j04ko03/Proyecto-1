@@ -2,6 +2,7 @@
 
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/login.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/loginRegistroComun.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
 @endpush
 
