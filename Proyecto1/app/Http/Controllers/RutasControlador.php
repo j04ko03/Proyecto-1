@@ -5,6 +5,11 @@ class RutasControlador extends Controller
 {
     public function registroView()
     {
-        return view('register');
+        return view('auth.register');
+    }
+
+    public function loginView()
+    {
+        return view('auth.login');
     }
 } 

@@ -10,6 +10,8 @@ Route::get('/', function () {
 
 //Route to get Register
 Route::get('/register', [RutasControlador::class, 'registroView'])->name('register.controller');
+//Route to get Login
+Route::get('/login', [RutasControlador::class, 'loginView'])->name('login.controller');
 
 Route::get('/volamentes', function () {
     return view('volamentes');
