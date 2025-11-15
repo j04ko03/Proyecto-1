@@ -16,30 +16,37 @@
                 <form id="">
                     @csrf
 
-                    <div style="border: 1px solid red">
-                        <label for="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" required>
+                    <div style="border: 1px solid red; height: 100%; display: flex; flex-wrap: wrap;">
+                        <div style="border:1px solid green; width: 50%;">
+                            <label for="nombre">Nombre</label>
+                            <input type="text" id="nombre" name="nombre" required>
 
-                        <label for="apellido1">Primer Apellido</label>
-                        <input type="text" id="apellido1" name="apellido1" required>
+                            <label for="apellido1">Primer Apellido</label>
+                            <input type="text" id="apellido1" name="apellido1" required>
 
-                        <label for="apellido2">Segundo Apellido</label>
-                        <input type="text" id="apellido2" name="apellido2">
+                            <label for="apellido2">Segundo Apellido</label>
+                            <input type="text" id="apellido2" name="apellido2">
+                        </div>
+                        <div style="border:1px solid green; width: 50%;">
+                            <label for="nickname">Nickname</label>
+                            <input type="text" id="nickname" name="nickname" required>
 
-                        <label for="nickname">Nickname</label>
-                        <input type="text" id="nickname" name="nickname" required>
+                            <label for="correo">Correo electrónico</label>
+                            <input type="email" id="correo" name="correo" required>
 
-                        <label for="correo">Correo electrónico</label>
-                        <input type="email" id="correo" name="correo" required>
+                            <label for="password">Contraseña</label>
+                            <input type="password" id="password" name="password" required>
 
-                        <label for="password">Contraseña</label>
-                        <input type="password" id="password" name="password" required>
+                            <label for="password">Repetir contraseña</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        <div class="links" style="width: 100%">
+                            <a href="{{ route('login.controller') }}">Volver a login</a>
+                            <button type="submit" class="btn-register">Crear cuenta</button>
+                        </div>
+
                     </div>
 
-                    <div class="links">
-                        <a href="{{ route('login.controller') }}">Volver a login</a>
-                        <button type="submit" class="btn-register">Crear cuenta</button>
-                    </div>
                 </form>
             </div>
 

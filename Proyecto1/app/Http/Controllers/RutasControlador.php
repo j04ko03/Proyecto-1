@@ -12,4 +12,9 @@ class RutasControlador extends Controller
     {
         return view('auth.login');
     }
+
+    public function homeView()
+    {
+        return view('home');
+    }
 } 

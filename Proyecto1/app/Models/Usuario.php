@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Foundation\Auth\User as Auth;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,7 +10,7 @@ use App\Models\Rol;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Usuario extends Auth
+class Usuario extends Authenticatable
 {
     //
     use HasFactory, Notifiable;

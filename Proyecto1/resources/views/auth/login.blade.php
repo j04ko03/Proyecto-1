@@ -10,12 +10,18 @@
     <div class="contenedorPrincipal">
         <div class="contenedorLogin">
             <div class="contenedorConForma">
-                <form id="">
-                    <label for="email">Email/Usuario</label>
-                    <input type="text" id="email" required autocomplete="username"/>
+                @if (session('Error'))
+                    <div class="alert alert-danger">
+                        {{ session('Error') }}
+                    </div>
+                @endif
+                <form id="" action="{{ route('login.submit') }}" method="post">
+                    @csrf
+                    <label for="correr">Email/NickName</label>
+                    <input type="text" id="correo" name="correo" required autocomplete="username"/>
 
                     <label for="password" style="margin-top: 5%">Contraseña</label>
-                    <input type="password" id="password" required autocomplete="current-password"/>
+                    <input type="password" id="password" name="password" required autocomplete="current-password"/>
 
                     <div class="links" style="margin-top: 5%">
                         <a href="{{ route('register.controller') }}">Crear cuenta</a>
