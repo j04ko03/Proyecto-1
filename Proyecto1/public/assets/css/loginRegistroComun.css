@@ -1,0 +1,33 @@
+/* Estilos de formulario */
+label {
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 20px;
+    margin-top: 15px;
+    display: block;
+    color: #333;
+}
+
+input {
+    font-family: 'Pixelify Sans', monospace;
+    width: 65%;
+    padding: 8px 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 22px;
+}
+
+.links {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    font-family: 'Pixelify Sans', monospace;
+    border: 1px solid purple;
+    width: 65%;
+}
+
+.links a {
+    color: #555;
+    text-decoration: none;
+    cursor: pointer;
+}
