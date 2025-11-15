@@ -27,14 +27,15 @@ class Usuario extends Authenticatable
         'apellido1',
         'apellido2',
         'nickName', 
-        'correo',
+        'email',
         'password',
+        'id_rol',
     ];
 
     // Valores por defecto
-    protected $attributes = [
+    /*protected $attributes = [
         'id_rol' => 2
-    ];
+    ];*/
 
     /**
      * Get all of the rol for the Usuario

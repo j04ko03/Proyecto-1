@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
@@ -20,7 +22,8 @@ class UsuarioController extends Controller
      */
     public function create()
     {
-        //
+        //Enviamos a la vista del registro
+        return view('auth.register');
     }
 
     /**
@@ -28,7 +31,50 @@ class UsuarioController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Recibimos el $request que nos trae los datos del formulario con los name
+        $validated = $request->validate([
+            'nombre'        => 'nullable|string|max:50',
+            'apellido1'     => 'nullable|string|max:50',
+            'apellido2'     => 'nullable|string|max:50',
+            'nickname'      => 'required|string|max:50|unique:Usuario,nickName', //Evita inserts duplicados antes de llegar a sqlserver
+            'email'        => 'required|string|email|max:255|unique:Usuario',
+            'password'      => 'required|string|min:8|max:200|confirmed',
+            'admin_secret'  => 'nullable|string'
+        ],[
+            'nickname.unique'       => 'Este nickname ya está en uso en nuestro servidor. Prueba con otro',
+            'email.unique'          => 'Debe ser un correo real y que no esté en uso en el servidor',
+            'password.min'          => 'Debes introducir almenos 8 carácteres',
+            'password.confirmed'    => 'Las contraseñas no coinciden'
+        ]);
+
+        $secret_admin_key = 'x2AppJocsx2SysAdmin';
+
+        if(!$request->admin_secret){
+            $id_rol = 3;
+        }else{
+            //Campo no null
+            if($request->admin_secret === $secret_admin_key){
+                $id_rol = 2;
+            }else{
+                $id_rol = 3;
+            }
+        }
+
+        //Aplicamos valores a los campos de la BDD con los atributos del validate
+        $usuario = Usuario::create([
+            'nombre'        => $validated['nombre'],
+            'apellido1'     => $validated['apellido1'],
+            'apellido2'     => $validated['apellido2'],
+            'nickName'      => $validated['nickname'],
+            'id_rol'        => $id_rol,
+            'email'         => $validated['email'],
+            'password'      => bcrypt($validated['password'])
+        ]);
+
+        Auth::login($usuario);
+
+        return redirect()->route('home.controller')->with('success', '¡Cuenta creada exitosamente!');
+
     }
 
     /**

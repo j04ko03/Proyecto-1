@@ -24,7 +24,7 @@
                     <input type="password" id="password" name="password" required autocomplete="current-password"/>
 
                     <div class="links" style="margin-top: 5%">
-                        <a href="{{ route('register.controller') }}">Crear cuenta</a>
+                        <a href="{{ route('usuarios.create') }}">Crear cuenta</a>
                         <button type="submit" class="btn-login">Iniciar sesión</button>
                     </div>
                 </form>

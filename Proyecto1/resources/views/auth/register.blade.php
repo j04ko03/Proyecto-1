@@ -13,32 +13,50 @@
             
 
             <div class="contenedorConForma" style="border: 1px solid green; padding-left: 15%;">
-                <form id="">
+                <form id="formRegister" method="POST" action="{{ route('usuarios.store') }}">
                     @csrf
 
                     <div style="border: 1px solid red; height: 100%; display: flex; flex-wrap: wrap;">
                         <div style="border:1px solid green; width: 50%;">
                             <label for="nombre">Nombre</label>
-                            <input type="text" id="nombre" name="nombre" required>
+                            <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}">
 
                             <label for="apellido1">Primer Apellido</label>
-                            <input type="text" id="apellido1" name="apellido1" required>
+                            <input type="text" id="apellido1" name="apellido1" value="{{ old('apellido1') }}">
 
                             <label for="apellido2">Segundo Apellido</label>
-                            <input type="text" id="apellido2" name="apellido2">
+                            <input type="text" id="apellido2" name="apellido2" value="{{ old('apellido2') }}">
+
+                            <label for="admin_secret">Clave secreta de administrador (opcional)</label>
+                            <input type="password" id="admin_secret" name="admin_secret">
+                            @error('admin_secret')
+                                <div class="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div style="border:1px solid green; width: 50%;">
-                            <label for="nickname">Nickname</label>
-                            <input type="text" id="nickname" name="nickname" required>
+                            <label for="nickname">Nickname*</label>
+                            <input type="text" id="nickname" name="nickname" value="{{ old('nickname') }}" required>
+                            @error('nickname')
+                                <div class="alert">{{ $message }}</div>
+                            @enderror
 
-                            <label for="correo">Correo electrónico</label>
-                            <input type="email" id="correo" name="correo" required>
+                            <label for="email">Correo electrónico*</label>
+                            <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+                            @error('email')
+                                <div class="alert">{{ $message }}</div>
+                            @enderror
 
-                            <label for="password">Contraseña</label>
+                            <label for="password">Contraseña*</label>
                             <input type="password" id="password" name="password" required>
+                            @error('password')
+                                <div class="alert">{{ $message }}</div>
+                            @enderror
 
-                            <label for="password">Repetir contraseña</label>
-                            <input type="password" id="password" name="password" required>
+                            <label for="rePassword">Repetir contraseña*</label>
+                            <input type="password" id="rePassword" name="password_confirmation" required>
+                            @error('password')
+                                <div class="alert">{{ $message }}</div>
+                            @enderror
                         </div>
                         <div class="links" style="width: 100%">
                             <a href="{{ route('login.controller') }}">Volver a login</a>
