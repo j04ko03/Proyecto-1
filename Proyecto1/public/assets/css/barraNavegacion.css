@@ -1,0 +1,115 @@
+
+.arroba{
+    font-family: 'Pixelify Sans', monospace;
+    font-size: 70px !important;
+    background: #8BBF5E;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    font-family: 'Pixelify Sans', monospace;
+}
+
+/* NAV RETRO */
+.retro-navbar {
+    height: 70px;
+    background: #090909;
+    border-bottom: 3px solid #0f0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 25px;
+    box-shadow: 0 0 12px #0f0 inset;
+    position: relative;
+}
+
+/* ENGRANAJE */
+.opciones {
+    position: relative;
+    border: 1px solid red;
+}
+
+.iconoEngranaje {
+    width: 120px;
+    cursor: pointer;
+}
+
+/* MENU DESPLEGABLE */
+.dropdown {
+    display: none;
+    position: absolute;
+    top: 70px;
+    right: -25px;
+    background: #000;
+    border: 2px solid #0f0;
+    padding: 10px;
+    width: 160px;
+    box-shadow: 0 0 10px #0f0;
+}
+
+.dropdown a {
+    display: block;
+    color: #0f0;
+    text-decoration: none;
+    padding: 8px 0;
+}
+
+.dropdown a:hover {
+    background: #0f0;
+    color: #000;
+}
+
+/* MOSTRAR DESPLEGABLE */
+.opciones:hover .dropdown {
+    display: block;
+}
+
+/* BUSCADOR */
+.buscador input {
+    width: 520px;
+    padding: 10px;
+    background: black;
+    border: 2px solid #0f0;
+    color: #0f0;
+    font-family: "Press Start 2P", monospace;
+    font-size: 12px;
+    outline: none;
+}
+
+.nombre {
+    font-size: 30px;
+    color: #0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+/* Para un futuro JUEGOS */
+/* JUEGOS */
+.games-section {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.game-card {
+    background: #030;
+    border: 2px solid #0f0;
+    padding: 20px;
+    width: 160px;
+    text-align: center;
+    box-shadow: 0 0 8px #0f0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.game-card:hover {
+    background: #0f0;
+    color: #000;
+}
