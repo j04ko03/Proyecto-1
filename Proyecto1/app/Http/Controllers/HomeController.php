@@ -48,7 +48,7 @@ class HomeController extends Controller
                 'Resuelve operaciones matemáticas',
                 'Completa todos los niveles',
                 'Consigue la máxima puntuación',
-                'Tienes 3 vidas por partida'
+                'Tienes 3 vidas por nivel'
             ],
             // LOS OTROS JUEGOS.
         ];
@@ -68,7 +68,7 @@ class HomeController extends Controller
             'e' => 'Interactuar'
         ];
 
-        // Escribir aqui las excepciones (hacer un if else y return = $response?)
+        // Escribir aqui las excepciones (¿hacer un if else y return = $response?)
 
     }
 

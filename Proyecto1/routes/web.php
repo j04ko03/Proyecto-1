@@ -9,7 +9,7 @@ use App\Http\Controllers\HomeController;
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
 Route::middleware(['auth'])->group(function () {
 //Route to get Home
-    Route::get('/home', [RutasControlador::class, 'homeView'])->name('home.controller');
+    Route::get('/home', [HomeController::class, 'index'])->name('home.controller');
 
     Route::get('/volamentes', function () {
         return view('volamentes');
