@@ -1,52 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HOME</title>
-    <link rel="stylesheet" href="css/estilos/style.css">
-</head>
-<body>
-    <div class="consola">
-        <svg src="{{ public('img/consola.vsg') }}"></svg>
+@extends('layouts.layoutPublico')
+
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
+@endpush
+
+@section('content')
+{{-- Marco de la consola --}}
+    <div class="consola"> 
+        <img src="{{ asset('img/consola.svg') }}" class="consola-frame" alt="Consola">
+
         <div class="interiorConsola">
-                <div class="izquierda">
-                    <button class="d-pad-up" data-key="w" data-direction="up">
-                        <span class="d-pad-w"></span>
+
+            {{-- Contenido del lado izquierdo de la consola --}}
+            <div class="izquierda"> 
+                <div class="d-pad-container">
+                    <button class="d-pad-btn up" data-key="w" data-action="move">
+                        <span></span>
                     </button>
-                    <button class="d-pad-right" data-key="d" data-direction="right">
-                        <span class="d-pad-d"></span>
+                    <button class="d-pad-btn right" data-key="d" data-action="move">
+                        <span></span>
                     </button>
-                    <button class="d-pad-left" data-key="a" data-direction="left">
-                        <span class="d-pad-a"></span>
+                    <button class="d-pad-btn down" data-key="s" data-action="move">
+                        <span></span>
                     </button>
-                    <button class="d-pad-down" data-key="s" data-direction="down">
-                        <span class="d-pad-s"></span>
-                    </button>
-                </div>
-                <div class="pantallaConsola">
-                    <canvas id="pantallaJuego"></canvas>
-                </div>
-                <div class="derecha">
-                    <button class="d-button-left" data-key="space" data-direction="jump">
-                        <span class="d-button-A"></span>
-                    </button>
-                    <button class="d-button-right" data-key="e" data-direction="interact">
-                        <span class="d-button-B"></span>
+                    <button class="d-pad-btn left" data-key="a" data-action="move">
+                        <span></span>
                     </button>
                 </div>
+            </div>
+
+            {{-- Pantalla --}}
+            <div class="pantallaConsola"> 
+                <canvas id="pantallaJuego"></canvas>
+            </div>
+
+            {{-- Contenido del lado derecho de la consola --}}
+            <div class="derecha"> 
+                <button class="action-btn btn-a" data-key=" " data-action="jump">
+                    <span>A</span>
+                </button>
+                <button class="action-btn btn-b" data-key="e" data-action="interact">
+                    <span>B</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <div class="cartuchos">
-        <div id="cartucho" class="cartucho1"></div>
-        <div id="cartucho" class="cartucho2"></div>
-        <div id="cartucho" class="cartucho3"></div>
-        <div id="cartucho" class="cartucho4"></div>
+    {{-- Llamada componente de los cartuchos --}}
+    <div class="cartuchos"> 
+        @foreach ($cartuchos as $cartucho)
+            <x-cartucho :cartucho="$cartucho" />
+        @endforeach
     </div>
 
-</body>
-
-
-</html>
+    @push('scripts')
+        <script src="{{ asset('assets/js/cartuchos.js') }}"></script>
+    @endpush
+@endsection

@@ -1,0 +1,180 @@
+/* Contenedor principal de la consola */
+.consola {
+    position: relative;
+    width: 1000px; /* Ajusta al ancho de tu SVG */
+    height: 600px; /* Ajusta al alto de tu SVG */
+    margin: 0 auto;
+    margin-bottom: 50px;
+}
+
+/* Marco SVG de la consola */
+.consola-frame {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+/* Interior de la consola - FLEXBOX para alinear horizontalmente */
+.interiorConsola {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between; /* Espacio entre izquierda, centro y derecha */
+    align-items: center; /* Centrar verticalmente */
+    height: 100%;
+    padding: 0 80px; /* Espacio a los lados según tu diseño */
+}
+
+/* Secciones izquierda, centro y derecha */
+.izquierda, .derecha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    flex: 0 0 auto; /* No crecer, no encoger */
+}
+
+/* Contenedor central - pantalla */
+.pantallaConsola {
+    flex: 1; /* Ocupa el espacio disponible */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin: 0 40px; /* Espacio entre controles y pantalla */
+}
+
+/* Canvas de juego */
+#pantallaJuego {
+    width: 500px; /* Ajusta según tu diseño */
+    height: 350px; /* Ajusta según tu diseño */
+    background: #000;
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+}
+
+/* D-Pad */
+.d-pad-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 20px;
+}
+
+.d-pad-btn {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(145deg, #34495e, #2c3e50);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ecf0f1;
+    font-size: 18px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.d-pad-btn:hover {
+    background: linear-gradient(145deg, #3498db, #2980b9);
+    transform: scale(1.1);
+}
+
+/* Posicionamiento D-Pad */
+.d-pad-btn.up {
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.d-pad-btn.right {
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.d-pad-btn.down {
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.d-pad-btn.left {
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+/* Botones de acción */
+.action-btn {
+    width: 80px;
+    height: 80px;
+    border: none;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #e74c3c, #c0392b);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    margin: 15px 0;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.action-btn:hover {
+    background: linear-gradient(145deg, #ff6b6b, #e74c3c);
+    transform: scale(1.1);
+}
+
+/* Cartuchos debajo de la consola */
+.cartuchos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    padding: 30px;
+    max-width: 1300px;
+    margin: 0 auto;
+}
+
+/* Animaciones para cartuchos */
+.cartucho {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.cartucho:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.cartucho-insertado {
+    border-color: #00ff00 !important;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5) !important;
+}
+
+/* Efecto de "cartucho seleccionado" */
+.cartucho.seleccionado {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: translateY(-30px) scale(1); }
+    50% { transform: translateY(-30px) scale(1.05); }
+    100% { transform: translateY(-30px) scale(1); }
+}
+
+@media screen {
+    
+}
