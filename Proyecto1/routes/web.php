@@ -12,15 +12,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
-    /*Route::get('/{vista}', function($vista) {
-        if (!in_array($vista, ['home', 'UIGames.UIAstroGame'])) {
-            dd($vista);
-            abort(404);
-        }
-        
-        return view($vista);
-    });*/
-
     Route::get('/volamentes', function () {
         return view('volamentes');
     });
@@ -44,12 +35,13 @@ Route::get('/', function () {
 
 //Route to get Register
 Route::get('/register', [RutasControlador::class, 'registroView'])->name('register.controller');
+
 //Route to get Login
 Route::get('/login', [RutasControlador::class, 'loginView'])->name('login.controller');
 Route::post('/login', [LoginController::class, 'loginF'])->name('login.submit');
 
-
-
+//Route to get Logout doLogout
+Route::get('/logout', [LoginController::class, 'doLogout'])->name('logout.controller');
 
 //RUTAS PARA LOS CONTROLADORES CREADOS
     //Si queremos importar todas las metodologías de la classe, se hace así ->

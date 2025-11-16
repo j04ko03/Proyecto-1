@@ -17,7 +17,9 @@
         <div class="dropdown">
             <a href="#">Configuración</a>
             <a href="#">Perfil</a>
-            <a href="#">Cerrar sesión</a>
+            <a href="#">Usuarios</a>
+            <a href="#">Estadísticas</a>
+            <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
         </div>
     </div>
 

@@ -12,6 +12,7 @@
     <!-- CSS base -->
     <link rel="stylesheet" href="{{ asset('assets/css/layoutPublicoPrivado.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/barraNavegacion.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/UIGameAstro.css') }}">
 
     <!-- CSS de vistas hijas -->
     @stack('styles')
@@ -25,6 +26,15 @@
     <main class="main-content">
         @yield('content')
     </main>
+
+    <script>
+        window.rutaScripts = {
+            astro: "{{ asset('js/cargaElementosSecundariosAstro.js') }}",
+            // Si tienes otros juegos, puedes agregar más rutas
+            // juego2: "{{ asset('js/cargaElementosSecundariosJuego2.js') }}",
+            astroInicializador: "{{ asset('js/Astro.js') }}",
+        };
+    </script>
 
     @stack('scripts')
     

@@ -12,6 +12,7 @@
         <div id="pantallaJugable" style="border: 2px solid white; width: 60%; height: 60%;">
 
         </div>
+        <a style="color: white" href="#">Best Player: Player</a>
     </div>
     <div id="botonesJuegos" class="contenedorPrincipalHome" style="border: 1px solid red; width: 100%; height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <a href="#" style="color: white">Sin Juego</a>
@@ -22,9 +23,6 @@
     </div>
 </div>
 
-<script>
-    const rutaJuego1 = "{{ route('astro.controller') }}";
-</script>
 <script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
 
 
