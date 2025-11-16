@@ -10,6 +10,17 @@ Route::middleware(['auth'])->group(function () {
 //Route to get Home
     Route::get('/home', [RutasControlador::class, 'homeView'])->name('home.controller');
 
+    Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
+
+    /*Route::get('/{vista}', function($vista) {
+        if (!in_array($vista, ['home', 'UIGames.UIAstroGame'])) {
+            dd($vista);
+            abort(404);
+        }
+        
+        return view($vista);
+    });*/
+
     Route::get('/volamentes', function () {
         return view('volamentes');
     });
