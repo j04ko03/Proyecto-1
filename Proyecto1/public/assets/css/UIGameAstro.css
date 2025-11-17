@@ -1,0 +1,133 @@
+:root{
+    --bg:#082032;
+    --ground:#1B262C;
+    --plat:#2E8B57;
+    --block:#FFD166;
+    --player:#EF476F;
+    --text:#EAEAEA;
+    --accent:#06D6A0;
+    font-family: 'Pixelify Sans', monospace;
+}
+
+.contenedorJuego{
+    width:100%;
+    height:360px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+    position:relative;
+    overflow:hidden;
+    background:#061221;
+    border:6px solid #000;
+}
+
+
+.ui{
+    position:absolute; 
+    left:8px; 
+    top:8px; 
+    right:8px; 
+    display:flex;
+    justify-content:space-between; 
+    align-items:center; 
+    pointer-events:none;
+    font-size:12px;
+}
+
+.ui-left, .ui-right{
+    background: rgba(0,0,0,0.35); 
+    padding:6px 8px; 
+    border-radius:6px; 
+    pointer-events:auto;
+}
+
+.contenedorCanvas{
+    width: 100%; 
+    height: 100%;
+    border: 1px solid rgb(11, 235, 49);
+}
+
+.mensaje{
+    position:absolute; 
+    left:50%; 
+    top:50%; 
+    transform:translate(-50%,-50%); 
+    background:rgba(0,0,0,0.75); 
+    padding:14px; 
+    border-radius:8px; 
+    display:none; 
+    width:70%; 
+    text-align:center;
+}
+
+#message h2{
+    margin:0 0 8px 0; 
+    font-size:14px;
+
+}
+
+#message button{
+    margin-top:8px;
+    padding:8px 12px;
+    border-radius:6px;
+    border:0;
+    background:var(--accent); 
+    color:#042; 
+    cursor:pointer; 
+    font-weight:700;
+}
+
+/* Modal pregunta */
+#modal{
+    position:absolute; 
+    left:50%; 
+    top:50%; 
+    transform:translate(-50%,-50%); 
+    width:360px; 
+    background:#081216; 
+    border:4px solid #000; 
+    padding:12px; 
+    display:none; 
+    z-index:20; 
+    border-radius:8px;
+}
+
+
+#modal h3{
+    margin:0 0 8px 0; 
+    font-size:13px;
+}
+
+#modal input{
+    width:100%; 
+    padding:8px; 
+    margin-top:8px; 
+    font-size:14px; 
+    border-radius:6px; 
+    border:2px solid #000; 
+    background:#071827; 
+    color:var(--text);
+}
+
+#modal .controls{
+    display:flex; 
+    gap:8px; 
+    margin-top:10px; 
+    justify-content:flex-end;
+}
+
+button.small{
+    padding:6px 8px; 
+    border-radius:6px;
+    border:0; 
+    cursor:pointer; 
+    font-weight:700;
+}
+
+button.ok{
+    background:var(--accent); 
+    color:#042;
+}
+
+button.cancel{
+    background:#ff6b6b; 
+    color:#fff;
+}
