@@ -5,12 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
+<<<<<<< HEAD
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:80/Proyecto-1/Proyecto1/public",
+            "webRoot": "${workspaceFolder}"
+        },
+
+=======
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:80/Proyecto-1/Proyecto1/public",
             "webRoot": "${workspaceFolder}"
         },
+>>>>>>> 01f7ce78c36a2196a97f3cf0ff28e77374635ef1
         {
             "name": "Listen for Xdebug",
             "type": "php",

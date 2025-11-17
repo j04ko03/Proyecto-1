@@ -1,0 +1,78 @@
+.contenedorPrincipal {
+    border: 1px solid red;
+    width: 100%;   /* ancho fijo */
+    height: 700px;   /* alto fijo */
+    margin: 0 auto;  /* centrar horizontalmente */
+    position: relative;
+    overflow: hidden;
+}
+
+.contenedorLogin {
+    border: 1px solid orange;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    position: relative;
+    background-color: #000; /* para que contraste igual que tu login */
+    overflow: hidden; /* evita que la imagen se salga */
+}
+
+.contenedorConForma {
+    background-color: white;
+    width: 60%;
+    height: 70%;
+    border-top-left-radius: 300px;
+    border-bottom-left-radius: 300px;
+    box-sizing: border-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10%;
+    padding-right: 1%;
+}
+
+/* 🚀 Ajuste del avión para que no quede tan desplazado */
+.avion {
+    position: absolute;
+    right: 47%; /* 👈 se fija justo detrás del borde del contenedor blanco */
+    top: 50%;
+    transform: translateY(-50%) scaleX(-1); /* mantiene el giro */
+    width: 30vw; /* el ancho será un % del viewport */
+    max-width: 500px; /* no más grande que esto */
+    min-width: 250px; /* evita que se haga diminuto */
+    transition: all 0.3s ease; /* suaviza el movimiento al redimensionar */
+    user-select: none;
+}
+
+
+.btn-register {
+    color: #F28918;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 8px 12px;
+    border-radius: 5px;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #842029;
+    background-color: #f8d7da;
+    border: 1px solid #f5c2c7;
+}
+
+@media (max-width: 900px) {
+    .avion {
+        width: 40vw;
+        left: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .avion {
+        display: none; /* oculta la imagen en móviles si no cabe bien */
+    }
+}
