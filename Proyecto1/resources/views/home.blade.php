@@ -1,15 +1,11 @@
-@extends('layouts.layoutPublico')
+@extends('layouts.layoutPrivado')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
 @endpush
 
 @section('content')
-{{-- Marco de la consola --}}
-    <div class="consola"> 
-        <img src="{{ asset('img/consola.svg') }}" class="consola-frame" alt="Consola">
-
 <div>
     <div class="contenedorPrincipalHome" style="border: 1px solid red; width: 100%; height: 600px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <a style="color: white" href="#">Aqui va la pantalla de los juegos</a>
@@ -27,7 +23,13 @@
     </div>
 </div>
 
-<script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
+    <div class="cartuchos"> 
+        @foreach ($cartuchos as $cartucho)
+            <x-cartucho :cartucho="$cartucho" />
+        @endforeach
+    </div>
+    
 
+<script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
 
 @endsection
