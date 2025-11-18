@@ -8,11 +8,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Evita que el enlace haga su acción por defecto (navegar a #)
         e.preventDefault();
         console.log("CLICK!");
+
         try {
             // Obtiene la ruta del juego desde el atributo data-route del botón
             const url = this.dataset.route; // "this" hace referencia al botón clicado
             console.log("URL llamada:", url);
-            
+            const scriptJs = this.dataset.script;
             // Realiza una petición HTTP a la ruta del juego usando fetch
             // El header "X-Requested-With" indica que es una petición AJAX
             const response = await fetch(url , {
@@ -20,19 +21,22 @@ document.addEventListener("DOMContentLoaded", function () {
                     "X-Requested-With": "XMLHttpRequest"
                 }
             });
-
             // Convierte la respuesta a texto (HTML)
             const html = await response.text();
-
             console.log(html);
             pantalla.innerHTML = html;
-
             // Cargar el script manualmente
-            let script = document.createElement("script");
             console.log('Que script carga?? ' + url.split('/').pop());
-            script.src = window.rutaScripts.astro;
-            script.type = "text/javascript";
-            document.body.appendChild(script);
+            if (!document.querySelector(`script[src="${scriptJs}"]`)) {
+                let script = document.createElement("script");
+                script.src = scriptJs;
+                script.type = "text/javascript";
+                document.body.appendChild(script);
+            } else {
+                console.log("Script ya cargado, no se vuelve a añadir");
+            }
+
+            
 
         } catch (error) {
             console.error("Error cargando el juego:", error);

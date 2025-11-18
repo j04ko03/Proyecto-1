@@ -17,6 +17,9 @@
     overflow:hidden;
     background:#061221;
     border:6px solid #000;
+    background-image: url('/Proyecto-1/Proyecto1/Astro/planetaAstro.jpg');
+    background-size: cover;
+    background-position: center;
 }
 
 
