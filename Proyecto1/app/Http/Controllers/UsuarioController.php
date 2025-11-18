@@ -14,7 +14,21 @@ class UsuarioController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::user();
+
+        if ($user->id_rol == 1){
+            $usuario = Usuario::whereIn('id_rol', [2,3])->get();
+        }
+
+        else if ($user->id_rol == 2){
+            $usuario = Usuario::where('id_rol', 3)->get();
+        }
+
+        else{
+            $usuario = collect();
+        }
+
+        return view('usuarios.index', compact('usuario'));
     }
 
     /**
