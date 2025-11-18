@@ -4,6 +4,7 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+<<<<<<< HEAD
         {
             "name": "Launch Chrome",
             "request": "launch",
@@ -97,3 +98,14 @@
         }
     ]
 }
+=======
+    {
+        "name": "Launch Chrome",
+        "request": "launch",
+        "type": "chrome",
+        "url": "http://localhost:80/Proyecto-1/Proyecto1/public",
+        "webRoot": "${workspaceFolder}"
+    }
+    ]
+}
+>>>>>>> main
