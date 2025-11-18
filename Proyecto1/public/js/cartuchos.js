@@ -18,7 +18,7 @@ class CartuchoManager {
             }
         });
     }
-
+    
     /**
      * CARGA UN JUEGO DESDE UN CARTUCHO (vía AJAX)
      */

@@ -8,18 +8,26 @@ document.addEventListener("DOMContentLoaded", function () {
         // Evita que el enlace haga su acción por defecto (navegar a #)
         e.preventDefault();
         console.log("CLICK!");
+        console.log("---------------------------------------------------");
 
         try {
             // Obtiene la ruta del juego desde el atributo data-route del botón
             const url = this.dataset.route; // "this" hace referencia al botón clicado
             console.log("URL llamada:", url);
             const scriptJs = this.dataset.script;
+            console.log(scriptJs + "-------------------------------------------");
+
+            // Crear un AbortController
+            const controller = new AbortController();
+            const signal = controller.signal;
+
             // Realiza una petición HTTP a la ruta del juego usando fetch
             // El header "X-Requested-With" indica que es una petición AJAX
             const response = await fetch(url , {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
-                }
+                },
+                signal
             });
             // Convierte la respuesta a texto (HTML)
             const html = await response.text();
@@ -28,12 +36,15 @@ document.addEventListener("DOMContentLoaded", function () {
             // Cargar el script manualmente
             console.log('Que script carga?? ' + url.split('/').pop());
             if (!document.querySelector(`script[src="${scriptJs}"]`)) {
+                console.log("-------------------------- No entra en el abort --------------------------");
                 let script = document.createElement("script");
                 script.src = scriptJs;
                 script.type = "text/javascript";
                 document.body.appendChild(script);
+                console.log("-------------------------- No entra en el abort --------------------------");
             } else {
-                console.log("Script ya cargado, no se vuelve a añadir");
+                controller.abort();
+                console.log("-------------------------- Se ha detenido el script con el abort --------------------------");
             }
 
             
