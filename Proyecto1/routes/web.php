@@ -3,6 +3,7 @@
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RutasControlador;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\volamentesController;
 use Illuminate\Support\Facades\Route;
 
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
@@ -12,9 +13,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
-    Route::get('/volamentes', function () {
-        return view('volamentes');
-    });
+    Route::get('/volamentes', [RutasControlador::class, 'juego2View'])->name('volamentes.controller');
 });
 
 //Al entrar en una de las rutas dentro de este apartado, se mirará si el usuario está autentificado y a parte que rol tiene (En este apartado entra SuperAdmin y Admin)
