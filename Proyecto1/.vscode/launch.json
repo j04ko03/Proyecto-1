@@ -8,7 +8,7 @@
         "name": "Launch Chrome",
         "request": "launch",
         "type": "chrome",
-        "url": "http://localhost:8080/Proyecto-1/Proyecto1/public",
+        "url": "http://localhost:80/Proyecto-1/Proyecto1/public",
         "webRoot": "${workspaceFolder}"
     }
     ]
