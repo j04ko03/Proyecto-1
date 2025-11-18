@@ -22,20 +22,25 @@ class HomeController extends Controller
     }
 
     private function agregarDatosJuego($juego) 
-    {
-        // Definir normas y controles específicos para cada juego
-        $datosAdicionales = [
-            'normas' => $this->obtenerNormasJuego($juego->id),
-            'controles' => $this->obtenerControlesJuego($juego->id),
-            'etiqueta' => $this->obtenerEtiquetaJuego($juego->id),
-            'archivo' => $this->obtenerArchivoJuego($juego->id)
-        ];
+{
+    $rutasJuegos = [
+        1 => route('astro.controller'), // ASTRO
+        // 2 => route('juego2.controller'),
+        // 3 => route('juego3.controller'), 
+        // 4 => route('juego4.controller'),
+    ];
 
-        // Combinar datos del juego con datos adicionales
-        $juego->normas = $datosAdicionales['normas'];
-        $juego->controles = $datosAdicionales['controles'];
-        $juego->etiqueta = $datosAdicionales['etiqueta'];
-        $juego->archivo = $datosAdicionales['archivo'];
+    $datosAdicionales = [
+        'normas' => $this->obtenerNormasJuego($juego->id),
+        'controles' => $this->obtenerControlesJuego($juego->id),
+        'etiqueta' => $this->obtenerEtiquetaJuego($juego->id),
+        'ruta' => $rutasJuegos[$juego->id] ?? '#'
+    ];
+
+    $juego->normas = $datosAdicionales['normas'];
+    $juego->controles = $datosAdicionales['controles'];
+    $juego->etiqueta = $datosAdicionales['etiqueta'];
+    $juego->ruta = $datosAdicionales['ruta'];
 
         return $juego;
     }

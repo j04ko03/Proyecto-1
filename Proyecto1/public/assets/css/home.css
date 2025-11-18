@@ -1,180 +1,584 @@
 /* Contenedor principal de la consola */
 .consola {
     position: relative;
-    width: 1000px; /* Ajusta al ancho de tu SVG */
-    height: 600px; /* Ajusta al alto de tu SVG */
-    margin: 0 auto;
-    margin-bottom: 50px;
+    width: 90vw;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 0;
+    aspect-ratio: 2.5 / 1;
+    background: #090909;
+    border-radius: 25px;
+    border: 4px solid #00d9ff;
+    box-shadow: 
+        0 0 20px rgba(0, 217, 255, 0.5),
+        0 0 40px rgba(0, 217, 255, 0.3),
+        inset 0 2px 5px rgba(0, 217, 255, 0.1),
+        0 20px 60px rgba(0,0,0,0.8);
 }
 
-/* Marco SVG de la consola */
 .consola-frame {
+    display: none;
+}
+
+.consola::before {
+    content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 15px;
+    border: 2px solid rgba(0, 217, 255, 0.2);
+    border-radius: 20px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.consola::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 45%;
+    height: 60%;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border-radius: 10px;
+    box-shadow: 
+        inset 0 4px 15px rgba(0,0,0,0.9),
+        0 0 15px rgba(0, 217, 255, 0.2);
+    border: 3px solid #00d9ff;
     z-index: 1;
 }
 
-/* Interior de la consola - FLEXBOX para alinear horizontalmente */
 .interiorConsola {
     position: relative;
     z-index: 2;
-    display: flex;
-    justify-content: space-between; /* Espacio entre izquierda, centro y derecha */
-    align-items: center; /* Centrar verticalmente */
+    display: grid;
+    grid-template-columns: 1fr 1.5fr 1fr;
+    gap: 50px;
+    align-items: center;
+    padding: 18% 8% 18% 8%;
     height: 100%;
-    padding: 0 80px; /* Espacio a los lados según tu diseño */
 }
 
-/* Secciones izquierda, centro y derecha */
-.izquierda, .derecha {
+.izquierda {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100%;
-    flex: 0 0 auto; /* No crecer, no encoger */
+    gap: 20px;
 }
 
-/* Contenedor central - pantalla */
+.derecha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
 .pantallaConsola {
-    flex: 1; /* Ocupa el espacio disponible */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    margin: 0 40px; /* Espacio entre controles y pantalla */
+    padding: 20px;
 }
 
-/* Canvas de juego */
 #pantallaJuego {
-    width: 500px; /* Ajusta según tu diseño */
-    height: 350px; /* Ajusta según tu diseño */
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    aspect-ratio: 16 / 10;
     background: #000;
-    border: 2px solid #3498db;
+    border: 2px solid #00d9ff;
     border-radius: 8px;
-    box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+    box-shadow: 
+        0 0 20px rgba(0, 217, 255, 0.3),
+        inset 0 0 30px rgba(0, 0, 0, 0.9);
 }
 
-/* D-Pad */
 .d-pad-container {
     position: relative;
-    width: 150px;
-    height: 150px;
-    margin-bottom: 20px;
+    width: 130px;
+    height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, rgba(0, 217, 255, 0.15) 0%, rgba(9, 9, 9, 0.9) 70%);
+    border-radius: 50%;
+    border: 3px solid #00d9ff;
+    box-shadow: 
+        0 0 15px rgba(0, 217, 255, 0.4),
+        inset 0 0 20px rgba(0, 217, 255, 0.1);
 }
 
 .d-pad-btn {
     position: absolute;
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(145deg, #34495e, #2c3e50);
-    border: none;
-    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(145deg, #1a1a1a, #0a0a0a);
+    border: 2px solid #00d9ff;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ecf0f1;
-    font-size: 18px;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: all 0.1s ease;
+    box-shadow: 
+        0 0 10px rgba(0, 217, 255, 0.3),
+        inset 0 1px 3px rgba(0, 217, 255, 0.2);
 }
 
 .d-pad-btn:hover {
-    background: linear-gradient(145deg, #3498db, #2980b9);
-    transform: scale(1.1);
+    background: linear-gradient(145deg, #00d9ff, #00a8cc);
+    box-shadow: 
+        0 0 20px rgba(0, 217, 255, 0.6),
+        inset 0 1px 3px rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
 }
 
-/* Posicionamiento D-Pad */
+.d-pad-btn:active {
+    transform: scale(0.95) translateY(2px);
+    box-shadow: 
+        0 0 10px rgba(0, 217, 255, 0.4),
+        inset 0 2px 5px rgba(0,0,0,0.5);
+}
+
 .d-pad-btn.up {
-    top: 0;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .d-pad-btn.right {
     top: 50%;
-    right: 0;
+    right: 8px;
     transform: translateY(-50%);
 }
 
 .d-pad-btn.down {
-    bottom: 0;
+    bottom: 8px;
     left: 50%;
     transform: translateX(-50%);
 }
 
 .d-pad-btn.left {
     top: 50%;
-    left: 0;
+    left: 8px;
     transform: translateY(-50%);
 }
 
-/* Botones de acción */
 .action-btn {
-    width: 80px;
-    height: 80px;
-    border: none;
+    width: 75px;
+    height: 75px;
+    border: 3px solid #ff00ff;
     border-radius: 50%;
-    background: linear-gradient(145deg, #e74c3c, #c0392b);
-    color: white;
+    background: linear-gradient(145deg, #1a0a1a, #0a0a0a);
+    color: #ff00ff;
     font-weight: bold;
+    font-size: 24px;
     cursor: pointer;
-    margin: 15px 0;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: all 0.1s ease;
+    box-shadow: 
+        0 0 15px rgba(255, 0, 255, 0.5),
+        inset 0 2px 5px rgba(255, 0, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    text-shadow: 0 0 10px rgba(255, 0, 255, 0.8);
 }
 
 .action-btn:hover {
-    background: linear-gradient(145deg, #ff6b6b, #e74c3c);
-    transform: scale(1.1);
+    background: linear-gradient(145deg, #ff00ff, #cc00cc);
+    color: white;
+    box-shadow: 
+        0 0 25px rgba(255, 0, 255, 0.8),
+        inset 0 2px 5px rgba(255, 255, 255, 0.3);
+    transform: scale(1.08);
 }
 
-/* Cartuchos debajo de la consola */
+.action-btn:active {
+    transform: scale(0.95) translateY(3px);
+    box-shadow: 
+        0 0 15px rgba(255, 0, 255, 0.5),
+        inset 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.consola .led-power {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    width: 10px;
+    height: 10px;
+    background: #00ff00;
+    border-radius: 50%;
+    box-shadow: 
+        0 0 10px rgba(0, 255, 0, 1),
+        0 0 20px rgba(0, 255, 0, 0.6);
+    animation: powerLed 1.5s infinite;
+    z-index: 3;
+}
+
+@keyframes powerLed {
+    0%, 100% { 
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(0, 255, 0, 1), 0 0 20px rgba(0, 255, 0, 0.6);
+    }
+    50% { 
+        opacity: 0.7;
+        box-shadow: 0 0 5px rgba(0, 255, 0, 0.8), 0 0 15px rgba(0, 255, 0, 0.4);
+    }
+}
+
+.consola .corner-detail {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #00d9ff;
+    z-index: 3;
+}
+
+.consola .corner-detail.top-left {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 15px 0 0 0;
+}
+
+.consola .corner-detail.top-right {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 15px 0 0;
+}
+
+.consola .corner-detail.bottom-left {
+    bottom: 10px;
+    left: 10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 15px;
+}
+
+.consola .corner-detail.bottom-right {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 15px 0;
+}
+
+.consola .side-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent,
+        rgba(0, 217, 255, 0.6),
+        transparent
+    );
+    z-index: 1;
+}
+
+.consola .side-line.top {
+    top: 8%;
+    left: 15%;
+    right: 15%;
+}
+
+.consola .side-line.bottom {
+    bottom: 8%;
+    left: 15%;
+    right: 15%;
+}
+
+/* ============================================
+   CARTUCHOS - TAMAÑO FIJO BASADO EN IMAGEN
+   ============================================ */
+
 .cartuchos {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
-    padding: 30px;
-    max-width: 1300px;
-    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    padding: 40px 20px;
+    max-width: 1400px;
+    margin: 40px auto;
 }
 
-/* Animaciones para cartuchos */
+/* Cartucho con tamaño fijo */
 .cartucho {
-    transition: all 0.3s ease;
+    width: 200px;
+    height: 280px;
     cursor: pointer;
+    transition: all 0.4s ease;
+    position: relative;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
 }
 
 .cartucho:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    transform: translateY(-15px) scale(1.05);
+    filter: drop-shadow(0 15px 30px rgba(79, 195, 247, 0.6));
 }
 
+/* Contenedor de la imagen del cartucho */
+.cartucho-imagen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Imagen base del cartucho - tamaño fijo */
+.cartucho-base {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Texto DENTRO de la imagen del cartucho */
+.cartucho-texto-overlay {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    text-align: center;
+    pointer-events: none;
+}
+
+.cartucho-titulo-overlay {
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 8px;
+    text-shadow: 
+        0 2px 4px rgba(0,0,0,0.8),
+        0 0 10px rgba(79, 195, 247, 0.5);
+    font-family: 'Fira Code', 'Courier New', monospace;
+    letter-spacing: 1px;
+}
+
+.cartucho-descripcion-overlay {
+    color: #bdc3c7;
+    font-size: 0.75em;
+    line-height: 1.3;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+    font-family: 'Fira Code', 'Courier New', monospace;
+}
+
+/* Badge en la esquina */
+.cartucho-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #4fc3f7;
+    color: #000;
+    padding: 3px 8px;
+    border-radius: 8px;
+    font-size: 0.7em;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(79, 195, 247, 0.6);
+    font-family: 'Fira Code', monospace;
+}
+
+/* Información expandible (aparece debajo al hover) */
+.cartucho-info {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    margin-top: 15px;
+    padding: 15px;
+    background: linear-gradient(145deg, #1b1f2a, #161a22);
+    border-radius: 12px;
+    border: 2px solid #2c2f3a;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.cartucho:hover .cartucho-info {
+    opacity: 1;
+    visibility: visible;
+    margin-top: 10px;
+}
+
+.cartucho-normas h4,
+.cartucho-controles h4 {
+    color: #4fc3f7;
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    font-family: 'Fira Code', monospace;
+}
+
+.cartucho-normas ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 12px;
+}
+
+.cartucho-normas li {
+    color: #bdc3c7;
+    margin-bottom: 5px;
+    font-size: 0.75em;
+    padding-left: 15px;
+    position: relative;
+    font-family: 'Fira Code', monospace;
+}
+
+.cartucho-normas li::before {
+    content: '▸';
+    color: #4fc3f7;
+    position: absolute;
+    left: 0;
+}
+
+.controles-lista {
+    display: grid;
+    gap: 6px;
+}
+
+.control-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.control-item kbd {
+    background: #2c2f3a;
+    color: #4fc3f7;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7em;
+    min-width: 40px;
+    text-align: center;
+    font-family: 'Fira Code', monospace;
+    border: 1px solid #4fc3f7;
+}
+
+.control-item span {
+    color: #bdc3c7;
+    font-size: 0.75em;
+    flex: 1;
+    font-family: 'Fira Code', monospace;
+}
+
+/* Estado de cartucho insertado/activo */
 .cartucho-insertado {
-    border-color: #00ff00 !important;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5) !important;
+    animation: cartuchoGlow 2s infinite;
 }
 
-/* Efecto de "cartucho seleccionado" */
-.cartucho.seleccionado {
-    animation: pulse 1s infinite;
+@keyframes cartuchoGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 0 20px rgba(79, 195, 247, 0.8))
+                drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+    }
+    50% { 
+        filter: drop-shadow(0 0 30px rgba(79, 195, 247, 1))
+                drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+    }
 }
 
-@keyframes pulse {
-    0% { transform: translateY(-30px) scale(1); }
-    50% { transform: translateY(-30px) scale(1.05); }
-    100% { transform: translateY(-30px) scale(1); }
-}
-
-@media screen {
+/* RESPONSIVE */
+@media screen and (max-width: 1024px) {
+    .consola {
+        max-width: 950px;
+    }
     
+    .interiorConsola {
+        gap: 40px;
+    }
+    
+    .d-pad-container {
+        width: 110px;
+        height: 110px;
+    }
+    
+    .d-pad-btn {
+        width: 35px;
+        height: 35px;
+    }
+    
+    .action-btn {
+        width: 65px;
+        height: 65px;
+        font-size: 20px;
+    }
+    
+    .cartucho {
+        width: 180px;
+        height: 252px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .consola {
+        max-width: 700px;
+    }
+    
+    .interiorConsola {
+        gap: 30px;
+        padding: 20% 6% 20% 6%;
+    }
+    
+    .d-pad-container {
+        width: 95px;
+        height: 95px;
+    }
+    
+    .d-pad-btn {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .action-btn {
+        width: 55px;
+        height: 55px;
+        font-size: 18px;
+    }
+    
+    .cartuchos {
+        gap: 25px;
+        padding: 30px 15px;
+    }
+    
+    .cartucho {
+        width: 160px;
+        height: 224px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .consola {
+        max-width: 450px;
+        aspect-ratio: 2 / 1;
+    }
+    
+    .interiorConsola {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        padding: 18% 5% 22% 5%;
+        gap: 20px;
+    }
+    
+    .izquierda, .derecha {
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .consola .corner-detail,
+    .consola .side-line {
+        display: none;
+    }
+    
+    .cartucho {
+        width: 140px;
+        height: 196px;
+    }
+    
+    .cartucho-info {
+        width: 200px;
+    }
 }
