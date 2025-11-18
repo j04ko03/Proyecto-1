@@ -31,6 +31,19 @@ const contenedor = document.getElementById("contenedor_pregunta");
 const btnSiguiente = document.getElementById("btnSiguiente");
 const puntajeTexto = document.getElementById("puntaje");
 
+// Estado para saber si ya iniciamos el juego
+let juegoIniciado = false;
+
+// Esconde el boton al iniciar
+
+btnSiguiente.textContent = "Iniciar";
+btnSiguiente.style.display = "inline-block";
+
+// Limpiar el contenedor y puntuaje al principio
+
+contenedor.innerHTML = "";
+puntajeTexto.textContent = "";
+
 function mostrarPregunta() {
     const p = preguntas[indice];
     contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b></p>
@@ -112,14 +125,21 @@ function actualizarPuntaje() {
 
 
 btnSiguiente.addEventListener('click', () => {
-    indice++;
-    if (indice < preguntas.length) {
+    if (!juegoIniciado) {
+        // Primer click: Inicia el juego y cargar la primera pregunta
+        juegoIniciado = true;
+        btnSiguiente.textContent = "Siguiente";
         mostrarPregunta();
     } else {
-        contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
+        indice++;
+        if (indice < preguntas.length) {
+            mostrarPregunta();
+        } else {
+            contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
     <p>Tu puntuación final es: <b>${puntaje} / ${preguntas.length}</b></p>
     `;
-        btnSiguiente.style.display = "none";
+            btnSiguiente.style.display = "none";
+        }
     }
 });
 

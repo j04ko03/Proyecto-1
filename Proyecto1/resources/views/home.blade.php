@@ -9,16 +9,16 @@
 {{-- Consola Gamer --}}
 <div class="consola">
     <div class="led-power"></div>
-    
+
     <!-- Detalles decorativos -->
     <div class="corner-detail top-left"></div>
     <div class="corner-detail top-right"></div>
     <div class="corner-detail bottom-left"></div>
     <div class="corner-detail bottom-right"></div>
-    
+
     <div class="side-line top"></div>
     <div class="side-line bottom"></div>
-    
+
     <div class="interiorConsola">
         {{-- D-Pad izquierdo --}}
         <div class="izquierda">
@@ -29,7 +29,7 @@
                 <button class="d-pad-btn left" data-key="a" aria-label="Izquierda"></button>
             </div>
         </div>
-        
+
         {{-- Pantalla central --}}
         <div class="pantallaConsola">
             <div id="pantallaJuego" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
@@ -43,13 +43,12 @@
                 </div>
             </div>
         </div>
-        
+
         {{-- Botones A/B derechos --}}
         <div class="derecha">
             <button class="action-btn btn-a" data-key="space" aria-label="Botón A">A</button>
             <button class="action-btn btn-b" data-key="e" aria-label="Botón B">B</button>
         </div>
-<<<<<<< HEAD
         <a style="color: white" href="#">Best Player: Player</a>
     </div>
     <div id="botonesJuegos" class="contenedorPrincipalHome" style="border: 1px solid red; width: 100%; height: 240px; display: flex; flex-direction: column; justify-content: center; align-items: center;">
@@ -58,8 +57,6 @@
         <a href="#" id="btnJuego2" data-route="{{ route('volamentes.controller') }}" style="color: white">Juego 2</a>
         <a href="#" style="color: white">Juego 3</a>
         <a href="#" style="color: white">Juego 4</a>
-=======
->>>>>>> main
     </div>
 </div>
 
@@ -84,12 +81,12 @@ document.addEventListener('keydown', function(e) {
                     <div style="font-size: 0.9em; margin-top: 10px; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
                 </div>
             `;
-            
+
             // Remover estado de cartucho insertado
             document.querySelectorAll('.cartucho-insertado').forEach(c => {
                 c.classList.remove('cartucho-insertado');
             });
-            
+
             console.log('👋 Juego cerrado');
         }
     }
