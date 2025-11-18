@@ -24,7 +24,7 @@
     </div>
     
     <!-- Información expandible (aparece debajo al hover) -->
-    <div class="cartucho-info">
+    {{-- <div class="cartucho-info">
         <div class="cartucho-normas">
             <h4>📜 Normas</h4>
             <ul>
@@ -45,12 +45,14 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 {{-- JS INTEGRADO EN EL COMPONENTE --}}
 <script>
 (function() {
+
+    // EN caso de apretar otro cartucho también se ejecutará este código
     const cartucho = document.querySelector('.cartucho-{{ $cartucho->id }}');
     
     if (!cartucho) return;

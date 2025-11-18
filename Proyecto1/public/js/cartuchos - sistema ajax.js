@@ -1,6 +1,5 @@
 /**
  * GESTOR DE CARTUCHOS - SISTEMA AJAX
- * Adaptado para cargar juegos via AJAX en lugar de Canvas
  */
 class CartuchoManager {
     constructor() {
