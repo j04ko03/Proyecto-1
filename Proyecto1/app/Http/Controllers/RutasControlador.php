@@ -17,4 +17,9 @@ class RutasControlador extends Controller
     {
         return view('home');
     }
+    
+    public function juego1View()
+    {
+        return view('UIGames.UIAstroGame');
+    }
 } 
