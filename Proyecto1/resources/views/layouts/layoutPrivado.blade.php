@@ -36,12 +36,14 @@
             // Si tienes otros juegos, puedes agregar más rutas
             // juego2: "{{ asset('js/cargaElementosSecundariosJuego2.js') }}",
             astroInicializador: "{{ asset('js/Astro.js') }}",
-            volamentes: "{{ asset('js/volamentes.js')  }}",
+            volamentes: "{{ asset('js/scriptJuegos/volamentes.js')  }}",
 
         };
     </script>
 
     @stack('scripts')
+
+    <script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
 
 </body>
 </html>

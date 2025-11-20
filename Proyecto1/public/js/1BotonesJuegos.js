@@ -73,19 +73,31 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log(html);
             pantalla.innerHTML = html;
 
-            // Cargar el script manualmente
+            // Cargar el script manualmente usando la ruta solicitada
             let script = document.createElement("script");
-            console.log('Que script carga?? ' + url.split('/').pop());
-            switch (window.rutaScripts) {
-                case window.rutaScripts.astro:
-                    script.src = window.rutaScripts.astro;
-                    break;
-                case window.rutaScripts.volamentes:
-                    script.src = window.rutaScripts.volamentes;
-                default:
-                    console.error("Ruta de script no reconocida.");
-                    return;
+            const nombre = url.split('/').pop();
+            console.log('Que script carga?? ' + nombre);
+            if (!window.rutaScripts) {
+                console.error('window.rutaScripts no está definido');
+                pantalla.innerHTML = "<p style='color:red;'>Error: rutas de scripts no configuradas.</p>";
+                return;
             }
+
+            if (nombre === 'astro') {
+                script.src = window.rutaScripts.astro;
+            } else if (nombre === 'volamentes') {
+                script.src = window.rutaScripts.volamentes;
+            } else {
+                // Si el nombre no coincide, intentar usar la ruta completa como clave
+                if (window.rutaScripts[nombre]) {
+                    script.src = window.rutaScripts[nombre];
+                } else {
+                    console.error("Ruta de script no reconocida:", nombre);
+                    pantalla.innerHTML = "<p style='color:red;'>Error: ruta de script no reconocida.</p>";
+                    return;
+                }
+            }
+
             script.type = "text/javascript";
             document.body.appendChild(script);
 
