@@ -22,37 +22,15 @@
             <span class="cartucho-badge">{{ $cartucho->etiqueta }}</span>
         @endif
     </div>
-    
-    <!-- Información expandible (aparece debajo al hover) -->
-    {{-- <div class="cartucho-info">
-        <div class="cartucho-normas">
-            <h4>📜 Normas</h4>
-            <ul>
-                @foreach($cartucho->normas as $norma)
-                    <li>{{ $norma }}</li>
-                @endforeach
-            </ul>
-        </div>
-        
-        <div class="cartucho-controles">
-            <h4>🎮 Controles</h4>
-            <div class="controles-lista">
-                @foreach($cartucho->controles as $tecla => $accion)
-                    <div class="control-item">
-                        <kbd>{{ strtoupper($tecla) }}</kbd>
-                        <span>{{ $accion }}</span>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </div> --}}
 </div>
 
+
+<script src="{{ asset('js/caragaConsola.js') }}" defer></script>
 {{-- JS INTEGRADO EN EL COMPONENTE --}}
-<script>
+{{-- <script>
 (function() {
 
-    // EN caso de apretar otro cartucho también se ejecutará este código
+    // En caso de apretar otro cartucho también se ejecutará este código
     const cartucho = document.querySelector('.cartucho-{{ $cartucho->id }}');
     
     if (!cartucho) return;
@@ -208,4 +186,4 @@
         });
     }
 })();
-</script>
+</script> --}}
