@@ -119,6 +119,10 @@ class CartuchoManager {
             1: { // ASTRO
                 main: window.rutaScripts?.astro,
                 inicializador: window.rutaScripts?.astroInicializador
+            },
+            3: { // CAPI MATES
+                main: window.rutaScripts?.capimates,
+                inicializador: window.rutaScripts?.capimatesInicializador 
             }
             // Agregar más juegos aquí según necesites
         };
@@ -136,6 +140,9 @@ class CartuchoManager {
             await this.cargarScript(scripts.inicializador, () => {
                 if (typeof inicializadorAstro === 'function') {
                     inicializadorAstro();
+                }
+                if (typeof inicializadorCapiMates === 'function') {
+                    inicializadorCapiMates();
                 }
             });
         }

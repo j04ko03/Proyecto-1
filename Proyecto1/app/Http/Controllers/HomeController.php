@@ -26,7 +26,7 @@ class HomeController extends Controller
     $rutasJuegos = [
         1 => route('astro.controller'), // ASTRO
         // 2 => route('juego2.controller'),
-        // 3 => route('juego3.controller'), 
+        3 => route('capi.controller'), // CAPI MATES
         // 4 => route('juego4.controller'),
     ];
 

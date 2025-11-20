@@ -13,6 +13,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
+    Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
+
     Route::get('/volamentes', function () {
         return view('volamentes');
     });
