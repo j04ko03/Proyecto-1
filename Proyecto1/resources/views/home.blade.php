@@ -34,13 +34,13 @@
         <div class="pantallaConsola">
             <div id="pantallaJuego" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                 {{-- Aquí se cargará el contenido del juego vía AJAX --}}
-                <div id="pantallaJugable" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #4fc3f7; font-family: 'Fira Code', monospace;">
+                
                     <div style="text-align: center;">
                         <div style="font-size: 3em; margin-bottom: 20px;">🎮</div>
                         <div style="font-size: 1.2em;">Selecciona un juego</div>
                         <div style="font-size: 0.9em; margin-top: 10px; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
                     </div>
-                </div>
+                    
             </div>
         </div>
         
