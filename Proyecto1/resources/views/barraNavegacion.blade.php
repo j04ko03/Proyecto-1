@@ -1,14 +1,16 @@
 <div class="retro-navbar" style="border: 1px solid purple; height: 10%; width: 100%;">
-    
+
     <!-- NOMBRE DEL USUARIO -->
     <div class="nombre">
-        <span class="arroba">@</span> {{Auth::user()->nickName}}
+        <span class="arroba">@</span> {{ Auth::user()->nickName }}
     </div>
 
-    <!-- BUSCADOR -->
-    <div class="buscador">
-        <input type="text" id="searchInput" placeholder="Buscar juego...">
-    </div>
+    @if (Auth::user()->id_rol == 3)
+        <!-- BUSCADOR -->
+        <div class="buscador">
+            <input type="text" id="searchInput" placeholder="Buscar juego...">
+        </div>
+    @endif
 
     <!-- ENGRANAJE -->
     <div class="opciones">
@@ -17,10 +19,9 @@
         <div class="dropdown">
             <a href="#">Configuración</a>
             <a href="#">Perfil</a>
-            <a href="#">Usuarios</a>
+            <a href="{{ route('usuarios.index') }}">Usuarios</a>
             <a href="#">Estadísticas</a>
             <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
         </div>
     </div>
-
 </div>
