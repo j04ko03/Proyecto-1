@@ -31,8 +31,10 @@ document.body.appendChild(scriptAstro);
 console.log("Inicializa la carga de recursos");
 
 /*--------------------------------------------Configuracionesº----------------------------------------------*/
-const CANVAS_W = 640;
-const CANVAS_H = 360;
+const canvas = document.getElementById('canvas');
+
+const CANVAS_W = canvas.clientWidth;
+const CANVAS_H = canvas.clientHeight;
 const GRAVITY = 0.6;
 const FRICTION = 0.85;
 const PLAYER_SPEED = 2.0;
