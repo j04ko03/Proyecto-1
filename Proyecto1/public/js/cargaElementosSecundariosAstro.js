@@ -17,7 +17,7 @@ scriptAstro.onload = () => {
     }
 };
 
-//Pongo el script en el body
+//Pongo el script en el body    
 document.body.appendChild(scriptAstro);
 
 //Empieza el juego en este punto. TODO: idea, quiero hacer un timmer para los puntos. Para el tiempo del nivel se coge el local y se hace una resta
@@ -27,3 +27,27 @@ document.body.appendChild(scriptAstro);
   Autor: @Josep Guiu Sillés
   Controles: Flechas izquierda/derecha, Espacio para saltar, E para interactuar con bloque
 */
+
+console.log("Inicializa la carga de recursos");
+
+/*--------------------------------------------Configuracionesº----------------------------------------------*/
+const canvas = document.getElementById('canvas');
+
+const CANVAS_W = canvas.clientWidth;
+const CANVAS_H = canvas.clientHeight;
+const GRAVITY = 0.6;
+const FRICTION = 0.85;
+const PLAYER_SPEED = 2.0;
+const JUMP_V = -10;
+const START_X = 40;
+const START_Y = 260;
+const LEVEL_ID = 1;
+
+/* -----------------------------------------------Puntuación------------------------------------------------ */
+let puntos = 0;
+let mejor = parseInt(localStorage.getItem('mejor') || '0', 10);
+
+let vidas = 3;
+let nivel = 1;
+let erroresEnNivel = 0;
+
