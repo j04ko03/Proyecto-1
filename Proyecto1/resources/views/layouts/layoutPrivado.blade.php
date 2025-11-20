@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/layoutPublicoPrivado.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/barraNavegacion.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameAstro.css') }}">
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="{{ asset('assets/css/Volamentes.css') }}">
 
 
     <!-- CSS de vistas hijas -->
@@ -35,6 +35,8 @@
             // Si tienes otros juegos, puedes agregar más rutas
             // juego2: "{{ asset('js/cargaElementosSecundariosJuego2.js') }}",
             astroInicializador: "{{ asset('js/Astro.js') }}",
+            volamentes: "{{ asset('js/volamentes.js')  }}",
+
         };
     </script>
 

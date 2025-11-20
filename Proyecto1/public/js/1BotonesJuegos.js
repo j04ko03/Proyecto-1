@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Realiza una petición HTTP a la ruta del juego usando fetch
             // El header "X-Requested-With" indica que es una petición AJAX
-            const response = await fetch(url , {
+            const response = await fetch(url, {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Realiza una petición HTTP a la ruta del juego usando fetch
             // El header "X-Requested-With" indica que es una petición AJAX
-            const response = await fetch(url , {
+            const response = await fetch(url, {
                 headers: {
                     "X-Requested-With": "XMLHttpRequest"
                 }
@@ -76,7 +76,16 @@ document.addEventListener("DOMContentLoaded", function () {
             // Cargar el script manualmente
             let script = document.createElement("script");
             console.log('Que script carga?? ' + url.split('/').pop());
-            script.src = window.rutaScripts.astro;
+            switch (window.rutaScripts) {
+                case window.rutaScripts.astro:
+                    script.src = window.rutaScripts.astro;
+                    break;
+                case window.rutaScripts.volamentes:
+                    script.src = window.rutaScripts.volamentes;
+                default:
+                    console.error("Ruta de script no reconocida.");
+                    return;
+            }
             script.type = "text/javascript";
             document.body.appendChild(script);
 

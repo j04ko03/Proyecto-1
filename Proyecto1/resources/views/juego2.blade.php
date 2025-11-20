@@ -5,5 +5,5 @@
 @endpush
 
 @section('content')
-<script src="{{ url('js') }}}"></script>
+<script src="{{ url('js/volamentes.js') }}}"></script>
 @endsection
