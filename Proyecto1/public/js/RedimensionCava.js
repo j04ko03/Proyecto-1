@@ -1,7 +1,11 @@
-function inicializadorAstro(){
+function redimensionarCanva(){
     const canvas = document.getElementById('canvas');
-    const contenedorCanvas = document.getElementById('contenedorCanvas');
+    if (!canvas) {
+        console.error("❌ Astro: No se encontró el canvas");
+        return;
+    }
 
+    const contenedorCanvas = document.getElementById('contenedorCanvas');
     canvas.width = contenedorCanvas.clientWidth;   
     canvas.height = contenedorCanvas.clientHeight; 
     canvas.style = "border: 1px solid red";
@@ -11,13 +15,12 @@ function inicializadorAstro(){
         canvas.width = contenedorCanvas.clientWidth;
         canvas.height = contenedorCanvas.clientHeight;
         console.log('Redimensionando...');
-        // Opcional: volver a dibujar todo lo dibujado hasta el momento
-        // dibujar(); 
     }
-
     // Carga inicial del tamaño
     ajustarCanvas();
 
-    // Al redimensionar la ventana
     window.addEventListener('resize', ajustarCanvas);
 }
+
+// 🚀 REGISTRA EL INICIALIZADOR DE MANERA GLOBAL
+window.redimensionador = redimensionarCanva;

@@ -1,11 +1,15 @@
-<div class="cartucho cartucho-{{ $cartucho->id }}" data-cartucho="{{ $cartucho->id }}" data-juego="{{ $cartucho->nombre }}"
-    data-route="{{ $cartucho->ruta ?? '#' }}" role="button" aria-label="Jugar {{ $cartucho->nombre }}" tabindex="0">
+<div class="cartucho cartucho-{{ $cartucho->id }}" 
+    data-cartucho="{{ $cartucho->id }}" 
+    data-juego="{{ $cartucho->nombre }}"
+    data-route="{{ $cartucho->ruta ?? '#' }}" 
+    role="button" 
+    aria-label="Jugar {{ $cartucho->nombre }}" 
+    tabindex="0"
+    data-script="{{ asset('js/' . 'RedimensionCava' . '.js') }}">
 
-    <!-- Imagen del cartucho con texto DENTRO -->
     <div class="cartucho-imagen">
         <img src="{{ asset('img/cartuchoVerde.png') }}" alt="{{ $cartucho->nombre }}" class="cartucho-base">
 
-        <!-- Texto dentro de la imagen del cartucho -->
         <div class="cartucho-texto-overlay">
             <h3 class="cartucho-titulo-overlay">{{ $cartucho->nombre }}</h3>
             <p class="cartucho-descripcion-overlay">{{ Str::limit($cartucho->descripcion, 50) }}</p>
@@ -16,7 +20,6 @@
         @endif
     </div>
 
-    <!-- Información expandible (aparece debajo al hover) -->
     <div class="cartucho-info">
         <div class="cartucho-normas">
             <h4>📜 Normas</h4>
@@ -40,5 +43,3 @@
         </div>
     </div>
 </div>
-
-<script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
