@@ -13,21 +13,7 @@
     @endif
 
     <!-- ENGRANAJE -->
-    <div class="opciones">
-        <img src="{{ asset('img/iconoSettings.png') }}" alt="Opciones" class="iconoEngranaje">
-
-        <div class="dropdown">
-            {{-- <a href="#">Configuración</a>
-            <a href="#">Perfil</a> --}}
-
-            @if(Auth::user()->id === '1' || Auth::user()->rol === '2')
-                <a href="{{ route('') }}">Usuarios</a>
-            @endif        
-            @if(Auth::user()->rol === '1')
-                <a href="{{ route('') }}">Estadísticas</a>
-            @endif        
-            <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
-        </div>
+    @include('components.rueda-settings')
     
     </div>
 </div>
