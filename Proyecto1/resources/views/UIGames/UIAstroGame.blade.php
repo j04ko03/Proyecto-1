@@ -10,6 +10,7 @@
             <div style="width: 66%; display: flex; flex-wrap: wrap; width: 66%; justify-content: space-between; align-items: center;">
                 <div style="width: 55%;">
                     Vidas: <span id="vidas">3</span>
+                    <button id="PROVA">AAAAAAAAAAAAAAAAAAAA</button>
                 </div>
                 <div style="width: 40%; height: 80%; display: flex; flex-wrap: wrap; justify-content: space-between; align-content: center;">
                     <img src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">

@@ -97,21 +97,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Ponemos el contenido del juego dentro del contenedor pantalla
                 pantalla.innerHTML = html;
 
+
+                // ahora sí el DOM tiene #PROVA
+                if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
+                    window.astroJugable();
+                }
+
+
                 // Revisamos si el script del juego ya está cargado para no cargarlo dos veces
                 if (!document.querySelector(`script[src="${scriptJs}"]`)) {
                     // Si no está cargado, lo creamos y lo agregamos al body
                     const script = document.createElement("script");
                     script.src = scriptJs;
                     script.setAttribute("data-juego", "true");
-
-                    // Cuando el script termine de cargar, llamamos a la función redimensionador si existe
-                    script.onload = () => {
+                    
+                    script.onload = async () => {
                         if (typeof window.redimensionador === "function") {
                             window.redimensionador();
+                        }
+                        // Ahora sí cargamos Astro si corresponde
+                        switch (this.dataset.juego) {
+                            case 'Astro':
+                                const scriptAstro = document.createElement("script");
+                                scriptAstro.src = "./js/Astro/Astro.js";
+                                scriptAstro.setAttribute("data-juego", "true");
+                                scriptAstro.onload = () => {
+                                    console.log("Astro.js cargado, ejecutando astroJugable...");
+                                    if (typeof window.astroJugable === "function") {
+                                        window.astroJugable();
+                                    }
+                                };
+                                document.body.appendChild(scriptAstro);
+                                break;
+                            // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };
 
                     document.body.appendChild(script);
+
+                    
+
                 } else {
                     // Si ya está cargado, solo llamamos a redimensionador si existe
                     console.log("El script ya estaba cargado:", scriptJs);
