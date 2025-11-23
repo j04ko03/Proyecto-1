@@ -15,6 +15,17 @@ function redimensionarCanva(){
         canvas.width = contenedorCanvas.clientWidth;
         canvas.height = contenedorCanvas.clientHeight;
         console.log('Redimensionando...');
+
+        // 🔥 Emitimos un evento indicando que cambió el tamaño
+        window.dispatchEvent(
+            new CustomEvent('contenedorResize', {
+                detail: {
+                    width: contenedorCanvas.clientWidth,
+                    height: contenedorCanvas.clientHeight
+                }
+            })
+        );
+
     }
     // Carga inicial del tamaño
     ajustarCanvas();

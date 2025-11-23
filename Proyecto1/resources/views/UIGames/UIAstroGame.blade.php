@@ -10,7 +10,6 @@
             <div style="width: 66%; display: flex; flex-wrap: wrap; width: 66%; justify-content: space-between; align-items: center;">
                 <div style="width: 55%;">
                     Vidas: <span id="vidas">3</span>
-                    <button id="PROVA">AAAAAAAAAAAAAAAAAAAA</button>
                 </div>
                 <div style="width: 40%; height: 80%; display: flex; flex-wrap: wrap; justify-content: space-between; align-content: center;">
                     <img src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
@@ -31,12 +30,12 @@
     
     <!-- Story de capi -->
     <div id="mensaje" class="mensaje">
-        <h2 id="msg-title" class="msg-title">¡Bienvenido a Misión Matemática!</h2>
-        <div id="msg-body" class="msg-body">
+        <h2 id="msg-title" class="msg-title" style="color: white">¡Bienvenido a Misión Matemática!</h2>
+        <div id="msg-body" class="msg-body" style="color: white">
             Llega al final del nivel resolviendo las sumas. Presiona <strong>JUGAR</strong> para empezar.
         </div>
         <div style="margin-top:8px;">
-            <button id="start-btn" class="start-btn">JUGAR</button>
+            <button id="start-btn" class="start-btn" style="color: white">JUGAR</button>
         </div>
     </div>
 
