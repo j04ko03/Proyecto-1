@@ -225,6 +225,7 @@ window.iniciarAstro = function () {
         if(vidas <= 0){
             mostrarMensaje("Juego Terminado", "Has perdido todas tus vidas. Pulsa JUGAR para reiniciar.");
             reiniciarVidas();
+            resetJugador();
         }
     }
 
@@ -293,6 +294,7 @@ window.iniciarAstro = function () {
             playerPosInicio.y > 347 
         ) {
             console.log("💥 El jugador ha caído. Volviendo al inicio...");
+            console.log("------------------------:", playerPosInicio);
             playerPosInicio.x = START_X;
             playerPosInicio.y = START_Y;
             playerPosInicio.vx = 0;
@@ -346,8 +348,19 @@ window.iniciarAstro = function () {
         gameActive = true;
     }
 
-    //Iniciar el Juego, Ver para futuro implementar mas niveles
+    //Resetear juego -> valores de jugador
+        function resetJugador() {
+        playerPosInicio.x = START_X - 40;
+        playerPosInicio.y = START_Y + 65;
 
+        keys = {};
+        
+        playerPosInicio.vx = 0;
+        playerPosInicio.vy = 0;
+        playerPosInicio.onGround = false;
+    }
+
+    //Iniciar el Juego, Ver para futuro implementar mas niveles
     function iniciarAstro() {
         gameActive = true;
         levelComplete = false;
@@ -355,6 +368,8 @@ window.iniciarAstro = function () {
         nivel = LEVEL_ID; //De momento solo 1 nivel
         vidas = 3;
         erroresEnNivel = 0;
+
+        resetJugador();
         crearNivel1();
         loop();
     }
