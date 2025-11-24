@@ -7,6 +7,8 @@ window.iniciarAstro = function () {
       Controles: Flechas izquierda/derecha, Espacio para saltar, E para interactuar con bloque
     */
 
+    let loopId; // ID del bucle principal
+
     /* Canvas */
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
@@ -58,6 +60,7 @@ window.iniciarAstro = function () {
     let vidas = 3;
     let nivel = 1;
     let erroresEnNivel = 0;
+    let taxaErrores = 0;
 
     /* Estado del juego */
     let keys = {};
@@ -65,14 +68,18 @@ window.iniciarAstro = function () {
     let gameActive = false;
     let levelComplete = false;
 
+    /* Carga Pieza IMg */
+    const imgNave = new Image();
+    imgNave.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
+
     /* UI referencias */
     const msg = document.getElementById('mensaje');
     const startBtn = document.getElementById('start-btn');
     const nivelEl = document.getElementById('nivel');
     const vidasEl = document.getElementById('vidas');
     const puntosEl = document.getElementById('puntos');
-    const mejorEl = document.getElementById('mejor');
-    mejorEl.textContent = mejor;
+    const timmer = document.getElementById('mejor');
+    
 
 
     /* Modal pregunta */
@@ -82,9 +89,60 @@ window.iniciarAstro = function () {
     const cancelBtn = document.getElementById('cancel-btn');
     const submitBtn = document.getElementById('submit-btn');
 
+    /* Vidas */
+    const cor1 = document.getElementById('cor1');
+    const cor2 = document.getElementById('cor2');
+    const cor3 = document.getElementById('cor3');   
+
+    /* Timmer del Juego*/
+    let tiempoTranscurrido = null;
+    let timmerId = null;
+
+    //Funcion Internacional para modificar segundos a formato hh:mm:ss
+    function formatTiempo(segundos) {
+        const h = Math.floor(segundos / 3600);
+        const m = Math.floor((segundos % 3600) / 60);
+        const s = segundos % 60;
+
+        // Añadir cero a la izquierda si es menor que 10
+        const hh = h.toString().padStart(2, '0');
+        const mm = m.toString().padStart(2, '0');
+        const ss = s.toString().padStart(2, '0');
+
+        return `${hh}:${mm}:${ss}`;
+    }
+
+    function iniciarTimmer(){
+        tiempoTranscurrido = 0;
+        timmer.textContent = formatTiempo(tiempoTranscurrido);
+
+        if(timmerId){
+            clearInterval(timmerId)
+        }
+
+        timmerId = setInterval(() => {
+            //if (!gameActive) return; // solo contar si el juego está activo
+
+            tiempoTranscurrido++;
+            timmer.textContent = formatTiempo(tiempoTranscurrido);
+
+        }, 1000); // cada segundo
+    }
+
+    function pausarTimer() {
+        if(timmerId){
+            clearInterval(timmerId);
+            timmerId = null;
+        }
+    }
+
     startBtn.addEventListener('click', () => {
         console.log("Iniciar juego pulsado, cerrando Mensaje....");
         ocultarMensaje();
+
+        //Iniciar el juego Y Timmer
+        iniciarTimmer();
+
         iniciarAstro();
     });
 
@@ -141,7 +199,7 @@ window.iniciarAstro = function () {
 
     //Dibujar plataformas en nivel
     function dibujarPlataformas(){
-        ctx.fillStyle = "#6b4f2a"; // color marrón para plataformas TODO->CAMBIAR POR IMAGEN
+        ctx.fillStyle = "#000"; // color marrón para plataformas TODO->CAMBIAR POR IMAGEN
         plataformas.forEach(plata => {
             ctx.fillRect(
                 toScreenX(plata.x),
@@ -149,8 +207,30 @@ window.iniciarAstro = function () {
                 toScreenW(plata.w),
                 toScreenH(plata.h)
             );
+            dibujarRectanguloRedondeado(plata);
         });
     };
+
+    //Dibujar rectángulo con esquinas redondeadas para pieza de pregunta, se le pasara la lpataforma por contexto
+    function dibujarRectanguloRedondeado(plataformaArg) {
+        if(!plataformaArg.hasBlock || plataformaArg.blockAnswered)return;
+        const x = toScreenX(plataformaArg.x + plataformaArg.w / 2 - 10);
+        const y = toScreenY(plataformaArg.y - 50);
+        const w = 20;
+        const h = 20;
+
+        ctx.fillStyle = "#F9C74F"; // fondo
+        ctx.fillRect(x, y, w, h);
+
+        ctx.strokeStyle = "#000"; // borde
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, w, h);
+
+        ctx.fillStyle = "#000"; // ?
+        ctx.font = "16px monospace";
+        ctx.fillText("?", x + 6, y + 16);
+    }
+
 
     function rectanguloPieza(ctx, x, y, w, h, r, fill, stroke) {
         ctx.beginPath();
@@ -168,17 +248,29 @@ window.iniciarAstro = function () {
     function dibujarComponenteNave(){
         if(!componenteNave1.obtained){
             console.log("Dibujando componente nave 1------------------------------------");
+            
             ctx.fillStyle = '#F4A261';
+            
             rectanguloPieza(ctx, componenteNave1.x, componenteNave1.y, componenteNave1.w, componenteNave1.h, 4, true, false);
-            ctx.fillStyle = '#000';
-            ctx.font = '10px monospace';
-            const texto = "MOTOR";
-            const textWidth = ctx.measureText(texto).width;
+            
+        
+                ctx.drawImage(
+                    imgNave,
+                    componenteNave1.x,      // posición x
+                    componenteNave1.y,      // posición y
+                    componenteNave1.w,      // ancho
+                    componenteNave1.h       // alto
+                );
 
-            const textX = componenteNave1.x + (componenteNave1.w - textWidth) / 2;
-            const textY = componenteNave1.y + componenteNave1.h + 12;
+                ctx.fillStyle = '#000';
+                ctx.font = '10px monospace';
+                const texto = "MOTOR";
+                const textWidth = ctx.measureText(texto).width;
 
-            ctx.fillText(texto, textX, textY);
+                const textX = componenteNave1.x + (componenteNave1.w - textWidth) / 2;
+                const textY = componenteNave1.y + componenteNave1.h + 12;
+
+                ctx.fillText(texto, textX, textY);
         }
     }
 
@@ -215,15 +307,38 @@ window.iniciarAstro = function () {
     });
 
     function reiniciarVidas(){
+        cor1.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
+        cor2.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
+        cor3.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
         vidas = 3;
         vidasEl.textContent = vidas;
     }
     
     function quitarUnaVida(){
+        Respuesta(false); // Quitar puntos por error al caer
         vidas -= 1;
         vidasEl.textContent = vidas;
-        if(vidas <= 0){
+
+        switch(vidas){
+            case 2:
+                cor3.src = '/Proyecto-1/Proyecto1/Astro/corazonless.png';
+                break;
+            case 1:
+                cor2.src = '/Proyecto-1/Proyecto1/Astro/corazonless.png';
+                break;
+            case 0:
+                cor1.src = '/Proyecto-1/Proyecto1/Astro/corazonless.png';
+                break;
+        }
+
+        if(vidas === 0){
+            pausarTimer();
+
+            gameActive = false;
             mostrarMensaje("Juego Terminado", "Has perdido todas tus vidas. Pulsa JUGAR para reiniciar.");
+            
+            cancelAnimationFrame(loopId);
+
             reiniciarVidas();
             resetJugador();
         }
@@ -231,6 +346,23 @@ window.iniciarAstro = function () {
 
     //Actualización de la posición del jugador
     function actualizarJugador() {
+        //Si el jugador tiene una pregunta abierta no se actualiza su posición
+        // Añado apartado de que si el jugador apreta la tecla e interactúe con el bloque de pregunta
+
+        if(keys['KeyE']) {
+            console.log("Interaccion con bloque de pregunta");
+            plataformas.forEach(plata => {
+                if(plata.hasBlock && !plata.blockAnswered){
+                    if(detectarInteraccionPlataforma(plata)){
+                        abrirModalPregunta(plata);
+                    }        
+                }
+            });
+        }
+
+
+        if(modalOpen) return;
+
         if(keys['ArrowRight'] || keys['KeyD']) {
             console.log("Mover derecha");
             playerPosInicio.vx = PLAYER_SPEED;
@@ -311,28 +443,159 @@ window.iniciarAstro = function () {
             playerPosInicio.vy = 0;
             playerPosInicio.onGround = true;
         }
+        
     }
+
+    //Detectar si el jugador está cerca de una plataforma interactiva la plataforma interactiva tiene el atributo hasblock a true
+    function detectarInteraccionPlataforma(plataforma){
+        // Coordenadas reales del jugador
+        const JX = playerPosInicio.x;
+        const JY = playerPosInicio.y;
+        const JW = playerPosInicio.w;
+        const JH = playerPosInicio.h;
+
+        // Coordenadas reales del bloque
+        const BX = plataforma.x;
+        const BY = plataforma.y;
+        const BW = plataforma.w;
+        const BH = plataforma.h;
+
+        // Calcular centro de jugador y bloque
+        const jugadorCentroX = JX + JW/2;
+        const jugadorCentroY = JY + JH/2;
+
+        const bloqueCentroX = BX + BW/2;
+        const bloqueCentroY = BY + BH/2;
+
+        // Distancia real
+        const distanciaX = Math.abs(jugadorCentroX - bloqueCentroX);
+        const distanciaY = Math.abs(jugadorCentroY - bloqueCentroY);
+
+        let interactuar = false;
+        //Para interactuar debe de estar cerca, entre estos valores
+        if(distanciaX < 30 && distanciaY < 50){
+            console.log("El jugador está cerca de una plataforma interactiva!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            interactuar = true;
+        }
+
+        return interactuar;
+    }
+
+    function anadirBloquePreguntaAPlataforma(indicePlataforma){
+        plataformas[indicePlataforma].hasBlock = true;
+        plataformas[indicePlataforma].hasBlock = true;
+        plataformas[indicePlataforma].hasBlock = true;
+        plataformas[indicePlataforma].hasBlock = true;
+        plataformas[indicePlataforma].hasBlock = true;
+    }
+
+    //Método para abrir las preguntas
+    function abrirModalPregunta(plataforma){
+        console.log("Abriendo modal de pregunta para la plataforma:", plataforma);
+
+        if(modalOpen) return; // Si ya está abierto, no hacer nada
+
+        modalOpen = true;
+        gameActive = false;
+
+        plataformaActual = plataforma;
+
+        modal.style.display = 'block';
+        preguntaText.textContent = "¿Cuánto es 2 + 2?"; // Aquí iría la pregunta real
+
+        respuestaInput.value = '';
+        respuestaInput.focus();
+
+        plataforma.blockAsked = true;
+
+    }
+
+    function cerrarModalPregunta(){
+        modalOpen = false;
+        gameActive = true;
+        modal.style.display = 'none';
+        loop();
+    }
+
+    function Respuesta(respuesta){
+        if(respuesta){
+            puntos += 100;
+            puntosEl.textContent = puntos;
+        }else{
+            erroresEnNivel += 1;
+            switch(erroresEnNivel){
+                case 0:
+                    taxaErrores = 0;
+                    break;
+                case 1:
+                    taxaErrores = 0.1;
+                    break;
+                case 2:
+                    taxaErrores = 0.25;
+                    break;
+                case 3:
+                    taxaErrores = 0.5;
+                    break;
+                case 4:
+                    taxaErrores = 0.75;
+                    break;
+                case 5:
+                    taxaErrores = 1;
+                    break;
+                default:
+                    taxaErrores = 1;
+                    break;
+            }     
+            puntos = puntos - Math.floor(puntos * taxaErrores); 
+            puntosEl.textContent = puntos; 
+        }
+    }
+
+    submitBtn.addEventListener('click', () => {
+        const respuesta = respuestaInput.value.trim();
+        console.log("Respuesta enviada:", respuesta);
+        
+        // Aquí iría la lógica para verificar la respuesta
+        if (respuesta === "9") { 
+            
+            plataformaActual.blockAnswered = true;
+
+            Respuesta(true);
+        }else{
+            Respuesta(false);
+        }
+
+        cerrarModalPregunta();
+
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        console.log("Cerrando modal de pregunta sin responder");
+        cerrarModalPregunta();
+    });
 
     // Bucle principal del juego, corazón del motor de juego. Actualización del jugador, físicas, colisiones con plataformas, etc.
     function loop() {
-        if (!gameActive) {
-            requestAnimationFrame(loop);//Vuelve a ejecutar esta función en el próximo frame. Sin esto, el juego se detendría.
-            return;
+        if(vidas > 0){
+            if (!gameActive) {
+                //requestAnimationFrame(loop);//Vuelve a ejecutar esta función en el próximo frame. Sin esto, el juego se detendría.
+                return;
+            }
+
+            // limpiar canvas
+            ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+            // dibujar plataformas
+            dibujarPlataformas();
+            // dibujar componente nave
+            dibujarComponenteNave(1);
+            // actualizar jugador
+            actualizarJugador();
+            // dibujar jugador posicion inicial
+            dibujarPlayer();
+
+            loopId = requestAnimationFrame(loop);
         }
-
-        // limpiar canvas
-        ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-
-        // dibujar plataformas
-        dibujarPlataformas();
-        // dibujar componente nave
-        dibujarComponenteNave();
-        // actualizar jugador
-        actualizarJugador();
-        // dibujar jugador posicion inicial
-        dibujarPlayer();
-
-        requestAnimationFrame(loop);
     }
 
     /* -------------- Mensajes -------------- */
@@ -365,12 +628,21 @@ window.iniciarAstro = function () {
         gameActive = true;
         levelComplete = false;
         puntos = 0;
+        puntosEl.textContent = puntos;
         nivel = LEVEL_ID; //De momento solo 1 nivel
         vidas = 3;
         erroresEnNivel = 0;
 
         resetJugador();
         crearNivel1();
+        anadirBloquePreguntaAPlataforma(2); // plataforma índice 2
+        anadirBloquePreguntaAPlataforma(3); // plataforma índice 3
+        anadirBloquePreguntaAPlataforma(4); // plataforma índice 4
+        anadirBloquePreguntaAPlataforma(5); // plataforma índice 5
+        anadirBloquePreguntaAPlataforma(6); // plataforma índice 6
+
+
+        
         loop();
     }
 
