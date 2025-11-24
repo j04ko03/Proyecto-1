@@ -14,17 +14,19 @@
     <link rel="stylesheet" href="{{ asset('assets/css/layoutPublicoPrivado.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/barraNavegacion.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameAstro.css') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/Volamentes.css') }}">
-
 
     <!-- CSS de vistas hijas -->
     @stack('styles')
 </head>
 
+@push('scripts')
+    <script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
+@endpush
+
 <body class="background">
     <!-- Navbar -->
     @include('barraNavegacion', ['usuario' => Auth::user()->nickName])
-
+    
     <!-- Contenido principal -->
     <main class="main-content">
         @yield('content')
@@ -32,18 +34,13 @@
 
     <script>
         window.rutaScripts = {
-            astro: "{{ asset('js/cargaElementosSecundariosAstro.js') }}",
-            // Si tienes otros juegos, puedes agregar más rutas
-            // juego2: "{{ asset('js/cargaElementosSecundariosJuego2.js') }}",
-            astroInicializador: "{{ asset('js/Astro.js') }}",
-            volamentes: "{{ asset('js/scriptJuegos/volamentes.js')  }}",
-
+            redimensionador: "{{ asset('js/RedimensionCava.js') }}",
         };
     </script>
 
     @stack('scripts')
 
-    <script src="{{ asset('js/1BotonesJuegos.js') }}"></script>
-
+    
+    
 </body>
 </html>
