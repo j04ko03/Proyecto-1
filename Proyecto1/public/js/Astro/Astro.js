@@ -70,7 +70,25 @@ window.iniciarAstro = function () {
 
     /* Carga Pieza IMg */
     const imgNave = new Image();
-    imgNave.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
+    imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
+
+    /* Carga de imagen andando Capi */
+    const imagenCapiPieIzquierda = new Image();
+    const imagenCapiPieIzquierdaAnda = new Image();
+    const imagenCapiPieDerecha = new Image();
+    const imagenCapiPieDerechaAnda = new Image();
+    const imageCapiSaltoIzquierda = new Image();
+    const imageCapiSaltoDerecha = new Image();
+
+    imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pie1izquierda.png';
+    imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pie2izquierda.png';
+    imagenCapiPieDerecha.src =          '/Proyecto-1/Proyecto1/Astro/paso1derecha.png';
+    imagenCapiPieDerechaAnda.src =      '/Proyecto-1/Proyecto1/Astro/paso2derecha.png';
+    imageCapiSaltoIzquierda.src =       '/Proyecto-1/Proyecto1/Astro/salto2izquierda.png';
+    imageCapiSaltoDerecha.src =         '/Proyecto-1/Proyecto1/Astro/salto2derecha.png';
+
+    const capiAnda = imagenCapiPieDerecha;
+
 
     /* UI referencias */
     const msg = document.getElementById('mensaje');
@@ -262,6 +280,7 @@ window.iniciarAstro = function () {
                     componenteNave1.h       // alto
                 );
 
+                //centrar texto
                 ctx.fillStyle = '#000';
                 ctx.font = '10px monospace';
                 const texto = "MOTOR";
@@ -287,12 +306,19 @@ window.iniciarAstro = function () {
     };
 
     function dibujarPlayer() {
-        ctx.fillStyle = "#00f"; // azul
-        ctx.fillRect(
+        //ctx.fillStyle = "#00f"; // azul
+        /*ctx.fillRect(
             toScreenX(playerPosInicio.x),
             toScreenY(playerPosInicio.y),
             toScreenW(playerPosInicio.w),
             toScreenH(playerPosInicio.h)
+        );*/
+        ctx.drawImage(
+            capiAnda,
+            playerPosInicio.x,
+            playerPosInicio.y,
+            playerPosInicio.w,
+            playerPosInicio.h
         );
     }
 
@@ -300,6 +326,31 @@ window.iniciarAstro = function () {
     window.addEventListener('keydown', function (e) {
         keys[e.code] = true;
         console.log("Tecla presionada:", e.code);
+
+        //controlar la imagen de capi actual para ir variandola
+        if(e.code == "ArrowRight" || e.code == "KeyD"){
+            if(capiAnda.src === imagenCapiPieDerecha.src){
+                capiAnda.src = imagenCapiPieDerechaAnda.src;
+            }else if(capiAnda.src === imagenCapiPieDerechaAnda.src) {
+                capiAnda.src = imagenCapiPieDerecha.src;
+            }else{
+                capiAnda.src = imagenCapiPieDerecha.src;
+            }
+        }else if(e.code == "ArrowLeft" || e.code == "KeyA"){
+            if (capiAnda.src === imagenCapiPieIzquierda.src) {
+                capiAnda.src = imagenCapiPieIzquierdaAnda.src;
+            } else if (capiAnda.src === imagenCapiPieIzquierdaAnda.src){
+                capiAnda.src = imagenCapiPieIzquierda.src;
+            }else{
+                capiAnda.src = imagenCapiPieIzquierda.src;
+            }
+        }else if(e.code == "Space" || e.code == "KeyW" || e.code == "ArrowUp"){
+            if(capiAnda.src == imageCapiSaltoIzquierda.src){
+                capiAnda.src == imageCapiSaltoDerecha.src;
+            }else{
+                capiAnda.src == imageCapiSaltoIzquierda.src;
+            }
+        }
     });
     window.addEventListener('keyup', function (e) {
         keys[e.code] = false;
