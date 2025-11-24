@@ -243,6 +243,10 @@ class CartuchoManager {
             1: { // ASTRO
                 main: window.rutaScripts?.astro,
                 inicializador: window.rutaScripts?.astroInicializador
+            },
+            2: { // BOSQUE
+                main: '/js/juegos/bosque/Bosque.js',
+                inicializador: '/js/juegos/bosque/InicializadorBosque.js'
             }
             // Agregar más juegos aquí según necesites
             // 2: { main: 'ruta/juego2.js', inicializador: 'ruta/inicializador2.js' }
@@ -279,10 +283,16 @@ class CartuchoManager {
                     console.log('✅ Inicializador Astro ejecutado');
                 }
                 break;
-            // Agregar más casos para otros juegos
             default:
                 console.warn(`⚠️ No hay inicializador definido para el juego ${idJuego}`);
-        }
+            case 2: // BOSQUE
+                if (typeof inicializadorBosque === 'function') {
+                    inicializadorBosque();
+                    console.log('✅ Inicializador Bosque ejecutado');
+                }
+                break;
+                    }
+                // Agregar más casos para otros juegos
     }
 
     /**
