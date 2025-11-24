@@ -634,6 +634,8 @@ window.iniciarAstro = function () {
         erroresEnNivel = 0;
 
         resetJugador();
+
+        //Parte a modificar en caso de niveles diferentes
         crearNivel1();
         anadirBloquePreguntaAPlataforma(2); // plataforma índice 2
         anadirBloquePreguntaAPlataforma(3); // plataforma índice 3
