@@ -19,7 +19,7 @@
     <div class="side-line top"></div>
     <div class="side-line bottom"></div>
     
-    <div class="interiorConsola">
+    <div class="interiorConsola" style="display: flex; flex-wrap: nowrap; align-content: center; justify-content: center;">
         {{-- D-Pad izquierdo --}}
         <div class="izquierda">
             <div class="d-pad-container">
@@ -31,18 +31,16 @@
         </div>
         
         {{-- Pantalla central --}}
-        <div class="pantallaConsola">
-            <div id="pantallaJuego" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            <div id="pantallaJuego" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
                 {{-- Aquí se cargará el contenido del juego vía AJAX --}}
-                <div id="pantallaJugable" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #4fc3f7; font-family: 'Fira Code', monospace;">
-                    <div style="text-align: center;">
+                
+                    <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; border-radius: 50%;">
                         <div style="font-size: 3em; margin-bottom: 20px;">🎮</div>
-                        <div style="font-size: 1.2em;">Selecciona un juego</div>
-                        <div style="font-size: 0.9em; margin-top: 10px; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
+                        <div style="font-size: 1.2em; color: #bdc3c7;">Selecciona un juego</div>
+                        <div style="font-size: 0.9em; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
                     </div>
-                </div>
+                    
             </div>
-        </div>
         
         {{-- Botones A/B derechos --}}
         <div class="derecha">
@@ -59,30 +57,5 @@
     @endforeach
 </div>
 
-{{-- Script para salir del juego con ESC --}}
-<script>
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        const pantalla = document.getElementById('pantallaJugable');
-        if (pantalla) {
-            // Resetear pantalla
-            pantalla.innerHTML = `
-                <div style="text-align: center;">
-                    <div style="font-size: 3em; margin-bottom: 20px;">🎮</div>
-                    <div style="font-size: 1.2em;">Selecciona un juego</div>
-                    <div style="font-size: 0.9em; margin-top: 10px; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
-                </div>
-            `;
-            
-            // Remover estado de cartucho insertado
-            document.querySelectorAll('.cartucho-insertado').forEach(c => {
-                c.classList.remove('cartucho-insertado');
-            });
-            
-            console.log('👋 Juego cerrado');
-        }
-    }
-});
-</script>
 
 @endsection
