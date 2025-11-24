@@ -43,17 +43,17 @@ contenedor.innerHTML = "";
 puntajeTexto.textContent = "";
 
 function mostrarPregunta() {
-    const p = preguntas[indice];
-    contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b> ${p.texto}</p>
-    <div class="linea-codigo">
-        <span>${p.antes}</span>
-        <span class="dropzone" id="zona">[ Código ]</span>
-        <span>${p.despues}</span>
-    </div>
-    <div class="opciones">
+    // const p = preguntas[indice];
+    // contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b> ${p.texto}</p>
+    // <div class="linea-codigo">
+    //     <span>${p.antes}</span>
+    //     <span class="dropzone" id="zona">[ Código ]</span>
+    //     <span>${p.despues}</span>
+    // </div>
+    // <div class="opciones">
 
-    </div>
-    <p id="menaje"></p>`;
+    // </div>
+    // <p id="menaje"></p>`;
 // Importante: Corregir para sacar las opciones bien y que las repuestas cambien de color en funcion de la correcta
 //Crear un Json donde esten las preguntas y cargarlas entro del element.
 //
@@ -62,7 +62,7 @@ function mostrarPregunta() {
     let elemento = document.getElementById("menaje");
     elemento.appendChild(myOpcion);
     myOpcion.addEventListener('click', () => {
-        console.log('Has hecho clic en el mensaje');
+        console.log('Has hecho click en el mensaje');
     });
 
 
@@ -127,33 +127,10 @@ function mostrarPregunta() {
     btnSiguiente.style.display = "none";
 }
 
-function actualizarPuntaje() {
-    puntajeTexto.textContent = `Puntaje: ${puntaje} / ${preguntas.length}`;
-}
 
 
-btnSiguiente.addEventListener('click', () => {
-    if (!juegoIniciado) {
-        // Primer click: Inicia el juego y cargar la primera pregunta
-        juegoIniciado = true;
-        btnSiguiente.textContent = "Siguiente";
-        indice = 0;
-        puntaje = 0;
-        mostrarPregunta();
-    } else {
-        indice++;
-        if (indice < preguntas.length) {
-            mostrarPregunta();
-        } else {
-            contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
-    <p>Tu puntuación final es: <b>${puntaje} / ${preguntas.length}</b></p>
-    `;
-            btnSiguiente.style.display = "none";
-        }
-    }
-});
+
 
 // No llamar mostrarPregunta() automáticamente para que el usuario inicie con el botón
 
 // inicializar mostrando puntaje 0
-actualizarPuntaje();
