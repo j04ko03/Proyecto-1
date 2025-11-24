@@ -20,6 +20,8 @@ Route::middleware(['auth'])->group(function () {
     });
 });
 
+// Route::get('/filtrar', [HomeController::class, 'filtrar'])->name('filtrar.controller');
+
 //Al entrar en una de las rutas dentro de este apartado, se mirará si el usuario está autentificado y a parte que rol tiene (En este apartado entra SuperAdmin y Admin)
 Route::middleware(['auth', 'rol: 1,2'])->group(function () {
     //Rutas que comparten SuperAdmin y Admin. TODO-> Limpiar esta línea

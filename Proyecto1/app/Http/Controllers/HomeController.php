@@ -7,40 +7,56 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function index()
-    {
-        $cartuchos = Cartucho::where('isBlocked', false)
-                            ->orderBy('nombre')
-                            ->get();
+    public function index(Request $request)
+{
+     $query = Cartucho::where('isBlocked', false);
 
+    // FILTRO POR NOMBRE (SI EL USUARIO ESCRIBE ALGO)
+    if ($request->filled('codi_buscar')) {
+        $filter = $request->codi_buscar;
 
-        $cartuchosConDatos = $cartuchos->map(function ($juego) {
-            return $this->agregarDatosJuego($juego);
-        });
+        $query->orderByRaw("
+            CASE 
+                WHEN nombre LIKE ? THEN 0 
+                ELSE 1 
+            END
+        ", ["%$filter%"]);
 
-        return view('home', ['cartuchos' => $cartuchosConDatos]);
     }
 
-    private function agregarDatosJuego($juego) 
-{
-    $rutasJuegos = [
-        1 => route('astro.controller'), // ASTRO
-        // 2 => route('juego2.controller'),
-        3 => route('capi.controller'), // CAPI MATES
-        // 4 => route('juego4.controller'),
-    ];
+    // ORDENAR SIEMPRE POR NOMBRE
+    $query->orderBy('nombre', 'asc');
 
-    $datosAdicionales = [
-        'normas' => $this->obtenerNormasJuego($juego->id),
-        'controles' => $this->obtenerControlesJuego($juego->id),
-        'etiqueta' => $this->obtenerEtiquetaJuego($juego->id),
-        'ruta' => $rutasJuegos[$juego->id] ?? '#'
-    ];
+    $cartuchos = $query->get();
 
-    $juego->normas = $datosAdicionales['normas'];
-    $juego->controles = $datosAdicionales['controles'];
-    $juego->etiqueta = $datosAdicionales['etiqueta'];
-    $juego->ruta = $datosAdicionales['ruta'];
+    $cartuchosConDatos = $cartuchos->map(function ($juego) {
+        return $this->agregarDatosJuego($juego);
+    });
+
+    return view('home', ['cartuchos' => $cartuchosConDatos]);
+}
+
+
+    private function agregarDatosJuego($juego)
+    {
+        $rutasJuegos = [
+            1 => route('astro.controller'), // ASTRO
+            // 2 => route('juego2.controller'),
+            3 => route('capi.controller'), // CAPI MATES
+            // 4 => route('juego4.controller'),
+        ];
+
+        $datosAdicionales = [
+            'normas' => $this->obtenerNormasJuego($juego->id),
+            'controles' => $this->obtenerControlesJuego($juego->id),
+            'etiqueta' => $this->obtenerEtiquetaJuego($juego->id),
+            'ruta' => $rutasJuegos[$juego->id] ?? '#',
+        ];
+
+        $juego->normas = $datosAdicionales['normas'];
+        $juego->controles = $datosAdicionales['controles'];
+        $juego->etiqueta = $datosAdicionales['etiqueta'];
+        $juego->ruta = $datosAdicionales['ruta'];
 
         return $juego;
     }
@@ -53,7 +69,7 @@ class HomeController extends Controller
                 'Resuelve operaciones matemáticas',
                 'Completa todos los niveles',
                 'Consigue la máxima puntuación',
-                'Tienes 3 vidas por nivel'
+                'Tienes 3 vidas por nivel',
             ],
             // LOS OTROS JUEGOS.
         ];
@@ -70,7 +86,7 @@ class HomeController extends Controller
             'a' => 'Mover izquierda',
             'd' => 'Mover derecha',
             'space' => 'Acción principal',
-            'e' => 'Interactuar'
+            'e' => 'Interactuar',
         ];
 
         // Escribir aqui las excepciones (¿hacer un if else y return = $response?)
@@ -80,7 +96,7 @@ class HomeController extends Controller
     private function obtenerEtiquetaJuego($idJuego)
     {
         $etiquetas = [
-            1 => 'MATEMÁTICAS'
+            1 => 'MATEMÁTICAS',
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';
@@ -89,7 +105,7 @@ class HomeController extends Controller
     private function obtenerArchivoJuego($idJuego) // De donde se pillara el js del juego
     {
         $archivos = [
-            1 => 'js/scriptJuegos/astro.js'
+            1 => 'js/scriptJuegos/astro.js',
         ];
 
         return $archivos[$idJuego] ?? error('No se encontró el juego'); // Insertar una imagen de Capi triste? OPTIONAL
