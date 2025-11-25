@@ -532,17 +532,67 @@ window.iniciarAstro = function () {
         return interactuar;
     }
 
-    function anadirBloquePreguntaAPlataforma(indicePlataforma){
-        plataformas[indicePlataforma].hasBlock = true;
-        plataformas[indicePlataforma].hasBlock = true;
-        plataformas[indicePlataforma].hasBlock = true;
-        plataformas[indicePlataforma].hasBlock = true;
-        plataformas[indicePlataforma].hasBlock = true;
+    function anadirPreguntasnivel1(){//Se le puede pasar por parámetro el nivel para la creación de preguntas
+        const indices = [2, 3, 4, 5, 6];
+        indices.forEach(i => {
+            const preguntita = generadorPreguntas(1);//solo sumas por ahora
+            plataformas[i].hasBlock = true;
+            plataformas[i].preguntaText = preguntita.texto;
+            plataformas[i].respuesta = preguntita.correcta;
+            plataformas[i].blockAsked = false;
+            plataformas[i].blockAnswered = false;
+        });
     }
+
+    //Método para crear una función que genere según el nivel una pregunta u otra
+    function generadorPreguntas(nivel){
+        let operador1, operador2, operacion, respuesta;
+
+        switch(nivel){
+            case 1: //sumas
+                operacion = "+";
+                operador1 = Math.floor(Math.random() * 100) + 1; //Hasta cien
+                operador2 = Math.floor(Math.random() * 100) + 1;
+                respuesta = operador1 + operador2;
+                break;
+            case 2://restas
+                operacion = "-";
+                operador1 = Math.floor(Math.random() * 100) + 1; //Hasta cien
+                operador2 = Math.floor(Math.random() * 100) + 1;
+                respuesta = operador1 - operador2;
+                break;
+            case 3://multiplicaciones
+                operacion = "*";
+                operador1 = Math.floor(Math.random() * 10) + 1; //Hasta cien
+                operador2 = Math.floor(Math.random() * 10) + 1;
+                respuesta = operador1 * operador2;
+                break;
+            case 4://Divisiones
+                operacion = "";
+                operacion = "÷";
+                b = Math.floor(Math.random() * 9) + 2; // divisor 2–10
+                a = b * (Math.floor(Math.random() * 10) + 1); // múltiplo exacto
+                respuesta = operador1 / operador2;
+                break;
+            case 5://Mixto
+                const operacionesRandom = [1, 2, 3, 4];
+                return generadorPreguntas(operacionesRandom[Math.floor(Math.random() * 4)]);
+            default:
+                break;
+        }
+
+        return { 
+            texto: `${operador1} ${operacion} ${operador2}`, 
+            correcta: respuesta 
+        };
+
+    }
+
 
     //Método para abrir las preguntas
     function abrirModalPregunta(plataforma){
-        console.log("Abriendo modal de pregunta para la plataforma:", plataforma);
+        console.log("Abriendo modal de pregunta para la plataforma:", plataforma.preguntaText);
+        console.log(plataforma);
 
         if(modalOpen) return; // Si ya está abierto, no hacer nada
 
@@ -552,7 +602,7 @@ window.iniciarAstro = function () {
         plataformaActual = plataforma;
 
         modal.style.display = 'block';
-        preguntaText.textContent = "¿Cuánto es 2 + 2?"; // Aquí iría la pregunta real
+        preguntaText.textContent = "¿Cuánto es: " + plataforma.pre + "?"; // Aquí iría la pregunta real
 
         respuestaInput.value = '';
         respuestaInput.focus();
@@ -603,6 +653,9 @@ window.iniciarAstro = function () {
     }
 
     submitBtn.addEventListener('click', () => {
+        //Mostrar la plataforma ya contiene la pregunta respuestaetc
+        console.log("----------------------------------" + plataformaActual);
+
         const respuesta = respuestaInput.value.trim();
         console.log("Respuesta enviada:", respuesta);
         
@@ -688,12 +741,7 @@ window.iniciarAstro = function () {
 
         //Parte a modificar en caso de niveles diferentes
         crearNivel1();
-        anadirBloquePreguntaAPlataforma(2); // plataforma índice 2
-        anadirBloquePreguntaAPlataforma(3); // plataforma índice 3
-        anadirBloquePreguntaAPlataforma(4); // plataforma índice 4
-        anadirBloquePreguntaAPlataforma(5); // plataforma índice 5
-        anadirBloquePreguntaAPlataforma(6); // plataforma índice 6
-
+        anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
 
         
         loop();
