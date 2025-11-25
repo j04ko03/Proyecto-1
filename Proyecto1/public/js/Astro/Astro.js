@@ -175,7 +175,7 @@ window.iniciarAstro = function () {
     const componenteNave1 = { 
         x: 840, 
         y: CANVAS_H - 80, 
-        w: 36, 
+        w: 46, 
         h: 36, 
         obtained: false 
     };
@@ -262,9 +262,20 @@ window.iniciarAstro = function () {
         if (stroke) ctx.stroke();
     }
 
+    //Determinar recurso de imagen de naveç
+    function determinarRecursoNave(){
+        switch(nivel){
+            case 1:
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
+                break;
+        }
+        
+    }
+
     //Dibujar componente nave
     function dibujarComponenteNave(){
         if(!componenteNave1.obtained){
+            determinarRecursoNave(); ///------------------------------------------------>>> Comportamiento switch que detecta en que nivel esta y carga una imagen u otra
             console.log("Dibujando componente nave 1------------------------------------");
             
             ctx.fillStyle = '#F4A261';
@@ -317,8 +328,8 @@ window.iniciarAstro = function () {
             capiAnda,
             playerPosInicio.x,
             playerPosInicio.y,
-            playerPosInicio.w,
-            playerPosInicio.h
+            playerPosInicio.w * 1.4,
+            playerPosInicio.h * 1.4
         );
     }
 
@@ -602,7 +613,7 @@ window.iniciarAstro = function () {
         plataformaActual = plataforma;
 
         modal.style.display = 'block';
-        preguntaText.textContent = "¿Cuánto es: " + plataforma.pre + "?"; // Aquí iría la pregunta real
+        preguntaText.textContent = "¿Cuánto es: " + plataforma.preguntaText + "?"; // Aquí iría la pregunta real
 
         respuestaInput.value = '';
         respuestaInput.focus();
@@ -656,11 +667,11 @@ window.iniciarAstro = function () {
         //Mostrar la plataforma ya contiene la pregunta respuestaetc
         console.log("----------------------------------" + plataformaActual);
 
-        const respuesta = respuestaInput.value.trim();
+        const respuesta = parseInt(respuestaInput.value.trim());
         console.log("Respuesta enviada:", respuesta);
         
-        // Aquí iría la lógica para verificar la respuesta
-        if (respuesta === "9") { 
+        // Aquí la lógica para verificar la respuesta
+        if (respuesta === plataformaActual.respuesta) { 
             
             plataformaActual.blockAnswered = true;
 
@@ -692,7 +703,7 @@ window.iniciarAstro = function () {
             // dibujar plataformas
             dibujarPlataformas();
             // dibujar componente nave
-            dibujarComponenteNave(1);
+            dibujarComponenteNave();
             // actualizar jugador
             actualizarJugador();
             // dibujar jugador posicion inicial
@@ -740,8 +751,25 @@ window.iniciarAstro = function () {
         resetJugador();
 
         //Parte a modificar en caso de niveles diferentes
-        crearNivel1();
-        anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
+        switch(nivel){
+            case 1:
+                crearNivel1();
+                anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4: 
+                break;
+            case 5:
+                break;
+            default:
+                crearNivel1();
+                anadirPreguntasnivel1();
+                break;
+        }
+        
 
         
         loop();
