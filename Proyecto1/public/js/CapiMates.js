@@ -3,7 +3,7 @@ function inicializadorCapiMates(){
     const contenedorBack = document.getElementById('contenedorJuego');
     if (contenedorBack) {
         // Coge la ruta relativa del data-attribute
-        contenedorBack.style.backgroundImage = "url('/Proyecto-1/Proyecto1/Astro/planetaAstro.jpg')";
+        contenedorBack.style.backgroundImage = "url('/Proyecto-1/Proyecto1/CapiMates/Bosque.png')";
         contenedorBack.style.backgroundSize = "cover";
         contenedorBack.style.backgroundPosition = "center";
     }
