@@ -6,10 +6,15 @@
 function inicializadorBosque() {
     console.log("🌲 Inicializador del Bosque ejecutándose...");
     
-    // Verificar que el canvas existe
     const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
     if (!canvas) {
         console.error("❌ No se encontró el canvas");
+        return;
+    }
+    if (!ctx) {
+        console.error("❌ No se pudo obtener el contexto 2D");
         return;
     }
     

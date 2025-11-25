@@ -10,12 +10,16 @@ window.iniciarBosque = function () {
        CANVAS Y CONTEXTO
     ============================================ */
     const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
     if (!canvas) {
         console.error("❌ No se encontró el canvas");
         return;
     }
-    
-    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error("❌ No se pudo obtener el contexto 2D");
+        return;
+    }
 
     /* ============================================
        CONFIGURACIÓN DEL CANVAS
@@ -45,9 +49,9 @@ window.iniciarBosque = function () {
     ============================================ */
     const GRAVITY = 0.6;
     const FRICTION = 0.85;
-    const PLAYER_SPEED = 3;
-    const JUMP_POWER = -12;
-    const GROUND_Y = 280;
+    const PLAYER_SPEED = 2;
+    const JUMP_POWER = -10;
+    const GROUND_Y = 260;
 
     /* ============================================
        ESTADO DEL JUEGO
@@ -119,7 +123,7 @@ window.iniciarBosque = function () {
                     type: 'puente',
                     solved: false,
                     challenge: {
-                        title: "🌉 Repara el Puente",
+                        title: "Repara el Puente",
                         text: "Para cruzar el puente, completa esta secuencia:\nAVANZAR → SALTAR → ___",
                         answer: "AVANZAR",
                         hint: "Después de saltar, ¿qué haces para continuar?"
@@ -130,7 +134,7 @@ window.iniciarBosque = function () {
                     type: 'arbol',
                     solved: false,
                     challenge: {
-                        title: "🌳 Árbol Bloqueando",
+                        title: "Árbol Bloqueando",
                         text: "¿Cuántos pasos necesitas para rodear el árbol si cada paso es 1 metro y el árbol mide 3 metros?",
                         answer: "3",
                         hint: "El árbol mide 3 metros"
@@ -146,7 +150,7 @@ window.iniciarBosque = function () {
                     type: 'rocas',
                     solved: false,
                     challenge: {
-                        title: "🪨 Rocas en el Camino",
+                        title: "Rocas en el Camino",
                         text: "Hay 5 rocas. Si repites 'MOVER_ROCA' 5 veces, ¿cuántas rocas quedarán?",
                         answer: "0",
                         hint: "¿Qué pasa cuando mueves todas las rocas?"
@@ -157,7 +161,7 @@ window.iniciarBosque = function () {
                     type: 'flores',
                     solved: false,
                     challenge: {
-                        title: "🌸 Recolecta Flores",
+                        title: "Recolecta Flores",
                         text: "Completa el código:\nREPETIR ___ VECES { RECOGER_FLOR }\npara recoger 4 flores",
                         answer: "4",
                         hint: "¿Cuántas veces debes repetir la acción?"
