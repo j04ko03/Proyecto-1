@@ -13,10 +13,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
+    Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
+
     Route::get('/volamentes', function () {
         return view('volamentes');
     });
 });
+
+// Route::get('/filtrar', [HomeController::class, 'filtrar'])->name('filtrar.controller');
 
 //Al entrar en una de las rutas dentro de este apartado, se mirará si el usuario está autentificado y a parte que rol tiene (En este apartado entra SuperAdmin y Admin)
 Route::middleware(['auth', 'rol: 1,2'])->group(function () {
