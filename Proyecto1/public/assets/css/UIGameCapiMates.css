@@ -1,0 +1,84 @@
+:root {
+    --bg: #082032;
+    --ground: #1B262C;
+    --plat: #2E8B57;
+    --block: #FFD166;
+    --player: #EF476F;
+    --text: #EAEAEA;
+    --accent: #06D6A0;
+    font-family: 'Pixelify Sans', monospace;
+}
+
+.uiCapi {
+    color: var(--text) !important;
+}
+
+.juegoCapiMates {
+    width: 100%;
+    height: 360px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+    position: relative;
+    overflow: hidden;
+    background: #061221;
+    border: 6px solid #000;
+    background-image: url('../../../CapiMates/bosque.png');
+    background-size: auto 100%;
+    background-repeat: repeat-x;
+    background-position: 0 0;
+    animation: scroll-bg 10s linear infinite;
+}
+
+.personaje {
+    width: 60px;
+    height: 80px;
+    background-image: url('../../../Astro/paso2\ derecha.png');
+    background-size: cover;
+    position: absolute;
+    bottom: 0px;
+    left: 10px;
+}
+
+.obstaculos,
+.obstaculos1 {
+    position: absolute;
+    width: 6%;
+    height: 36px;
+    pointer-events: none;
+    background-color: #06D6A0;
+}
+
+.obstaculos {
+    bottom: 15px;
+    left: 150px;
+    background-image: url('../../../CapiMates/roca.png');
+    background-size: cover;
+    position: absolute;
+}
+
+.obstaculos1 {
+    bottom: 12px;
+    left: 70px;
+    background-image: url('../../../CapiMates/tronco.png');
+    background-size: cover;
+    position: absolute;
+}
+
+.piso {
+    width: 100%;
+    height: 15px;
+    opacity: 0.9;
+    background-color: var(--ground);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+@keyframes scroll-bg {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: -1500px 0;
+    }
+}

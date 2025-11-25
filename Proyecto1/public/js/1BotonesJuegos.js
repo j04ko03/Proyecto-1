@@ -101,6 +101,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 // ahora sí el DOM tiene #PROVA
                 if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
                     window.astroJugable();
+                }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
+                    window.capiJugable();
                 }
 
 
@@ -129,6 +131,18 @@ document.addEventListener("DOMContentLoaded", function () {
                                 };
                                 document.body.appendChild(scriptAstro);
                                 break;
+                            case 'CapiMates':
+                                const scriptCapi = document.createElement("script");
+                                scriptCapi.src = "./js/CapiMates/CapiMates.js";
+                                scriptCapi.setAttribute("data-juego", "true");
+                                scriptCapi.onload = () => {
+                                    console.log("CapiMates.js cargado, ejecutando inicializadorCapiMates...");
+                                    if (typeof window.capiJugable === "function") {
+                                        window.capiJugable();
+                                    }
+                                };
+                                document.body.appendChild(scriptCapi);
+                                break
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };
