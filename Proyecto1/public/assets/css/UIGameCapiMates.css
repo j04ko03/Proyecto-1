@@ -13,6 +13,52 @@
     color: var(--text) !important;
 }
 
+/* --- NUEVOS ESTILOS PARA SUSTITUIR INLINE --- */
+
+.vidas-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 150px;
+}
+
+.vidas-inner {
+    display: flex;
+    flex-wrap: wrap;
+    width: 66%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vidas-label {
+    width: 55%;
+}
+
+.vidas-icons {
+    width: 40%;
+    height: 80%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.vida-img {
+    width: 30%;
+    object-fit: contain;
+}
+
+.msg-title,
+.msg-body,
+.start-btn {
+    color: white;
+}
+
+.btn-container {
+    margin-top: 8px;
+}
+
+/* --- ESTILOS GENERALES DEL JUEGO --- */
+
 .juegoCapiMates {
     width: 100%;
     height: 360px;
@@ -26,41 +72,81 @@
     background-repeat: repeat-x;
     background-position: 0 0;
     animation: scroll-bg 10s linear infinite;
+    animation-play-state: running;
+}
+
+.juegoCapiMates.paused {
+    animation-play-state: paused;
 }
 
 .personaje {
     width: 60px;
     height: 80px;
-    background-image: url('../../../Astro/paso2\ derecha.png');
+    background-image: url('../../../Astro/paso2 derecha.png');
     background-size: cover;
     position: absolute;
     bottom: 0px;
     left: 10px;
 }
 
-.obstaculos,
-.obstaculos1 {
+.obstaculo,
+.obstaculo1 {
     position: absolute;
     width: 6%;
     height: 36px;
+    background-size: cover;
     pointer-events: none;
-    background-color: #06D6A0;
+
 }
 
-.obstaculos {
+.obstaculo {
     bottom: 15px;
     left: 150px;
     background-image: url('../../../CapiMates/roca.png');
-    background-size: cover;
-    position: absolute;
+    animation: respawn 10s linear infinite;
 }
 
-.obstaculos1 {
+.obstaculo.paused {
+    animation-play-state: paused;
+}
+
+@keyframes respawn {
+    0% {
+        left: 3000px;
+    }
+
+    50% {
+        left: 2000px;
+    }
+
+    100% {
+        left: -40px;
+    }
+}
+
+.obstaculo1 {
     bottom: 12px;
     left: 70px;
     background-image: url('../../../CapiMates/tronco.png');
-    background-size: cover;
-    position: absolute;
+    animation: respawn1 10s linear infinite;
+}
+
+.obstaculo1.paused {
+    animation-play-state: paused;
+}
+
+@keyframes respawn1 {
+    0% {
+        left: 3000px;
+    }
+
+    50% {
+        left: 1900px;
+    }
+
+    100% {
+        left: -400px;
+    }
 }
 
 .piso {
