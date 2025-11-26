@@ -193,10 +193,8 @@ window.iniciarAstro = function () {
             [690, 120, 80, 16],// cerca del final
             [810, CANVAS_H - 20, 100, 16],
         ];
-
         //Limpiez del array principal de plataformas
         plataformas = [];
-
 
         plataformasFlotantes.forEach(plata => {
             plataformas.push({ 
@@ -210,9 +208,127 @@ window.iniciarAstro = function () {
             });
         });
 
-        
-
         console.log("Plataformas nivel 1 creadas:", plataformas);
+    }
+
+    function crearNivel2(){
+        // plataformas flotantes (x, y, ancho, alto)
+        const plataformasFlotantes = [
+            [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
+            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [80, 290, 150, 16],
+            [250, 230, 150, 16],
+            [450, 190, 50, 16],
+            [550, 160, 90, 16],
+            [690, 120, 80, 16],// cerca del final
+            [810, CANVAS_H - 20, 100, 16],
+        ];
+        //Limpiez del array principal de plataformas
+        plataformas = [];
+
+        plataformasFlotantes.forEach(plata => {
+            plataformas.push({ 
+                x: plata[0],
+                y: plata[1], 
+                w: plata[2], 
+                h: plata[3],
+                hasBlock: false,
+                blockAsked: false,
+                blockAnswered: false
+            });
+        });
+
+        console.log("Plataformas nivel 2 creadas:", plataformas);
+    }
+
+    function crearNivel3(){
+        // plataformas flotantes (x, y, ancho, alto)
+        const plataformasFlotantes = [
+            [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
+            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [80, 290, 150, 16],
+            [250, 230, 150, 16],
+            [450, 190, 50, 16],
+            [550, 160, 90, 16],
+            [690, 120, 80, 16],// cerca del final
+            [810, CANVAS_H - 20, 100, 16],
+        ];
+        //Limpiez del array principal de plataformas
+        plataformas = [];
+
+        plataformasFlotantes.forEach(plata => {
+            plataformas.push({ 
+                x: plata[0],
+                y: plata[1], 
+                w: plata[2], 
+                h: plata[3],
+                hasBlock: false,
+                blockAsked: false,
+                blockAnswered: false
+            });
+        });
+
+        console.log("Plataformas nivel 3 creadas:", plataformas);
+    }
+
+    function crearNivel4(){
+        // plataformas flotantes (x, y, ancho, alto)
+        const plataformasFlotantes = [
+            [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
+            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [80, 290, 150, 16],
+            [250, 230, 150, 16],
+            [450, 190, 50, 16],
+            [550, 160, 90, 16],
+            [690, 120, 80, 16],// cerca del final
+            [810, CANVAS_H - 20, 100, 16],
+        ];
+        //Limpiez del array principal de plataformas
+        plataformas = [];
+
+        plataformasFlotantes.forEach(plata => {
+            plataformas.push({ 
+                x: plata[0],
+                y: plata[1], 
+                w: plata[2], 
+                h: plata[3],
+                hasBlock: false,
+                blockAsked: false,
+                blockAnswered: false
+            });
+        });
+
+        console.log("Plataformas nivel 4 creadas:", plataformas);
+    }
+
+    function crearNivel5(){
+        // plataformas flotantes (x, y, ancho, alto)
+        const plataformasFlotantes = [
+            [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
+            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [80, 290, 150, 16],
+            [250, 230, 150, 16],
+            [450, 190, 50, 16],
+            [550, 160, 90, 16],
+            [690, 120, 80, 16],// cerca del final
+            [810, CANVAS_H - 20, 100, 16],
+        ];
+        //Limpiez del array principal de plataformas
+        plataformas = [];
+
+        plataformasFlotantes.forEach(plata => {
+            plataformas.push({ 
+                x: plata[0],
+                y: plata[1], 
+                w: plata[2], 
+                h: plata[3],
+                hasBlock: false,
+                blockAsked: false,
+                blockAnswered: false
+            });
+        });
+
+        console.log("Plataformas nivel 5 creadas:", plataformas);
     }
 
     //Dibujar plataformas en nivel
@@ -268,21 +384,36 @@ window.iniciarAstro = function () {
             case 1:
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
                 break;
+            case 2:
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
+                break;
+            case 3:
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
+                break;
+            case 4: 
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
+                break;
+            case 5: 
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
+                break;
+            default: 
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
+                break;
         }
         
     }
 
     //Dibujar componente nave
     function dibujarComponenteNave(){
+        //Switch para determinar que componente se dibuja en cada nivel
+        determinarRecursoNave();
+
         if(!componenteNave1.obtained){
             determinarRecursoNave(); ///------------------------------------------------>>> Comportamiento switch que detecta en que nivel esta y carga una imagen u otra
             console.log("Dibujando componente nave 1------------------------------------");
-            
             ctx.fillStyle = '#F4A261';
-            
             rectanguloPieza(ctx, componenteNave1.x, componenteNave1.y, componenteNave1.w, componenteNave1.h, 4, true, false);
             
-        
                 ctx.drawImage(
                     imgNave,
                     componenteNave1.x,      // posición x
@@ -544,9 +675,29 @@ window.iniciarAstro = function () {
     }
 
     function anadirPreguntasnivel1(){//Se le puede pasar por parámetro el nivel para la creación de preguntas
-        const indices = [2, 3, 4, 5, 6];
+        const indices = [];
+        switch(nivel){
+            case 1:
+                indices = [2, 3, 4, 5, 6];
+                break;
+            case 2:
+                indices = [2, 3, 4, 5, 6];
+                break;
+            case 3:
+                indices = [2, 3, 4, 5, 6];
+                break;
+            case 4:
+                indices = [2, 3, 4, 5, 6];
+                break;
+            case 5:
+                indices = [2, 3, 4, 5, 6];
+                break;
+            default:
+                indices = [2, 3, 4, 5, 6];
+                break;
+        }
         indices.forEach(i => {
-            const preguntita = generadorPreguntas(1);//solo sumas por ahora
+            const preguntita = generadorPreguntas(nivel);//solo sumas por ahora
             plataformas[i].hasBlock = true;
             plataformas[i].preguntaText = preguntita.texto;
             plataformas[i].respuesta = preguntita.correcta;
@@ -757,12 +908,17 @@ window.iniciarAstro = function () {
                 anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
                 break;
             case 2:
+                crearNivel2();
+
                 break;
             case 3:
+                crearNivel3();
                 break;
             case 4: 
+                crearNivel4();
                 break;
             case 5:
+                crearNivel5();
                 break;
             default:
                 crearNivel1();
