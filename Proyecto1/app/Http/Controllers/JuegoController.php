@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Juegos;
-use App\Http\Requests\StoreJuegosRequest;
-use App\Http\Requests\UpdateJuegosRequest;
+use App\Models\Juego;
+use Illuminate\Http\Request;
 
-class JuegosController extends Controller
+class JuegoController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,7 +26,7 @@ class JuegosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreJuegosRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +34,7 @@ class JuegosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Juegos $juegos)
+    public function show(Juego $juego)
     {
         //
     }
@@ -43,7 +42,7 @@ class JuegosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Juegos $juegos)
+    public function edit(Juego $juego)
     {
         //
     }
@@ -51,7 +50,7 @@ class JuegosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJuegosRequest $request, Juegos $juegos)
+    public function update(Request $request, Juego $juego)
     {
         //
     }
@@ -59,7 +58,7 @@ class JuegosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Juegos $juegos)
+    public function destroy(Juego $juego)
     {
         //
     }

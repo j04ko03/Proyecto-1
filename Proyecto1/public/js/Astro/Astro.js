@@ -73,12 +73,12 @@ window.iniciarAstro = function () {
     imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
 
     /* Carga de imagen andando Capi */
-    const imagenCapiPieIzquierda = new Image();
-    const imagenCapiPieIzquierdaAnda = new Image();
-    const imagenCapiPieDerecha = new Image();
-    const imagenCapiPieDerechaAnda = new Image();
-    const imageCapiSaltoIzquierda = new Image();
-    const imageCapiSaltoDerecha = new Image();
+    const imagenCapiPieIzquierda        = new Image();
+    const imagenCapiPieIzquierdaAnda    = new Image();
+    const imagenCapiPieDerecha          = new Image();
+    const imagenCapiPieDerechaAnda      = new Image();
+    const imageCapiSaltoIzquierda       = new Image();
+    const imageCapiSaltoDerecha         = new Image();
 
     imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pie1izquierda.png';
     imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pie2izquierda.png';
@@ -91,12 +91,12 @@ window.iniciarAstro = function () {
 
 
     /* UI referencias */
-    const msg = document.getElementById('mensaje');
-    const startBtn = document.getElementById('start-btn');
-    const nivelEl = document.getElementById('nivel');
-    const vidasEl = document.getElementById('vidas');
-    const puntosEl = document.getElementById('puntos');
-    const timmer = document.getElementById('mejor');
+    const msg       = document.getElementById('mensaje');
+    const startBtn  = document.getElementById('start-btn');
+    const nivelEl   = document.getElementById('nivel');
+    const vidasEl   = document.getElementById('vidas');
+    const puntosEl  = document.getElementById('puntos');
+    const timmer    = document.getElementById('mejor');
     
 
 
