@@ -406,7 +406,6 @@ window.iniciarAstro = function () {
     //Dibujar componente nave
     function dibujarComponenteNave(){
         //Switch para determinar que componente se dibuja en cada nivel
-        determinarRecursoNave();
 
         if(!componenteNave1.obtained){
             determinarRecursoNave(); ///------------------------------------------------>>> Comportamiento switch que detecta en que nivel esta y carga una imagen u otra
@@ -448,6 +447,7 @@ window.iniciarAstro = function () {
     };
 
     function dibujarPlayer() {
+        //Totalmente Borrable --> TODO -> Borrar Limpiar 
         //ctx.fillStyle = "#00f"; // azul
         /*ctx.fillRect(
             toScreenX(playerPosInicio.x),
@@ -486,7 +486,7 @@ window.iniciarAstro = function () {
             }else{
                 capiAnda.src = imagenCapiPieIzquierda.src;
             }
-        }else if(e.code == "Space" || e.code == "KeyW" || e.code == "ArrowUp"){
+        }else if(e.code == "Space" || e.code == "KeyW" || e.code == "ArrowUp"){ //TODO Controlar imagen de salto 
             if(capiAnda.src == imageCapiSaltoIzquierda.src){
                 capiAnda.src == imageCapiSaltoDerecha.src;
             }else{
@@ -675,8 +675,8 @@ window.iniciarAstro = function () {
     }
 
     function anadirPreguntasnivel1(){//Se le puede pasar por parámetro el nivel para la creación de preguntas
-        const indices = [];
-        switch(nivel){
+        const indices = [2, 3, 4, 5, 6];
+        /*switch(nivel){
             case 1:
                 indices = [2, 3, 4, 5, 6];
                 break;
@@ -695,7 +695,7 @@ window.iniciarAstro = function () {
             default:
                 indices = [2, 3, 4, 5, 6];
                 break;
-        }
+        }*/
         indices.forEach(i => {
             const preguntita = generadorPreguntas(nivel);//solo sumas por ahora
             plataformas[i].hasBlock = true;
