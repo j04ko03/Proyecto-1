@@ -1,6 +1,6 @@
 window.iniciarAstro = function () {
     console.log("🚀 Astro Jugable iniciado");
-
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
     /*
       Misión Matemática — Nivel 1 (sencillo, pixel retro)
       Autor: Prototipo instantáneo
@@ -576,6 +576,17 @@ window.iniciarAstro = function () {
             // ✔ Parar el juego
             gameActive = false;
 
+            pausarTimer();
+            cancelAnimationFrame(loopId);
+            if(nivel < 5){
+                nivel += 1;
+            }
+            // Ir al nivel 2 después de 1.5 segundos
+            setTimeout(() => {
+                reiniciarVidas();
+                resetJugador();
+            }, 1500);
+
             return true;
         }
 
@@ -939,44 +950,67 @@ window.iniciarAstro = function () {
 
     //Iniciar el Juego, Ver para futuro implementar mas niveles
     function iniciarAstro() {
-        gameActive = true;
-        levelComplete = false;
-        puntos = 0;
-        puntosEl.textContent = puntos;
-        nivel = LEVEL_ID; //De momento solo 1 nivel
-        vidas = 3;
-        erroresEnNivel = 0;
+        const usuarioIdx = 1;  // ➜ obtén esto de sesión, localStorage o backend
+        const juegoIdx = 1;      // ➜ ID del juego Astro
 
-        resetJugador();
+        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/iniciar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                usuarioId: usuarioIdx,
+                juegoId: juegoIdx
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log("Controlador ejecutado:", data);
+            // Aquí comienzas el juego:
+            
+            gameActive = true;
+            levelComplete = false;
+            puntos = 0;
+            puntosEl.textContent = puntos;
+            nivel = LEVEL_ID; //De momento solo 1 nivel
+            vidas = 3;
+            erroresEnNivel = 0;
 
-        //Parte a modificar en caso de niveles diferentes
-        switch(nivel){
-            case 1:
-                crearNivel1();
-                anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
-                break;
-            case 2:
-                crearNivel2();
+            resetJugador(); 
 
-                break;
-            case 3:
-                crearNivel3();
-                break;
-            case 4: 
-                crearNivel4();
-                break;
-            case 5:
-                crearNivel5();
-                break;
-            default:
-                crearNivel1();
-                anadirPreguntasnivel1();
-                break;
-        }
-        
+            //Parte a modificar en caso de niveles diferentes
+            switch(nivel){
+                case 1:
+                    crearNivel1();
+                    anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
+                    break;
+                case 2:
+                    crearNivel2();
 
-        
-        loop();
+                    break;
+                case 3:
+                    crearNivel3();
+                    break;
+                case 4: 
+                    crearNivel4();
+                    break;
+                case 5:
+                    crearNivel5();
+                    break;
+                default:
+                    crearNivel1();
+                    anadirPreguntasnivel1();
+                    break;
+            }
+            
+            loop();
+
+        }).catch(err => {
+            console.error("ERROR EN FETCH:", err);
+        });
+
     }
 
     /* Iniciar mostrando mensaje inicial */

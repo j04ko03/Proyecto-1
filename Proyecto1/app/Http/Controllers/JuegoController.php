@@ -6,6 +6,7 @@ use App\Models\DatosSesion;
 use App\Models\Juego;
 use App\Models\Nivel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log; // ✅ Esto faltaba
 
 class JuegoController extends Controller
 {
@@ -65,8 +66,12 @@ class JuegoController extends Controller
         //
     }
 
-    public function iniciarJuegoAstro($usuarioId, $juegoId)
-    {
+    public function iniciarJuegoAstro(Request $request)
+    {   //Obtener
+        $usuarioId = $request->input('usuarioId');
+        $juegoId   = $request->input('juegoId');
+        \Log::info("Iniciar juego Astro: usuarioId={$usuarioId}, juegoId={$juegoId}");
+
         //Obtener Sesion activa del usuario
         $sesionActiva = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
             ->latest()
@@ -80,10 +85,14 @@ class JuegoController extends Controller
         $datosSesion->save();
         
         //Obtener en que nivel está el usuario en el juego Astro
-        $nivelActual = $this->obtenerNivelDelUsuario($sesionActiva, $juegoId);
+        $nivelActual = $this->obtenerNivelDelUsuario($usuarioId, $juegoId);
 
         //Guardar el nivel actual en la sesion de juego
-        $datosSesion->niveles()->attach($nivelActual->id);
+        if ($nivelActual) {
+            $datosSesion->niveles()->attach($nivelActual->id);
+        } else {
+            \Log::warning("No hay niveles disponibles para usuario {$usuarioId}");
+        }
 
         return ['datosSesionId' => $datosSesion->id,
         'nivel' => $nivelActual];
@@ -91,6 +100,7 @@ class JuegoController extends Controller
 
     public function obtenerNivelDelUsuario($sesionUsuario, $juegoId)
     {
+        
         // 1. Cargar todas las sesiones y datos del usuario
         $usuario = Usuario::with('sesionesUsuario.datosSesiones.niveles')
                         ->find($usuarioId);

@@ -51,5 +51,5 @@ Route::get('/logout', [LoginController::class, 'doLogout'])->name('logout.contro
 Route::resource('usuarios', UsuarioController::class);
 
 //Rutas para implementar datos con el juego de Astro
-Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro'])->name('AstroInsert1.controller');
-Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel'])->name('AstroInsert2.controller');
+Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
+Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
