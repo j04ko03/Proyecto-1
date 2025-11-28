@@ -75,6 +75,14 @@ document.addEventListener("DOMContentLoaded", function () {
             console.log("Se clickeó el juego:", this.dataset.juego);
 
             try {
+                //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
+                const usuarioLogeado = window.usuarioLogeado;
+                const JuegoActual = this.dataset.cartucho;  
+                guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
+                const dades = extreureCookie("user");
+                console.log(dades.user); 
+                console.log(dades.game);
+                
                 // Antes de cargar un juego nuevo, cerramos el anterior
                 cerrarJuego();
 
@@ -154,6 +162,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+function guardarCookie(nom, valors, dies){
+    const valorG = JSON.stringify(valors);
+    let expiracio = "";
+    if (dies) {
+        const date = new Date();
+        date.setTime(date.getTime() + (dies*24*60*60*1000));
+        expiracio = "; expires=" + date.toUTCString();
+    }
+    document.cookie = nom + "=" + (valorG || "") + expiracio + "; path=/";
+}
+
+function extreureCookie(clau) {
+    const cookies = document.cookie.split('; ');
+    let vuelta = null;
+    for (let c of cookies) {
+        const [key, value] = c.split('=');
+        if (key === clau){
+            vuelta = JSON.parse(value);
+        }
+    }
+    return vuelta;
+}
 
 
 /*

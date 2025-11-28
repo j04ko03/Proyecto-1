@@ -34,6 +34,6 @@ class SesionUsuario extends Model
      */
     public function datosSesion(): HasMany
     {
-        return $this->hasMany(DatosSesion::class, 'id_sesionUsuario');
+        return $this->hasMany(DatosSesion::class, 'id_SesionUsuario');
     }
 }

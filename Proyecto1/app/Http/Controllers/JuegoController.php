@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DatosSesion;
 use App\Models\Juego;
 use App\Models\Nivel;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log; // ✅ Esto faltaba
 
@@ -74,8 +75,19 @@ class JuegoController extends Controller
 
         //Obtener Sesion activa del usuario
         $sesionActiva = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
-            ->latest()
+            ->orderBy('fechaSesion', 'desc')
             ->first();
+
+        \Log::info("Sesion activa:", ['sesion' => $sesionActiva]);
+
+        if (!$sesionActiva) {
+            return response()->json([
+                'error' => 'El usuario no tiene una sesión activa registrada.'
+            ], 400);
+        }
+
+        //En caso que el usuario haga refresh de la página, borraremos Los DatosSesion sin completar endtime y score
+        $this->borrarDatosSesionIncompletos($usuarioId); //busca en el controlador todos los DatosSesion incompletos y los borra con el null y los foreach anidados
 
         //Crear datos de juego en DatosSesion con el id_usuari y el startTime
         $datosSesion = new DatosSesion();
@@ -86,6 +98,7 @@ class JuegoController extends Controller
         
         //Obtener en que nivel está el usuario en el juego Astro
         $nivelActual = $this->obtenerNivelDelUsuario($usuarioId, $juegoId);
+        \Log::info("Nivel actual:", ['nivel' => $nivelActual]);
 
         //Guardar el nivel actual en la sesion de juego
         if ($nivelActual) {
@@ -98,24 +111,23 @@ class JuegoController extends Controller
         'nivel' => $nivelActual];
     }
 
-    public function obtenerNivelDelUsuario($sesionUsuario, $juegoId)
+    public function obtenerNivelDelUsuario($usuarioId, $juegoId)
     {
         
-        // 1. Cargar todas las sesiones y datos del usuario
-        $usuario = Usuario::with('sesionesUsuario.datosSesiones.niveles')
+        // Cargar relaciones usando los nombres EXACTOS de tus modelos
+        $usuario = Usuario::with('sesionUsuario.datosSesion.niveles')
                         ->find($usuarioId);
 
         $nivelesJugados = [];
 
-        // 2. Recorrer todas las sesiones -> todos los DatosSesion -> sus niveles
-        foreach ($usuario->sesionesUsuario as $sesionUsuario) {
+        // Asegurar que no rompa si no hay sesiones
+        foreach ($usuario->sesionUsuario ?? [] as $sesionUsuario) {
 
-            foreach ($sesionUsuario->datosSesiones as $datosSesion) {
+            foreach ($sesionUsuario->datosSesion ?? [] as $datosSesion) {
 
-                // Solo sesiones finalizadas
                 if ($datosSesion->endTime === null) continue;
 
-                foreach ($datosSesion->niveles as $nivel) {
+                foreach ($datosSesion->niveles ?? [] as $nivel) {
 
                     if ($nivel->id_juego == $juegoId) {
                         $nivelesJugados[] = $nivel->id;
@@ -126,20 +138,31 @@ class JuegoController extends Controller
 
         $nivelesJugados = array_unique($nivelesJugados);
 
-        // 3. Obtener todos los niveles del juego ordenados
         $niveles = Nivel::where('id_juego', $juegoId)
                         ->orderBy('dificultad')
                         ->get();
 
-        // 4. Devolver el primer nivel NO jugado
         foreach ($niveles as $nivel) {
             if (!in_array($nivel->id, $nivelesJugados)) {
                 return $nivel;
             }
         }
 
-        // 5. Si jugó todos, devolver el último
         return $niveles->last();
+    }
+
+    public function borrarDatosSesionIncompletos($usuarioId)
+    {
+        $usuarioDatosSesion = Usuario::with('sesionUsuario.datosSesion')->find($usuarioId);
+
+        foreach ($usuarioDatosSesion->sesionUsuario as $sesion) {
+            foreach ($sesion->datosSesion as $dato) {
+                if (is_null($dato->endTime) && is_null($dato->score)) {
+                    $dato->niveles()->detach(); // Borra relaciones en la tabla pivot
+                    $dato->delete();
+                }
+            }
+        }
     }
 
     public function finalizarNivel(Request $request)

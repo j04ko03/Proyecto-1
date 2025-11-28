@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\DatosSesion;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
+use function PHPUnit\Framework\isNull;
 
 class DatosSesionController extends Controller
 {
@@ -61,5 +63,8 @@ class DatosSesionController extends Controller
     public function destroy(DatosSesion $datosSesion)
     {
         //
+        $datosSesion->delete();
+
+        return response()->json(['message' => 'Registros vacíos eliminados correctamente.']);
     }
 }
