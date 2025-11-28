@@ -54,4 +54,3 @@
 
 </div>
 
-<!-- Cargar Script para añadir foto de fondo, botonera, video introducción, etc -->

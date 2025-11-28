@@ -539,6 +539,50 @@ window.iniciarAstro = function () {
         }
     }
 
+    //Verificar que hay una colisiion del personage con la pieza final
+    function detectarColisionComponenteNave() {
+        if (componenteNave1.obtained) return false;
+
+        const JX = playerPosInicio.x;
+        const JY = playerPosInicio.y;
+        const JW = playerPosInicio.w;
+        const JH = playerPosInicio.h;
+
+        const NX = componenteNave1.x;
+        const NY = componenteNave1.y;
+        const NW = componenteNave1.w;
+        const NH = componenteNave1.h;
+
+        // Colisión rectangular simple
+        const colision =
+            JX < NX + NW &&
+            JX + JW > NX &&
+            JY < NY + NH &&
+            JY + JH > NY;
+
+        if (colision) {
+            componenteNave1.obtained = true;
+
+            // ✔ Dar puntos
+            puntos += 300;
+            puntosEl.textContent = puntos;
+
+            // ✔ Mostrar mensaje
+            mostrarMensaje(
+                "¡Componente recuperado!",
+                "Has recuperado la pieza de la nave. ¡Llegaste al final del nivel!"
+            );
+
+            // ✔ Parar el juego
+            gameActive = false;
+
+            return true;
+        }
+
+        return false;
+    }
+
+
     //Actualización de la posición del jugador
     function actualizarJugador() {
         //Si el jugador tiene una pregunta abierta no se actualiza su posición
@@ -859,6 +903,8 @@ window.iniciarAstro = function () {
             dibujarComponenteNave();
             // actualizar jugador
             actualizarJugador();
+            // ver si se recoge la pieza
+            detectarColisionComponenteNave();
             // dibujar jugador posicion inicial
             dibujarPlayer();
 

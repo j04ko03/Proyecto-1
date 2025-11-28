@@ -84,51 +84,59 @@ class JuegoController extends Controller
 
         //Guardar el nivel actual en la sesion de juego
         $datosSesion->niveles()->attach($nivelActual->id);
+
+        return ['datosSesionId' => $datosSesion->id,
+        'nivel' => $nivelActual];
     }
 
     public function obtenerNivelDelUsuario($sesionUsuario, $juegoId)
     {
-        $nivelDevuelto = null;
+        // 1. Cargar todas las sesiones y datos del usuario
+        $usuario = Usuario::with('sesionesUsuario.datosSesiones.niveles')
+                        ->find($usuarioId);
 
-        // 1. Todas las sesiones del usuario
-        $sesiones = $sesionUsuario->datosSesiones()->with('niveles')->get();
+        $nivelesJugados = [];
 
-        // 2. Extraer los niveles jugados de este juego
-        $dificultadesJugadas = [];
+        // 2. Recorrer todas las sesiones -> todos los DatosSesion -> sus niveles
+        foreach ($usuario->sesionesUsuario as $sesionUsuario) {
 
-        foreach ($sesiones as $sesion) {
-            foreach ($sesion->niveles as $nivel) {
-                if ($nivel->id_juego == $juegoId) {
-                    $dificultadesJugadas[] = $nivel->dificultad;
+            foreach ($sesionUsuario->datosSesiones as $datosSesion) {
+
+                // Solo sesiones finalizadas
+                if ($datosSesion->endTime === null) continue;
+
+                foreach ($datosSesion->niveles as $nivel) {
+
+                    if ($nivel->id_juego == $juegoId) {
+                        $nivelesJugados[] = $nivel->id;
+                    }
                 }
             }
         }
 
-        // 3. Niveles del juego ordenados por dificultad
+        $nivelesJugados = array_unique($nivelesJugados);
+
+        // 3. Obtener todos los niveles del juego ordenados
         $niveles = Nivel::where('id_juego', $juegoId)
                         ->orderBy('dificultad')
                         ->get();
 
-        // 4. Determinar el nivel a jugar
-        if (empty($dificultadesJugadas)) {
-            $nivelDevuelto = $niveles->first(); // Nunca jugó → primer nivel
-        } else {
-            $ultima = max($dificultadesJugadas);
-            // Buscar el siguiente nivel disponible
-            $nivelDevuelto = $niveles->firstWhere('dificultad', $ultima + 1);
-            if (!$nivelDevuelto) {
-                $nivelDevuelto = $niveles->last(); // Si ya jugó todos
+        // 4. Devolver el primer nivel NO jugado
+        foreach ($niveles as $nivel) {
+            if (!in_array($nivel->id, $nivelesJugados)) {
+                return $nivel;
             }
         }
-            
-        return $nivelDevuelto;
+
+        // 5. Si jugó todos, devolver el último
+        return $niveles->last();
     }
 
     public function finalizarNivel(Request $request)
     {
         DatosSesion::where('id', $request->datosSesionId)
             ->update([
-                'endTime'        => now(),
+                'endTime'        => now(),   // importante para marcar finalizado
                 'score'          => $request->score,
                 'numeroIntentos' => $request->numeroIntentos,
                 'errores'        => $request->errores,
