@@ -36,7 +36,7 @@
     <div class="piso"></div>
 
     {{-- Contenedor Preguntas --}}
-    <div id="quizPopup" class="quiz-popup">     {{-- Volver a poner hidden --}}
+    <div id="quizPopup" class="quiz-popup hidden">     {{-- Volver a poner hidden --}}
 
         <div class="quiz-header">
           <span class="quiz-title">Preguntas del bosque</span>
@@ -45,7 +45,7 @@
 
         <div class="quiz-body">
 
-            <p id="quizQuestion">¿Cuántas manzanas ves?</p>
+            <p id="quizQuestion"></p>
 
           <input id="quizAnswer" type="text" placeholder="Escribe tu respuesta"/>
 
