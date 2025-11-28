@@ -61,6 +61,7 @@ window.iniciarAstro = function () {
     let nivel = 1;
     let erroresEnNivel = 0;
     let taxaErrores = 0;
+    let numeroIntentos = 0;
 
     /* Estado del juego */
     let keys = {};
@@ -525,6 +526,7 @@ window.iniciarAstro = function () {
         }
 
         if(vidas === 0){
+            numeroIntentos += 1;
             pausarTimer();
 
             gameActive = false;

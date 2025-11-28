@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DatosSesion;
 use App\Models\Juego;
+use App\Models\Nivel;
 use Illuminate\Http\Request;
 
 class JuegoController extends Controller
@@ -61,5 +63,80 @@ class JuegoController extends Controller
     public function destroy(Juego $juego)
     {
         //
+    }
+
+    public function iniciarJuegoAstro($usuarioId, $juegoId)
+    {
+        //Obtener Sesion activa del usuario
+        $sesionActiva = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
+            ->latest()
+            ->first();
+
+        //Crear datos de juego en DatosSesion con el id_usuari y el startTime
+        $datosSesion = new DatosSesion();
+        $datosSesion->id_SesionUsuario = $sesionActiva->id;
+        $datosSesion->startTime = now();
+
+        $datosSesion->save();
+        
+        //Obtener en que nivel está el usuario en el juego Astro
+        $nivelActual = $this->obtenerNivelDelUsuario($sesionActiva, $juegoId);
+
+        //Guardar el nivel actual en la sesion de juego
+        $datosSesion->niveles()->attach($nivelActual->id);
+    }
+
+    public function obtenerNivelDelUsuario($sesionUsuario, $juegoId)
+    {
+        $nivelDevuelto = null;
+
+        // 1. Todas las sesiones del usuario
+        $sesiones = $sesionUsuario->datosSesiones()->with('niveles')->get();
+
+        // 2. Extraer los niveles jugados de este juego
+        $dificultadesJugadas = [];
+
+        foreach ($sesiones as $sesion) {
+            foreach ($sesion->niveles as $nivel) {
+                if ($nivel->id_juego == $juegoId) {
+                    $dificultadesJugadas[] = $nivel->dificultad;
+                }
+            }
+        }
+
+        // 3. Niveles del juego ordenados por dificultad
+        $niveles = Nivel::where('id_juego', $juegoId)
+                        ->orderBy('dificultad')
+                        ->get();
+
+        // 4. Determinar el nivel a jugar
+        if (empty($dificultadesJugadas)) {
+            $nivelDevuelto = $niveles->first(); // Nunca jugó → primer nivel
+        } else {
+            $ultima = max($dificultadesJugadas);
+            // Buscar el siguiente nivel disponible
+            $nivelDevuelto = $niveles->firstWhere('dificultad', $ultima + 1);
+            if (!$nivelDevuelto) {
+                $nivelDevuelto = $niveles->last(); // Si ya jugó todos
+            }
+        }
+            
+        return $nivelDevuelto;
+    }
+
+    public function finalizarNivel(Request $request)
+    {
+        DatosSesion::where('id', $request->datosSesionId)
+            ->update([
+                'endTime'        => now(),
+                'score'          => $request->score,
+                'numeroIntentos' => $request->numeroIntentos,
+                'errores'        => $request->errores,
+                'puntuacion'     => $request->puntuacion,
+                'helpclicks'     => $request->helpclicks,
+                'returningPlayer'=> $request->returningPlayer,
+            ]);
+
+        return ['status' => 'ok'];
     }
 }
