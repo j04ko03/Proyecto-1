@@ -51,7 +51,6 @@ window.iniciarAstro = function () {
     const JUMP_V = -10;
     const START_X = 40;
     const START_Y = 260;
-    const LEVEL_ID = 1;
 
 
     /* Puntuación */
@@ -62,6 +61,11 @@ window.iniciarAstro = function () {
     let erroresEnNivel = 0;
     let taxaErrores = 0;
     let numeroIntentos = 0;
+    let ayudas = 0;
+
+    /* Datos Sesion */
+    let datosSesionIdX = 0;
+    let isReturningPlayer = false;
 
     /* Estado del juego */
     let keys = {};
@@ -411,7 +415,7 @@ window.iniciarAstro = function () {
         if(!componenteNave1.obtained){
             determinarRecursoNave(); ///------------------------------------------------>>> Comportamiento switch que detecta en que nivel esta y carga una imagen u otra
             console.log("Dibujando componente nave 1------------------------------------");
-            ctx.fillStyle = '#F4A261';
+            ctx.fillStyle = '#c361f4ff';
             rectanguloPieza(ctx, componenteNave1.x, componenteNave1.y, componenteNave1.w, componenteNave1.h, 4, true, false);
             
                 ctx.drawImage(
@@ -420,7 +424,7 @@ window.iniciarAstro = function () {
                     componenteNave1.y,      // posición y
                     componenteNave1.w,      // ancho
                     componenteNave1.h       // alto
-                );
+                );  
 
                 //centrar texto
                 ctx.fillStyle = '#000';
@@ -448,14 +452,6 @@ window.iniciarAstro = function () {
     };
 
     function dibujarPlayer() {
-        //Totalmente Borrable --> TODO -> Borrar Limpiar 
-        //ctx.fillStyle = "#00f"; // azul
-        /*ctx.fillRect(
-            toScreenX(playerPosInicio.x),
-            toScreenY(playerPosInicio.y),
-            toScreenW(playerPosInicio.w),
-            toScreenH(playerPosInicio.h)
-        );*/
         ctx.drawImage(
             capiAnda,
             playerPosInicio.x,
@@ -581,10 +577,72 @@ window.iniciarAstro = function () {
             if(nivel < 5){
                 nivel += 1;
             }
+
+            //Guardar los datos del nivel em SesionUsuario
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            fetch('/Proyecto-1/Proyecto1/public/juegos/astro/finalizar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    datosSesionId: datosSesionIdX,
+                    score: puntos,
+                    numeroIntentos: numeroIntentos,
+                    errores:  erroresEnNivel,
+                    puntuacion: puntos,
+                    helpclicks: ayudas,
+                    returningPlayer: isReturningPlayer      
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Controlador ejecutado: Gurdado en Base de datos", data.status);
+                
+                //Los intens del nivel se resetean
+                numeroIntentos = 0;
+
+                //Hacemos el fech de iniciación pero sin iniciar loop asi no se sobreescribe siempre el mismo id de SesionUsuario también sacamos el nuevo nivel en que está el usuario
+                /////////////////////////////////////////////////////////////////////////////////// ////////////////////////////////////////////////////////////////////////
+                const dades = extreureCookie("user");
+                const usuarioIdx = dades.user;                  //  obtén esto de sesión, localStorage o backend   creo que se puude borrar -> TODO
+                const juegoIdx = parseInt(dades.game);          //  ID del juego Astro
+
+                fetch('/Proyecto-1/Proyecto1/public/juegos/astro/actualizar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        usuarioId: usuarioIdx
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    //nivel = data.nivel;
+                    nivelEl.textContent = nivel;
+                    datosSesionIdX = data.datosSesionId;
+                }).catch(err => {
+                    console.error("ERROR EN FETCH:", err);
+                });
+                ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            }).catch(err => {
+                console.error("ERROR EN FETCH:", err);
+            });
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
             // Ir al nivel 2 después de 1.5 segundos
             setTimeout(() => {
+                //componenteNave1.obtained = false;
                 reiniciarVidas();
                 resetJugador();
+                crearJuego(); //Todo verificar
             }, 1500);
 
             return true;
@@ -656,7 +714,7 @@ window.iniciarAstro = function () {
                 nextY + playerPosInicio.h >= plata.y &&
                 playerPosInicio.vy >= 0;
 
-            // 🔧 CAMBIO: Esta es la NUEVA colisión precisa desde arriba
+            //colisión precisa desde arriba
             if(colX && estabaArriba && caeEncima){
                 nextY = plata.y - playerPosInicio.h;
                 playerPosInicio.vy = 0;
@@ -731,9 +789,9 @@ window.iniciarAstro = function () {
         return interactuar;
     }
 
-    function anadirPreguntasnivel1(){//Se le puede pasar por parámetro el nivel para la creación de preguntas
-        const indices = [2, 3, 4, 5, 6];
-        /*switch(nivel){
+    function anadirPreguntasnivel(nivel){//Se le puede pasar por parámetro el nivel para la creación de preguntas
+        let indices = null;
+        switch(nivel){
             case 1:
                 indices = [2, 3, 4, 5, 6];
                 break;
@@ -752,7 +810,7 @@ window.iniciarAstro = function () {
             default:
                 indices = [2, 3, 4, 5, 6];
                 break;
-        }*/
+        }
         indices.forEach(i => {
             const preguntita = generadorPreguntas(nivel);//solo sumas por ahora
             plataformas[i].hasBlock = true;
@@ -787,12 +845,12 @@ window.iniciarAstro = function () {
                 respuesta = operador1 * operador2;
                 break;
             case 4://Divisiones
-                operacion = "";
+                const divisor = Math.floor(Math.random() * 9) + 2; // 2–10
+                const dividendo = divisor * (Math.floor(Math.random() * 10) + 1); // múltiplo exacto
+                operador1 = dividendo;
+                operador2 = divisor;
                 operacion = "÷";
-                b = Math.floor(Math.random() * 9) + 2; // divisor 2–10
-                a = b * (Math.floor(Math.random() * 10) + 1); // múltiplo exacto
-                respuesta = operador1 / operador2;
-                break;
+                respuesta = dividendo / divisor;
             case 5://Mixto
                 const operacionesRandom = [1, 2, 3, 4];
                 return generadorPreguntas(operacionesRandom[Math.floor(Math.random() * 4)]);
@@ -950,8 +1008,9 @@ window.iniciarAstro = function () {
 
     //Iniciar el Juego, Ver para futuro implementar mas niveles
     function iniciarAstro() {
-        const usuarioIdx = 1;  // ➜ obtén esto de sesión, localStorage o backend
-        const juegoIdx = 1;      // ➜ ID del juego Astro
+        const dades = extreureCookie("user");
+        const usuarioIdx = dades.user;                  //  obtén esto de sesión, localStorage o backend
+        const juegoIdx = parseInt(dades.game);          //  ID del juego Astro
 
         fetch('/Proyecto-1/Proyecto1/public/juegos/astro/iniciar', {
             method: 'POST',
@@ -974,36 +1033,19 @@ window.iniciarAstro = function () {
             levelComplete = false;
             puntos = 0;
             puntosEl.textContent = puntos;
-            nivel = LEVEL_ID; //De momento solo 1 nivel
+            if(!componenteNave1.obtained){
+                nivel = data.nivel['id'];
+            }
+            datosSesionIdX = data.datosSesionId;
+            nivelEl.textContent = nivel;
+            componenteNave1.obtained = false;
             vidas = 3;
             erroresEnNivel = 0;
 
             resetJugador(); 
 
-            //Parte a modificar en caso de niveles diferentes
-            switch(nivel){
-                case 1:
-                    crearNivel1();
-                    anadirPreguntasnivel1(); //Crea las preguntas de modo random para los modales
-                    break;
-                case 2:
-                    crearNivel2();
-
-                    break;
-                case 3:
-                    crearNivel3();
-                    break;
-                case 4: 
-                    crearNivel4();
-                    break;
-                case 5:
-                    crearNivel5();
-                    break;
-                default:
-                    crearNivel1();
-                    anadirPreguntasnivel1();
-                    break;
-            }
+            //Crea dinamicamente los juegos en funcion al nivel
+            crearJuego(nivel);
             
             loop();
 
@@ -1011,6 +1053,47 @@ window.iniciarAstro = function () {
             console.error("ERROR EN FETCH:", err);
         });
 
+    }
+
+    function crearJuego(nivel){
+        switch(nivel){
+                case 1:
+                    crearNivel1();
+                    anadirPreguntasnivel(nivel); //Crea las preguntas de modo random para los modales
+                    break;
+                case 2:
+                    crearNivel2();
+                    anadirPreguntasnivel(nivel);
+                    break;
+                case 3:
+                    crearNivel3();
+                    anadirPreguntasnivel(nivel);
+                    break;
+                case 4: 
+                    crearNivel4();
+                    anadirPreguntasnivel(nivel);
+                    break;
+                case 5:
+                    crearNivel5();
+                    anadirPreguntasnivel(nivel);
+                    break;
+                default:
+                    crearNivel1();
+                    anadirPreguntasnivel(nivel);
+                    break;
+            }
+    }
+
+    function extreureCookie(clau) {
+        const cookies = document.cookie.split('; ');
+        let vuelta = null;
+        for (let c of cookies) {
+            const [key, value] = c.split('=');
+            if (key === clau){
+                vuelta = JSON.parse(value);
+            }
+        }
+        return vuelta;
     }
 
     /* Iniciar mostrando mensaje inicial */

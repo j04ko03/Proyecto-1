@@ -111,6 +111,41 @@ class JuegoController extends Controller
         'nivel' => $nivelActual];
     }
 
+    public function actualizaDatosSesionNivel(Request $request){
+         $usuarioId = $request->input('usuarioId');
+
+        \Log::info("Obteniendo última sesión Astro para usuario {$usuarioId}");
+        // 1. Buscar la última sesión activa del usuario
+        $sesionUsuario = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
+            ->orderBy('fechaSesion', 'desc')
+            ->first();
+
+        if (!$sesionUsuario) {
+            return response()->json([
+                'error' => 'El usuario no tiene sesiones registradas.'
+            ], 404);
+        }
+
+        // 2. Obtener la última DatosSesion asociada a esa sesión
+        $ultimaDatosSesion = DatosSesion::where('id_SesionUsuario', $sesionUsuario->id)
+            ->orderBy('startTime', 'desc')
+            ->with('niveles') // cargar niveles asociados
+            ->first();
+        if (!$ultimaDatosSesion) {
+            return response()->json([
+                'error' => 'No existen DatosSesion previas para este usuario.'
+            ], 404);
+        }
+
+        // 3. Obtener el nivel asociado (si existe)
+        $nivel = $ultimaDatosSesion->niveles->first(); // normalmente hay uno
+
+        return response()->json([
+            'datosSesionId' => $ultimaDatosSesion->id,
+            'nivel'         => $nivel ? $nivel->id : null
+        ]);
+    }
+
     public function obtenerNivelDelUsuario($usuarioId, $juegoId)
     {
         
