@@ -85,15 +85,25 @@ window.iniciarAstro = function () {
     const imageCapiSaltoIzquierda       = new Image();
     const imageCapiSaltoDerecha         = new Image();
 
-    imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pie1izquierda.png';
-    imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pie2izquierda.png';
-    imagenCapiPieDerecha.src =          '/Proyecto-1/Proyecto1/Astro/paso1derecha.png';
-    imagenCapiPieDerechaAnda.src =      '/Proyecto-1/Proyecto1/Astro/paso2derecha.png';
-    imageCapiSaltoIzquierda.src =       '/Proyecto-1/Proyecto1/Astro/salto2izquierda.png';
-    imageCapiSaltoDerecha.src =         '/Proyecto-1/Proyecto1/Astro/salto2derecha.png';
+    imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pieizquierdo1.png';
+    imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pieizquierdo2.png';
+    imagenCapiPieDerecha.src =          '/Proyecto-1/Proyecto1/Astro/piederecho1.png';
+    imagenCapiPieDerechaAnda.src =      '/Proyecto-1/Proyecto1/Astro/piederecho2.png';
+    imageCapiSaltoIzquierda.src =       '/Proyecto-1/Proyecto1/Astro/saltoizquierdo1.png';
+    imageCapiSaltoDerecha.src =         '/Proyecto-1/Proyecto1/Astro/saltoderecha1.png';
 
-    const capiAnda = imagenCapiPieDerecha;
+    let capiStandDerecha = imagenCapiPieDerecha;
+    let capiWalkDerecha  = imagenCapiPieDerechaAnda;
+    let capiStandIzquierda = imagenCapiPieIzquierda;
+    let capiWalkIzquierda  = imagenCapiPieIzquierdaAnda;
 
+    let capiAnda = imagenCapiPieDerecha;
+    let miraDerecha = true;
+    let estaSaltando = false;
+    let caminando = false;
+    
+    let frame = 0;
+    let pasoFrame = 0;
 
     /* UI referencias */
     const msg       = document.getElementById('mensaje');
@@ -499,34 +509,58 @@ window.iniciarAstro = function () {
         console.log("Tecla presionada:", e.code);
 
         //controlar la imagen de capi actual para ir variandola
-        if(e.code == "ArrowRight" || e.code == "KeyD"){
-            if(capiAnda.src === imagenCapiPieDerecha.src){
-                capiAnda.src = imagenCapiPieDerechaAnda.src;
-            }else if(capiAnda.src === imagenCapiPieDerechaAnda.src) {
-                capiAnda.src = imagenCapiPieDerecha.src;
-            }else{
-                capiAnda.src = imagenCapiPieDerecha.src;
-            }
-        }else if(e.code == "ArrowLeft" || e.code == "KeyA"){
-            if (capiAnda.src === imagenCapiPieIzquierda.src) {
-                capiAnda.src = imagenCapiPieIzquierdaAnda.src;
-            } else if (capiAnda.src === imagenCapiPieIzquierdaAnda.src){
-                capiAnda.src = imagenCapiPieIzquierda.src;
-            }else{
-                capiAnda.src = imagenCapiPieIzquierda.src;
-            }
-        }else if(e.code == "Space" || e.code == "KeyW" || e.code == "ArrowUp"){ //TODO Controlar imagen de salto 
-            if(capiAnda.src == imageCapiSaltoIzquierda.src){
-                capiAnda.src == imageCapiSaltoDerecha.src;
-            }else{
-                capiAnda.src == imageCapiSaltoIzquierda.src;
-            }
+        if (e.code === "ArrowRight" || e.code === "KeyD") {
+            miraDerecha = true;
+            caminando = true;
         }
+
+        if (e.code === "ArrowLeft" || e.code === "KeyA") {
+            miraDerecha = false;
+            caminando = true;
+        }
+
+        // Salto
+        if ((e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") && playerPosInicio.onGround) {
+            estaSaltando = true;
+
+            capiAnda = miraDerecha ? imageCapiSaltoDerecha : imageCapiSaltoIzquierda;
+        }
+
     });
+
     window.addEventListener('keyup', function (e) {
         keys[e.code] = false;
         console.log("Tecla soltada:", e.code);
+        if (e.code === "ArrowRight" || e.code === "KeyD" ||
+            e.code === "ArrowLeft" || e.code === "KeyA")
+        {
+            caminando = false;
+        }
     });
+
+    function actualizarAnimacion() {    
+        // Si está saltando → solo imagen de salto
+        if (!playerPosInicio.onGround) {
+            capiAnda = miraDerecha ? imageCapiSaltoDerecha : imageCapiSaltoIzquierda;
+            return;
+        }
+        // Ya está en el suelo
+        estaSaltando = false;
+        // Si no camina → quieto
+        if (!caminando) {
+            capiAnda = miraDerecha ? capiStandDerecha : capiStandIzquierda;
+            return;
+        }
+        // Si camina → alternar paso cada 10 frames
+        if (frame % 10 === 0) {
+            pasoFrame = 1 - pasoFrame; // alterna 0/1
+        }
+        if (miraDerecha) {
+            capiAnda = pasoFrame ? capiWalkDerecha : capiStandDerecha;
+        } else {
+            capiAnda = pasoFrame ? capiWalkIzquierda : capiStandIzquierda;
+        }
+    }
 
     function reiniciarVidas(){
         cor1.src = '/Proyecto-1/Proyecto1/Astro/corazon.png';
@@ -704,10 +738,8 @@ window.iniciarAstro = function () {
         if(modalOpen) return;
 
         if(keys['ArrowRight'] || keys['KeyD']) {
-            console.log("Mover derecha");
             playerPosInicio.vx = PLAYER_SPEED;
         }else if(keys['ArrowLeft'] || keys['KeyA']) {
-            console.log("Mover izquierda");
             playerPosInicio.vx = -PLAYER_SPEED;
         }else{
             playerPosInicio.vx *= FRICTION; // fricción para detenerse suavemente
@@ -715,7 +747,6 @@ window.iniciarAstro = function () {
 
         // Salto -> controlar que el usuario solo pueda saltar si está en el suelo
         if((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && playerPosInicio.onGround) {
-            console.log("Saltar");
             playerPosInicio.vy = JUMP_V;
             playerPosInicio.onGround = false;
         }
@@ -994,6 +1025,8 @@ window.iniciarAstro = function () {
                 //requestAnimationFrame(loop);//Vuelve a ejecutar esta función en el próximo frame. Sin esto, el juego se detendría.
                 return;
             }
+            frame++;
+            actualizarAnimacion();
 
             // limpiar canvas
             ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
@@ -1073,7 +1106,7 @@ window.iniciarAstro = function () {
             componenteNave1.obtained = false;
             vidas = 3;
             erroresEnNivel = 0;
-determinarRecursoNave();
+            determinarRecursoNave();
             resetJugador(); 
 
             //Crea dinamicamente los juegos en funcion al nivel
