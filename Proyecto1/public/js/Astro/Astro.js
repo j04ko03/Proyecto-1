@@ -408,16 +408,45 @@ window.iniciarAstro = function () {
         
     }
 
+    function determinarNombreNave(){
+        let name = "";
+        switch(nivel){
+            case 1:
+                name = "MOTOR";
+                break;
+            case 2:
+                name = "Ala D.";
+                break;
+            case 3:
+                name = "Ala I.";
+                break;
+            case 4: 
+                name = "CABINA";
+                break;
+            case 5: 
+                name = "CABINA";
+                break;
+            default: 
+                name = "MOTOR";
+                break;
+        }
+        return name;
+    }
+
+
     //Dibujar componente nave
     function dibujarComponenteNave(){
-        //Switch para determinar que componente se dibuja en cada nivel
-
+        
         if(!componenteNave1.obtained){
-            determinarRecursoNave(); ///------------------------------------------------>>> Comportamiento switch que detecta en que nivel esta y carga una imagen u otra
             console.log("Dibujando componente nave 1------------------------------------");
             ctx.fillStyle = '#c361f4ff';
             rectanguloPieza(ctx, componenteNave1.x, componenteNave1.y, componenteNave1.w, componenteNave1.h, 4, true, false);
             
+            // 🔥 Borde negro de 3px
+            ctx.strokeStyle = "#000";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(componenteNave1.x, componenteNave1.y, componenteNave1.w, componenteNave1.h);
+
                 ctx.drawImage(
                     imgNave,
                     componenteNave1.x,      // posición x
@@ -429,13 +458,16 @@ window.iniciarAstro = function () {
                 //centrar texto
                 ctx.fillStyle = '#000';
                 ctx.font = '10px monospace';
-                const texto = "MOTOR";
+                const texto = determinarNombreNave();
                 const textWidth = ctx.measureText(texto).width;
 
                 const textX = componenteNave1.x + (componenteNave1.w - textWidth) / 2;
                 const textY = componenteNave1.y + componenteNave1.h + 12;
 
+                ctx.font = "bold 10px 'Pixelify Sans', sans-serif";
                 ctx.fillText(texto, textX, textY);
+        }else{
+            determinarRecursoNave();
         }
     }
 
@@ -1041,7 +1073,7 @@ window.iniciarAstro = function () {
             componenteNave1.obtained = false;
             vidas = 3;
             erroresEnNivel = 0;
-
+determinarRecursoNave();
             resetJugador(); 
 
             //Crea dinamicamente los juegos en funcion al nivel
