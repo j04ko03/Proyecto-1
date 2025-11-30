@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Juegos;
-use App\Http\Requests\StoreJuegosRequest;
-use App\Http\Requests\UpdateJuegosRequest;
+use App\Models\DatosSesion;
+use App\Models\Usuario;
+use Illuminate\Http\Request;
+use function PHPUnit\Framework\isNull;
 
-class JuegosController extends Controller
+class DatosSesionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
         //
     }
@@ -27,7 +28,7 @@ class JuegosController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreJuegosRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -35,7 +36,7 @@ class JuegosController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Juegos $juegos)
+    public function show(DatosSesion $datosSesion)
     {
         //
     }
@@ -43,7 +44,7 @@ class JuegosController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Juegos $juegos)
+    public function edit(DatosSesion $datosSesion)
     {
         //
     }
@@ -51,7 +52,7 @@ class JuegosController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJuegosRequest $request, Juegos $juegos)
+    public function update(Request $request, DatosSesion $datosSesion)
     {
         //
     }
@@ -59,8 +60,11 @@ class JuegosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Juegos $juegos)
+    public function destroy(DatosSesion $datosSesion)
     {
         //
+        $datosSesion->delete();
+
+        return response()->json(['message' => 'Registros vacíos eliminados correctamente.']);
     }
 }

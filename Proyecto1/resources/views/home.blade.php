@@ -57,5 +57,8 @@
     @endforeach
 </div>
 
+<script>
+    window.usuarioLogeado = {{ auth()->user()->id ?? 'null' }};
+</script>
 
 @endsection

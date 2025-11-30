@@ -12,14 +12,14 @@
                     Vidas: <span id="vidas">3</span>
                 </div>
                 <div style="width: 40%; height: 80%; display: flex; flex-wrap: wrap; justify-content: space-between; align-content: center;">
-                    <img src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
-                    <img src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
-                    <img src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
+                    <img  id="cor1" src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
+                    <img id="cor2" src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
+                    <img id="cor3" src="/Proyecto-1/Proyecto1/Astro/corazon.png" alt="Imagen de vida" style="width: 30%; height: auto%; object-fit: contain;">
                 </div>
             </div>
         </div>
         <div class="ui-right">
-            Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Mejor: <span id="mejor">0</span>
+            Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Tiempo: <span id="mejor">0</span>
         </div>
     </div>
 
@@ -41,7 +41,7 @@
 
     <!-- Contenedor Pregunstas -->
     <div id="modal">
-      <h3 id="pregunta-text">¿Cuánto es 2 + 2 ?</h3>
+      <h3 id="pregunta-text" style="color: white">¿Cuánto es 2 + 2 ?</h3>
       <input id="respuesta-input" type="number" inputmode="numeric" />
       <div class="controls">
         <button class="small cancel" id="cancel-btn">CANCELAR</button>
@@ -54,4 +54,3 @@
 
 </div>
 
-<!-- Cargar Script para añadir foto de fondo, botonera, video introducción, etc -->

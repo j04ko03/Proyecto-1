@@ -1,14 +1,17 @@
 <?php
 
 namespace App\Models;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Rol;
+use App\Models\Logro;
+use App\Models\SesionUsuario;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Models\Rol;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Usuario extends Authenticatable
 {
@@ -45,5 +48,25 @@ class Usuario extends Authenticatable
     public function rol(): BelongsTo
     {
         return $this->belongsTo(Rol::class, 'id_rol', 'id');
+    }
+
+    /**
+     * The logros that belong to the Usuario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function logros(): BelongsToMany
+    {
+        return $this->belongsToMany(Logro::class, 'Usuario_Logro', 'id_usuario', 'id_logro');
+    }
+
+    /**
+     * Get all of the sesionUsuario for the Usuario
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sesionUsuario(): HasMany
+    {
+        return $this->hasMany(SesionUsuario::class, 'id_usuario');
     }
 }
