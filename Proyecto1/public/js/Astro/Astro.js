@@ -555,6 +555,7 @@ window.iniciarAstro = function () {
             caminando = true;
             andaS.volume = 0.2;
             andaS.play();
+            document.querySelector(".right").classList.add("activo2");
         }
 
         if (e.code === "ArrowLeft" || e.code === "KeyA") {
@@ -562,6 +563,7 @@ window.iniciarAstro = function () {
             caminando = true;
             andaS.volume = 0.2;
             andaS.play();
+            document.querySelector(".left").classList.add("activo2");
         }
 
         // Salto
@@ -571,6 +573,13 @@ window.iniciarAstro = function () {
             capiAnda = miraDerecha ? imageCapiSaltoDerecha : imageCapiSaltoIzquierda;
         }
 
+        if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+             document.querySelector(".up").classList.add("activo2");
+        }
+
+        if (e.code === "KeyE") {
+            document.querySelector(".btn-a").classList.add("activo");
+        }
         
 
     });
@@ -584,6 +593,14 @@ window.iniciarAstro = function () {
             caminando = false;
             andaS.currentTime = 0;
             andaS.pause();
+            document.querySelector(".right").classList.remove("activo2");
+            document.querySelector(".left").classList.remove("activo2");
+        }
+        if (e.code === "KeyE") {
+            document.querySelector(".btn-a").classList.remove("activo");
+        }
+        if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+             document.querySelector(".up").classList.remove("activo2");
         }
     });
 
@@ -962,7 +979,7 @@ window.iniciarAstro = function () {
                 respuesta = operador1 - operador2;
                 break;
             case 3://multiplicaciones
-                operacion = "*";
+                operacion = "x";
                 operador1 = Math.floor(Math.random() * 10) + 1; //Hasta cien
                 operador2 = Math.floor(Math.random() * 10) + 1;
                 respuesta = operador1 * operador2;

@@ -107,9 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 // ahora sí el DOM tiene #PROVA
-                /*if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
+                if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
                     window.astroJugable();
-                }*/
+                }
 
 
                 // Revisamos si el script del juego ya está cargado para no cargarlo dos veces
