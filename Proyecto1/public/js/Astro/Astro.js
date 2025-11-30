@@ -114,6 +114,20 @@ window.iniciarAstro = function () {
     const suelo1 = new Image();
     suelo1.src =        '/Proyecto-1/Proyecto1/Astro/platapincho.png';
 
+    //Sonidos
+    const correctoS = new Audio("/Proyecto-1/Proyecto1/Astro/correctoS.mp3");
+    const incorrectoS = new Audio("/Proyecto-1/Proyecto1/Astro/incorrectoS.mp3");
+    /*const soundS = new Audio("/Proyecto-1/Proyecto1/Astro/sound.mp3");*/
+    const saltoS = new Audio("/Proyecto-1/Proyecto1/Astro/saltoS.mp3");
+    const muerteS = new Audio("/Proyecto-1/Proyecto1/Astro/muerteS.mp3");
+    const obtenidoS = new Audio("/Proyecto-1/Proyecto1/Astro/obtenidoS.mp3");
+    const andaS = new Audio("/Proyecto-1/Proyecto1/Astro/andaS.mp3");
+    if (!window.soundS) {
+    window.soundS = new Audio("/Proyecto-1/Proyecto1/Astro/sound.mp3");
+    window.soundS.volume = 0.2;
+    window.soundS.loop = true;
+}
+
     /* UI referencias */
     const msg       = document.getElementById('mensaje');
     const startBtn  = document.getElementById('start-btn');
@@ -539,11 +553,15 @@ window.iniciarAstro = function () {
         if (e.code === "ArrowRight" || e.code === "KeyD") {
             miraDerecha = true;
             caminando = true;
+            andaS.volume = 0.2;
+            andaS.play();
         }
 
         if (e.code === "ArrowLeft" || e.code === "KeyA") {
             miraDerecha = false;
             caminando = true;
+            andaS.volume = 0.2;
+            andaS.play();
         }
 
         // Salto
@@ -552,6 +570,8 @@ window.iniciarAstro = function () {
 
             capiAnda = miraDerecha ? imageCapiSaltoDerecha : imageCapiSaltoIzquierda;
         }
+
+        
 
     });
 
@@ -562,6 +582,8 @@ window.iniciarAstro = function () {
             e.code === "ArrowLeft" || e.code === "KeyA")
         {
             caminando = false;
+            andaS.currentTime = 0;
+            andaS.pause();
         }
     });
 
@@ -615,6 +637,10 @@ window.iniciarAstro = function () {
         }
 
         if(vidas === 0){
+            soundS.pause();
+            muerteS.currentTime = 0;
+            muerteS.volume = 0.3;
+            muerteS.play();
             capiAnda = imageCapimuerta;
 
             numeroIntentos += 1;
@@ -653,6 +679,9 @@ window.iniciarAstro = function () {
 
         if (colision) {
             componenteNave1.obtained = true;
+            obtenidoS.volume = 0.3;
+            obtenidoS.play();
+            soundS.pause();
 
             // ✔ Dar puntos
             puntos += 300;
@@ -750,7 +779,6 @@ window.iniciarAstro = function () {
     //Actualización de la posición del jugador
     function actualizarJugador() {
         //Si el jugador tiene una pregunta abierta no se actualiza su posición
-        // Añado apartado de que si el jugador apreta la tecla e interactúe con el bloque de pregunta
 
         if(keys['KeyE']) {
             console.log("Interaccion con bloque de pregunta");
@@ -778,6 +806,9 @@ window.iniciarAstro = function () {
         if((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && playerPosInicio.onGround) {
             playerPosInicio.vy = JUMP_V;
             playerPosInicio.onGround = false;
+            saltoS.currentTime = 0; // reinicia el audio si ya estaba sonando
+            saltoS.volume = 0.2;
+            saltoS.play();
         }
 
         // aplicar gravedad
@@ -990,9 +1021,13 @@ window.iniciarAstro = function () {
 
     function Respuesta(respuesta){
         if(respuesta){
+            correctoS.volume = 0.5;
+            correctoS.play();
             puntos += 100;
             puntosEl.textContent = puntos;
         }else{
+            incorrectoS.volume = 0.1;
+            incorrectoS.play();
             erroresEnNivel += 1;
             switch(erroresEnNivel){
                 case 0:
@@ -1123,7 +1158,10 @@ window.iniciarAstro = function () {
         .then(data => {
             console.log("Controlador ejecutado:", data);
             // Aquí comienzas el juego:
-            
+            window.soundS.pause();
+            window.soundS.currentTime = 0;
+            window.soundS.play().catch(e => console.warn("Autoplay bloqueado:", e));
+
             gameActive = true;
             levelComplete = false;
             puntos = 0;
@@ -1193,7 +1231,10 @@ window.iniciarAstro = function () {
 
     /* Iniciar mostrando mensaje inicial */
     mostrarMensaje("Misión Matemática - Nivel 1", "Llegar al final resolviendo sumas en las plataformas. Usa ← → para moverte, Espacio para saltar y E para interactuar con los bloques. Pulsa JUGAR para comenzar.");
-    
+   
+    window.addEventListener("beforeunload", () => {
+        soundS.pause();
+    });
 
 }
 
