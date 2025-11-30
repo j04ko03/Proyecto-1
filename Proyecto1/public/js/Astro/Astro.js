@@ -84,6 +84,7 @@ window.iniciarAstro = function () {
     const imagenCapiPieDerechaAnda      = new Image();
     const imageCapiSaltoIzquierda       = new Image();
     const imageCapiSaltoDerecha         = new Image();
+    const imageCapimuerta               = new Image();
 
     imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pieizquierdo1.png';
     imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pieizquierdo2.png';
@@ -91,11 +92,13 @@ window.iniciarAstro = function () {
     imagenCapiPieDerechaAnda.src =      '/Proyecto-1/Proyecto1/Astro/piederecho2.png';
     imageCapiSaltoIzquierda.src =       '/Proyecto-1/Proyecto1/Astro/saltoizquierdo1.png';
     imageCapiSaltoDerecha.src =         '/Proyecto-1/Proyecto1/Astro/saltoderecha1.png';
+    imageCapimuerta.src =               '/Proyecto-1/Proyecto1/Astro/muerte.png';
 
     let capiStandDerecha = imagenCapiPieDerecha;
     let capiWalkDerecha  = imagenCapiPieDerechaAnda;
     let capiStandIzquierda = imagenCapiPieIzquierda;
     let capiWalkIzquierda  = imagenCapiPieIzquierdaAnda;
+    let caiDead = imageCapimuerta;
 
     let capiAnda = imagenCapiPieDerecha;
     let miraDerecha = true;
@@ -427,13 +430,13 @@ window.iniciarAstro = function () {
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
                 break;
             case 3:
-                imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/alaD.png';
                 break;
             case 4: 
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
                 break;
             case 5: 
-                imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/sisNav.png';
                 break;
             default: 
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
@@ -458,7 +461,7 @@ window.iniciarAstro = function () {
                 name = "CABINA";
                 break;
             case 5: 
-                name = "CABINA";
+                name = "Sis. Nav";
                 break;
             default: 
                 name = "MOTOR";
@@ -612,6 +615,8 @@ window.iniciarAstro = function () {
         }
 
         if(vidas === 0){
+            capiAnda = imageCapimuerta;
+
             numeroIntentos += 1;
             pausarTimer();
 
@@ -1087,7 +1092,7 @@ window.iniciarAstro = function () {
     //Resetear juego -> valores de jugador
         function resetJugador() {
         playerPosInicio.x = START_X - 40;
-        playerPosInicio.y = START_Y + 65;
+        playerPosInicio.y = START_Y + 72;
 
         keys = {};
         
