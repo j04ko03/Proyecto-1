@@ -215,4 +215,25 @@ class JuegoController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function  desbloquearJuego(Request $request)  {
+        $juegos = Juego::orderBy('id', 'asc')->get();
+        $siguienteBloqueado = $juegos->firstWhere('isBlocked', 1);
+
+        if (!$siguienteBloqueado) {
+            return response()->json([
+                'status' => 'no-more-games',
+                'message' => 'El usuario ya desbloqueó todos los juegos.'
+            ]);
+        }
+
+        $siguienteBloqueado->isBlocked = 0;
+        $siguienteBloqueado->save();
+
+        return response()->json([
+            'status' => 'ok',
+            'message' => 'Juego desbloqueado correctamente.',
+            'juegoDesbloqueado' => $siguienteBloqueado->id
+        ]);
+    }
 }

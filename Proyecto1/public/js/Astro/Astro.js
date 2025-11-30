@@ -767,6 +767,31 @@ window.iniciarAstro = function () {
                     //nivel = data.nivel;
                     nivelEl.textContent = nivel;
                     datosSesionIdX = data.datosSesionId;
+                    if(nivel === 5){
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                juegoId: juegoIdx //Lo puedo evitar
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log("Juego desbloqueado!" + data.juegoDesbloqueado);
+                        }).catch(err => {
+                            console.error("ERROR EN FETCH:", err);
+                        });
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000); 
+                    }
                 }).catch(err => {
                     console.error("ERROR EN FETCH:", err);
                 });
@@ -1158,6 +1183,11 @@ window.iniciarAstro = function () {
         const dades = extreureCookie("user");
         const usuarioIdx = dades.user;                  //  obtén esto de sesión, localStorage o backend
         const juegoIdx = parseInt(dades.game);          //  ID del juego Astro
+
+        if (window.homeS) {
+            window.homeS.pause();
+            window.homeS.currentTime = 0;
+        }
 
         fetch('/Proyecto-1/Proyecto1/public/juegos/astro/iniciar', {
             method: 'POST',
