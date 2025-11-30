@@ -52,5 +52,8 @@
     <!-- Contenedor ayuda movilidad -->
     <div id="help">Controles: ← → mover · Espacio saltar · E interactuar</div>
 
+    <div id="videoFinalOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; justify-content: center; align-items: center; background: black; z-index: 99999;">       
+        <video id="videoFinal" width="90%" preload="auto"></video>
+    </div>
 </div>
 

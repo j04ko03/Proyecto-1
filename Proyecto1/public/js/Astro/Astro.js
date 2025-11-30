@@ -705,10 +705,12 @@ window.iniciarAstro = function () {
             puntosEl.textContent = puntos;
 
             // ✔ Mostrar mensaje
-            mostrarMensaje(
-                "¡Componente recuperado!",
-                "Has recuperado la pieza de la nave. ¡Llegaste al final del nivel!"
-            );
+            if(nivel < 5){
+                mostrarMensaje(
+                    "¡Componente recuperado!",
+                    "Has recuperado la pieza de la nave. ¡Llegaste al final del nivel!"
+                );
+            }
 
             // ✔ Parar el juego
             gameActive = false;
@@ -769,28 +771,31 @@ window.iniciarAstro = function () {
                     datosSesionIdX = data.datosSesionId;
                     if(nivel === 5){
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken
-                            },
-                            body: JSON.stringify({
-                                juegoId: juegoIdx
+                        reproducirVideoFinal("/Proyecto-1/Proyecto1/Astro/capiFuera1.mp4", () => {
+                            fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                                    'X-CSRF-TOKEN': csrfToken
+                                },
+                                body: JSON.stringify({
+                                    juegoId: juegoIdx
+                                })
                             })
-                        })
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log("Juego desbloqueado!" + data.juegoDesbloqueado);
-                        }).catch(err => {
-                            console.error("ERROR EN FETCH:", err);
+                            .then(res => res.json())
+                            .then(data => {
+                                console.log("Juego desbloqueado!" + data.juegoDesbloqueado);
+                                mostrarMensaje("Hasta la próxima Capi espacial!", "Fin del juego");
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1000); 
+                            }).catch(err => {
+                                console.error("ERROR EN FETCH:", err);
+                            });
                         });
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                        setTimeout(() => {
-                            location.reload();
-                        }, 2000); 
+                        
                     }
                 }).catch(err => {
                     console.error("ERROR EN FETCH:", err);
@@ -1157,7 +1162,11 @@ window.iniciarAstro = function () {
     function mostrarMensaje(title, body){
         msg.style.display = 'block';
         document.getElementById('msg-title').textContent = title;
-        document.getElementById('msg-body').innerHTML = body;
+        if(nivel === 5){
+            document.getElementById('msg-body').innerHTML = body;
+            document.getElementById('start-btn').style.visibility = "hidden";
+
+        }
         gameActive = false;
     }
 
@@ -1283,6 +1292,32 @@ window.iniciarAstro = function () {
         soundS.pause();
     });
 
+    function reproducirVideoFinal(src, callbackFin) {
+        const overlay = document.getElementById("videoFinalOverlay");
+        const video = document.getElementById("videoFinal");
+
+        video.src = src;
+        overlay.style.display = "flex";
+
+        video.volume = 0.2;  
+
+        // Evitar autoplay bloqueado
+        video.play().catch(() => {
+            const desbloqueo = () => {
+                video.play();
+                document.removeEventListener("click", desbloqueo);
+            };
+            document.addEventListener("click", desbloqueo);
+        });
+
+        // Cuando termine → callbackFinal
+        video.onended = () => {
+            overlay.style.display = "none";
+            video.src = "";
+
+            if (callbackFin) callbackFin(); // Ejecutar lógica final
+        };
+    }
 }
 
 window.astroJugable = iniciarAstro;
