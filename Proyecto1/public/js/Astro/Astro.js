@@ -789,7 +789,7 @@ window.iniciarAstro = function () {
                                 mostrarMensaje("Hasta la próxima Capi espacial!", "Fin del juego");
                                 setTimeout(() => {
                                     location.reload();
-                                }, 1000); 
+                                }, 2000); 
                             }).catch(err => {
                                 console.error("ERROR EN FETCH:", err);
                             });
