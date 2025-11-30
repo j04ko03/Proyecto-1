@@ -3,21 +3,21 @@ const preguntas = [
         texto: "¿Cómo se muestra un mensaje en consola en JavaScript?",
         antes: "",
         despues: "('Hola Mundo');",
-        opciones: ["alert, ", "console.log", "print"],
+        opciones: ["alert", "console.log", "print"],
         correcta: "console.log"
     },
     {
         texto: "¿Cómo se declara una variable en JavaScript?",
         antes: "",
         despues: ' nombre = "Juan";',
-        opciones: ["let, ", "varr", "constante"],
+        opciones: ["let", "var", "const"],
         correcta: "let"
     },
     {
         texto: "¿Qué método convierte un JSON a objeto en JS?",
         antes: "const obj =",
         despues: "('textoJSON');",
-        opciones: ["JSON.parse, ", "JSON.stringify", "parseJSON"],
+        opciones: ["JSON.parse", "JSON.stringify", "parseJSON"],
         correcta: "JSON.parse"
     },
 
@@ -31,19 +31,39 @@ const contenedor = document.getElementById("contenedor_pregunta");
 const btnSiguiente = document.getElementById("btnSiguiente");
 const puntajeTexto = document.getElementById("puntaje");
 
+// Estado para saber si ya iniciamos el juego
+let juegoIniciado = false;
+
+// Esconde el boton al iniciar
+btnSiguiente.textContent = "Iniciar";
+btnSiguiente.style.display = "inline-block";
+
+// Limpiar el contenedor y puntuaje al principio
+contenedor.innerHTML = "";
+puntajeTexto.textContent = "";
+
 function mostrarPregunta() {
     const p = preguntas[indice];
-    contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b></p>
+    contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b> ${p.texto}</p>
     <div class="linea-codigo">
         <span>${p.antes}</span>
         <span class="dropzone" id="zona">[ Código ]</span>
         <span>${p.despues}</span>
     </div>
     <div class="opciones">
-    ${p.opciones.map(op => `<div class="codigo" data-text="${op}"></div>`).join("")}
+
     </div>
-    <p id="menaje"></p>
-    `;
+    <p id="menaje"></p>`;
+// Importante: Corregir para sacar las opciones bien y que las repuestas cambien de color en funcion de la correcta
+//Crear un Json donde esten las preguntas y cargarlas entro del element.
+//
+    let myOpcion = document.createElement("span");
+    myOpcion.textContent = "Hola";
+    let elemento = document.getElementById("menaje");
+    elemento.appendChild(myOpcion);
+    myOpcion.addEventListener('click', () => {
+        console.log('Has hecho clic en el mensaje');
+    });
 
 
     seleccionActual = null;
@@ -75,7 +95,7 @@ function mostrarPregunta() {
         }
 
         if (!seleccionActual) {
-            mensaje.textContent = "Haz clic primero en un opcion";
+            mensaje.textContent = "Haz clic primero en una opción";
             mensaje.style.color = "#f44336";
             return;
         }
@@ -103,6 +123,7 @@ function mostrarPregunta() {
     });
 
     actualizarPuntaje();
+    // ocultamos el botón hasta que acierten la pregunta
     btnSiguiente.style.display = "none";
 }
 
@@ -112,18 +133,27 @@ function actualizarPuntaje() {
 
 
 btnSiguiente.addEventListener('click', () => {
-    indice++;
-    if (indice < preguntas.length) {
+    if (!juegoIniciado) {
+        // Primer click: Inicia el juego y cargar la primera pregunta
+        juegoIniciado = true;
+        btnSiguiente.textContent = "Siguiente";
+        indice = 0;
+        puntaje = 0;
         mostrarPregunta();
     } else {
-        contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
+        indice++;
+        if (indice < preguntas.length) {
+            mostrarPregunta();
+        } else {
+            contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
     <p>Tu puntuación final es: <b>${puntaje} / ${preguntas.length}</b></p>
     `;
-        btnSiguiente.style.display = "none";
+            btnSiguiente.style.display = "none";
+        }
     }
 });
 
-mostrarPregunta();
+// No llamar mostrarPregunta() automáticamente para que el usuario inicie con el botón
 
-
-
+// inicializar mostrando puntaje 0
+actualizarPuntaje();
