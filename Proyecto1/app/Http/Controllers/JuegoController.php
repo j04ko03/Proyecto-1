@@ -217,23 +217,36 @@ class JuegoController extends Controller
     }
 
     public function  desbloquearJuego(Request $request)  {
-        $juegos = Juego::orderBy('id', 'asc')->get();
-        $siguienteBloqueado = $juegos->firstWhere('isBlocked', 1);
+        $juegoActualId = $request->input('juegoId');
 
-        if (!$siguienteBloqueado) {
+        // Buscar el siguiente juego en orden
+        $siguiente = Juego::where('id', '>', $juegoActualId)
+            ->orderBy('id', 'asc')
+            ->first();
+
+        if (!$siguiente) {
             return response()->json([
                 'status' => 'no-more-games',
-                'message' => 'El usuario ya desbloqueó todos los juegos.'
+                'message' => 'No hay más juegos después de este.'
             ]);
         }
 
-        $siguienteBloqueado->isBlocked = 0;
-        $siguienteBloqueado->save();
+        if ($siguiente->isBlocked == 0) {
+            return response()->json([
+                'status' => 'already-unlocked',
+                'message' => 'El siguiente juego ya estaba desbloqueado.',
+                'juego' => $siguiente->id
+            ]);
+        }
+
+        // Desbloquear ese siguiente juego
+        $siguiente->isBlocked = 0;
+        $siguiente->save();
 
         return response()->json([
             'status' => 'ok',
             'message' => 'Juego desbloqueado correctamente.',
-            'juegoDesbloqueado' => $siguienteBloqueado->id
+            'juegoDesbloqueado' => $siguiente->id
         ]);
-    }
+        }
 }

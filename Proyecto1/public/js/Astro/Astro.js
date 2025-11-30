@@ -778,7 +778,7 @@ window.iniciarAstro = function () {
                                 'X-CSRF-TOKEN': csrfToken
                             },
                             body: JSON.stringify({
-                                juegoId: juegoIdx //Lo puedo evitar
+                                juegoId: juegoIdx
                             })
                         })
                         .then(res => res.json())
