@@ -72,6 +72,11 @@ document.addEventListener("DOMContentLoaded", function () {
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
 
+            if (window.homeS) {
+                window.homeS.pause();
+                window.homeS.currentTime = 0;
+            }
+
             console.log("Se clickeó el juego:", this.dataset.juego);
 
             try {

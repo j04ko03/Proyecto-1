@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const homeS = new Audio("/Proyecto-1/Proyecto1/Astro/homeS.mp3");
+    window.homeS = new Audio("/Proyecto-1/Proyecto1/Astro/homeS.mp3");
     homeS.loop = true;
 
     // ¿El usuario ya interactuó en login?
