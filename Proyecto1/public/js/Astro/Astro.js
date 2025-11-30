@@ -105,6 +105,12 @@ window.iniciarAstro = function () {
     let frame = 0;
     let pasoFrame = 0;
 
+    //Plataformaa del juego
+    const suelo = new Image();
+    suelo.src =        '/Proyecto-1/Proyecto1/Astro/plata.png';
+    const suelo1 = new Image();
+    suelo1.src =        '/Proyecto-1/Proyecto1/Astro/platapincho.png';
+
     /* UI referencias */
     const msg       = document.getElementById('mensaje');
     const startBtn  = document.getElementById('start-btn');
@@ -200,7 +206,7 @@ window.iniciarAstro = function () {
         // plataformas flotantes (x, y, ancho, alto)
         const plataformasFlotantes = [
             [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
-            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [20, CANVAS_H - 4, CANVAS_W - 10, 16],//Parte inicial baja
             [80, 290, 150, 16],
             [250, 230, 150, 16],
             [450, 190, 50, 16],
@@ -230,12 +236,12 @@ window.iniciarAstro = function () {
         // plataformas flotantes (x, y, ancho, alto)
         const plataformasFlotantes = [
             [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
-            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [20, CANVAS_H - 4, CANVAS_W - 10, 16],//Parte inicial baja
             [80, 290, 150, 16],
             [250, 230, 150, 16],
-            [450, 190, 50, 16],
-            [550, 160, 90, 16],
-            [690, 120, 80, 16],// cerca del final
+            [450, 300, 50, 16],
+            [550, 300, 90, 16],
+            [690, 350, 80, 16],// cerca del final
             [810, CANVAS_H - 20, 100, 16],
         ];
         //Limpiez del array principal de plataformas
@@ -260,12 +266,12 @@ window.iniciarAstro = function () {
         // plataformas flotantes (x, y, ancho, alto)
         const plataformasFlotantes = [
             [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
-            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [20, CANVAS_H - 4, CANVAS_W - 10, 16],//Parte inicial baja
             [80, 290, 150, 16],
             [250, 230, 150, 16],
             [450, 190, 50, 16],
-            [550, 160, 90, 16],
-            [690, 120, 80, 16],// cerca del final
+            [565, 160, 50, 16],
+            [670, 300, 70, 16],// cerca del final
             [810, CANVAS_H - 20, 100, 16],
         ];
         //Limpiez del array principal de plataformas
@@ -290,12 +296,12 @@ window.iniciarAstro = function () {
         // plataformas flotantes (x, y, ancho, alto)
         const plataformasFlotantes = [
             [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
-            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
+            [20, CANVAS_H - 4, CANVAS_W - 10, 16],//Parte inicial baja
             [80, 290, 150, 16],
             [250, 230, 150, 16],
-            [450, 190, 50, 16],
-            [550, 160, 90, 16],
-            [690, 120, 80, 16],// cerca del final
+            [450, 190, 150, 16],
+            [650, 160, 90, 16],
+            [810, 180, 100, 16],// cerca del final
             [810, CANVAS_H - 20, 100, 16],
         ];
         //Limpiez del array principal de plataformas
@@ -320,12 +326,12 @@ window.iniciarAstro = function () {
         // plataformas flotantes (x, y, ancho, alto)
         const plataformasFlotantes = [
             [0, CANVAS_H - 20, 80, 16],//Parte inicial alta
-            [80, CANVAS_H - 4, CANVAS_W - 10, 1],//Parte inicial baja
-            [80, 290, 150, 16],
-            [250, 230, 150, 16],
-            [450, 190, 50, 16],
-            [550, 160, 90, 16],
-            [690, 120, 80, 16],// cerca del final
+            [20, CANVAS_H - 4, CANVAS_W - 10, 16],//Parte inicial baja
+            [90, 290, 70, 16],
+            [200, 230, 150, 16],
+            [400, 190, 50, 16],
+            [500, 350, 260, 16],
+            [520, 190, 80, 16],// cerca del final
             [810, CANVAS_H - 20, 100, 16],
         ];
         //Limpiez del array principal de plataformas
@@ -348,14 +354,32 @@ window.iniciarAstro = function () {
 
     //Dibujar plataformas en nivel
     function dibujarPlataformas(){
-        ctx.fillStyle = "#000"; // color marrón para plataformas TODO->CAMBIAR POR IMAGEN
-        plataformas.forEach(plata => {
-            ctx.fillRect(
-                toScreenX(plata.x),
-                toScreenY(plata.y),
-                toScreenW(plata.w),
-                toScreenH(plata.h)
-            );
+       // ctx.fillStyle = "#000"; // color marrón para plataformas TODO->CAMBIAR POR IMAGEN
+        plataformas.forEach((plata, i) => {
+            let img = suelo;
+            const factor = 4;
+            const h = plata.h * factor;
+            const w = plata.w;
+            if(i === 1){
+                img = suelo1;
+                ctx.drawImage(
+                    img,
+                    toScreenX(plata.x),
+                    toScreenY(plata.y + (plata.h - h) + 20),
+                    toScreenW(w),
+                    toScreenH(h)
+                );
+            }else{
+                ctx.drawImage(
+                    img,
+                    toScreenX(plata.x),
+                    toScreenY(plata.y + (plata.h - h) + 30),
+                    toScreenW(w),
+                    toScreenH(h)
+                );
+            }
+
+            
             dibujarRectanguloRedondeado(plata);
         });
     };
@@ -552,7 +576,7 @@ window.iniciarAstro = function () {
             return;
         }
         // Si camina → alternar paso cada 10 frames
-        if (frame % 10 === 0) {
+        if (frame % 5 === 0) {
             pasoFrame = 1 - pasoFrame; // alterna 0/1
         }
         if (miraDerecha) {
@@ -914,6 +938,7 @@ window.iniciarAstro = function () {
                 operador2 = divisor;
                 operacion = "÷";
                 respuesta = dividendo / divisor;
+                break;
             case 5://Mixto
                 const operacionesRandom = [1, 2, 3, 4];
                 return generadorPreguntas(operacionesRandom[Math.floor(Math.random() * 4)]);
