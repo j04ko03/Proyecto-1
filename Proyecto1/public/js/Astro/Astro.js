@@ -84,6 +84,7 @@ window.iniciarAstro = function () {
     const imagenCapiPieDerechaAnda      = new Image();
     const imageCapiSaltoIzquierda       = new Image();
     const imageCapiSaltoDerecha         = new Image();
+    const imageCapimuerta               = new Image();
 
     imagenCapiPieIzquierda.src =        '/Proyecto-1/Proyecto1/Astro/pieizquierdo1.png';
     imagenCapiPieIzquierdaAnda.src =    '/Proyecto-1/Proyecto1/Astro/pieizquierdo2.png';
@@ -91,11 +92,13 @@ window.iniciarAstro = function () {
     imagenCapiPieDerechaAnda.src =      '/Proyecto-1/Proyecto1/Astro/piederecho2.png';
     imageCapiSaltoIzquierda.src =       '/Proyecto-1/Proyecto1/Astro/saltoizquierdo1.png';
     imageCapiSaltoDerecha.src =         '/Proyecto-1/Proyecto1/Astro/saltoderecha1.png';
+    imageCapimuerta.src =               '/Proyecto-1/Proyecto1/Astro/muerte.png';
 
     let capiStandDerecha = imagenCapiPieDerecha;
     let capiWalkDerecha  = imagenCapiPieDerechaAnda;
     let capiStandIzquierda = imagenCapiPieIzquierda;
     let capiWalkIzquierda  = imagenCapiPieIzquierdaAnda;
+    let caiDead = imageCapimuerta;
 
     let capiAnda = imagenCapiPieDerecha;
     let miraDerecha = true;
@@ -110,6 +113,20 @@ window.iniciarAstro = function () {
     suelo.src =        '/Proyecto-1/Proyecto1/Astro/plata.png';
     const suelo1 = new Image();
     suelo1.src =        '/Proyecto-1/Proyecto1/Astro/platapincho.png';
+
+    //Sonidos
+    const correctoS = new Audio("/Proyecto-1/Proyecto1/Astro/correctoS.mp3");
+    const incorrectoS = new Audio("/Proyecto-1/Proyecto1/Astro/incorrectoS.mp3");
+    /*const soundS = new Audio("/Proyecto-1/Proyecto1/Astro/sound.mp3");*/
+    const saltoS = new Audio("/Proyecto-1/Proyecto1/Astro/saltoS.mp3");
+    const muerteS = new Audio("/Proyecto-1/Proyecto1/Astro/muerteS.mp3");
+    const obtenidoS = new Audio("/Proyecto-1/Proyecto1/Astro/obtenidoS.mp3");
+    const andaS = new Audio("/Proyecto-1/Proyecto1/Astro/andaS.mp3");
+    if (!window.soundS) {
+    window.soundS = new Audio("/Proyecto-1/Proyecto1/Astro/sound.mp3");
+    window.soundS.volume = 0.2;
+    window.soundS.loop = true;
+}
 
     /* UI referencias */
     const msg       = document.getElementById('mensaje');
@@ -427,13 +444,13 @@ window.iniciarAstro = function () {
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
                 break;
             case 3:
-                imgNave.src = '/Proyecto-1/Proyecto1/Astro/ala.png';
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/alaD.png';
                 break;
             case 4: 
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
                 break;
             case 5: 
-                imgNave.src = '/Proyecto-1/Proyecto1/Astro/cabina.png';
+                imgNave.src = '/Proyecto-1/Proyecto1/Astro/sisNav.png';
                 break;
             default: 
                 imgNave.src = '/Proyecto-1/Proyecto1/Astro/motor.png';
@@ -458,7 +475,7 @@ window.iniciarAstro = function () {
                 name = "CABINA";
                 break;
             case 5: 
-                name = "CABINA";
+                name = "Sis. Nav";
                 break;
             default: 
                 name = "MOTOR";
@@ -536,11 +553,17 @@ window.iniciarAstro = function () {
         if (e.code === "ArrowRight" || e.code === "KeyD") {
             miraDerecha = true;
             caminando = true;
+            andaS.volume = 0.2;
+            andaS.play();
+            document.querySelector(".right").classList.add("activo2");
         }
 
         if (e.code === "ArrowLeft" || e.code === "KeyA") {
             miraDerecha = false;
             caminando = true;
+            andaS.volume = 0.2;
+            andaS.play();
+            document.querySelector(".left").classList.add("activo2");
         }
 
         // Salto
@@ -549,6 +572,15 @@ window.iniciarAstro = function () {
 
             capiAnda = miraDerecha ? imageCapiSaltoDerecha : imageCapiSaltoIzquierda;
         }
+
+        if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+             document.querySelector(".up").classList.add("activo2");
+        }
+
+        if (e.code === "KeyE") {
+            document.querySelector(".btn-a").classList.add("activo");
+        }
+        
 
     });
 
@@ -559,6 +591,16 @@ window.iniciarAstro = function () {
             e.code === "ArrowLeft" || e.code === "KeyA")
         {
             caminando = false;
+            andaS.currentTime = 0;
+            andaS.pause();
+            document.querySelector(".right").classList.remove("activo2");
+            document.querySelector(".left").classList.remove("activo2");
+        }
+        if (e.code === "KeyE") {
+            document.querySelector(".btn-a").classList.remove("activo");
+        }
+        if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+             document.querySelector(".up").classList.remove("activo2");
         }
     });
 
@@ -612,6 +654,12 @@ window.iniciarAstro = function () {
         }
 
         if(vidas === 0){
+            soundS.pause();
+            muerteS.currentTime = 0;
+            muerteS.volume = 0.3;
+            muerteS.play();
+            capiAnda = imageCapimuerta;
+
             numeroIntentos += 1;
             pausarTimer();
 
@@ -648,6 +696,9 @@ window.iniciarAstro = function () {
 
         if (colision) {
             componenteNave1.obtained = true;
+            obtenidoS.volume = 0.3;
+            obtenidoS.play();
+            soundS.pause();
 
             // ✔ Dar puntos
             puntos += 300;
@@ -716,6 +767,31 @@ window.iniciarAstro = function () {
                     //nivel = data.nivel;
                     nivelEl.textContent = nivel;
                     datosSesionIdX = data.datosSesionId;
+                    if(nivel === 5){
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            },
+                            body: JSON.stringify({
+                                juegoId: juegoIdx
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log("Juego desbloqueado!" + data.juegoDesbloqueado);
+                        }).catch(err => {
+                            console.error("ERROR EN FETCH:", err);
+                        });
+                        ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000); 
+                    }
                 }).catch(err => {
                     console.error("ERROR EN FETCH:", err);
                 });
@@ -745,7 +821,6 @@ window.iniciarAstro = function () {
     //Actualización de la posición del jugador
     function actualizarJugador() {
         //Si el jugador tiene una pregunta abierta no se actualiza su posición
-        // Añado apartado de que si el jugador apreta la tecla e interactúe con el bloque de pregunta
 
         if(keys['KeyE']) {
             console.log("Interaccion con bloque de pregunta");
@@ -773,6 +848,9 @@ window.iniciarAstro = function () {
         if((keys['Space'] || keys['ArrowUp'] || keys['KeyW']) && playerPosInicio.onGround) {
             playerPosInicio.vy = JUMP_V;
             playerPosInicio.onGround = false;
+            saltoS.currentTime = 0; // reinicia el audio si ya estaba sonando
+            saltoS.volume = 0.2;
+            saltoS.play();
         }
 
         // aplicar gravedad
@@ -926,7 +1004,7 @@ window.iniciarAstro = function () {
                 respuesta = operador1 - operador2;
                 break;
             case 3://multiplicaciones
-                operacion = "*";
+                operacion = "x";
                 operador1 = Math.floor(Math.random() * 10) + 1; //Hasta cien
                 operador2 = Math.floor(Math.random() * 10) + 1;
                 respuesta = operador1 * operador2;
@@ -985,9 +1063,13 @@ window.iniciarAstro = function () {
 
     function Respuesta(respuesta){
         if(respuesta){
+            correctoS.volume = 0.5;
+            correctoS.play();
             puntos += 100;
             puntosEl.textContent = puntos;
         }else{
+            incorrectoS.volume = 0.1;
+            incorrectoS.play();
             erroresEnNivel += 1;
             switch(erroresEnNivel){
                 case 0:
@@ -1087,7 +1169,7 @@ window.iniciarAstro = function () {
     //Resetear juego -> valores de jugador
         function resetJugador() {
         playerPosInicio.x = START_X - 40;
-        playerPosInicio.y = START_Y + 65;
+        playerPosInicio.y = START_Y + 72;
 
         keys = {};
         
@@ -1101,6 +1183,11 @@ window.iniciarAstro = function () {
         const dades = extreureCookie("user");
         const usuarioIdx = dades.user;                  //  obtén esto de sesión, localStorage o backend
         const juegoIdx = parseInt(dades.game);          //  ID del juego Astro
+
+        if (window.homeS) {
+            window.homeS.pause();
+            window.homeS.currentTime = 0;
+        }
 
         fetch('/Proyecto-1/Proyecto1/public/juegos/astro/iniciar', {
             method: 'POST',
@@ -1118,7 +1205,10 @@ window.iniciarAstro = function () {
         .then(data => {
             console.log("Controlador ejecutado:", data);
             // Aquí comienzas el juego:
-            
+            window.soundS.pause();
+            window.soundS.currentTime = 0;
+            window.soundS.play().catch(e => console.warn("Autoplay bloqueado:", e));
+
             gameActive = true;
             levelComplete = false;
             puntos = 0;
@@ -1188,7 +1278,10 @@ window.iniciarAstro = function () {
 
     /* Iniciar mostrando mensaje inicial */
     mostrarMensaje("Misión Matemática - Nivel 1", "Llegar al final resolviendo sumas en las plataformas. Usa ← → para moverte, Espacio para saltar y E para interactuar con los bloques. Pulsa JUGAR para comenzar.");
-    
+   
+    window.addEventListener("beforeunload", () => {
+        soundS.pause();
+    });
 
 }
 

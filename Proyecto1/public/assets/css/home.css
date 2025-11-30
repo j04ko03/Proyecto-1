@@ -115,7 +115,8 @@
         inset 0 1px 3px rgba(0, 217, 255, 0.2);
 }
 
-.d-pad-btn:hover {
+.d-pad-btn:hover,
+.d-pad-btn.activo2 {
     background: linear-gradient(145deg, #00d9ff, #00a8cc);
     box-shadow: 
         0 0 20px rgba(0, 217, 255, 0.6),
@@ -176,7 +177,8 @@
     z-index: 2;
 }
 
-.action-btn:hover {
+.action-btn:hover,
+.action-btn.activo {
     background: linear-gradient(145deg, #ff00ff, #cc00cc);
     color: white;
     box-shadow: 

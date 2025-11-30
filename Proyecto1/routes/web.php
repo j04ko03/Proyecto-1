@@ -58,3 +58,4 @@ Route::resource('usuarios', UsuarioController::class);
 Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
 Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
 Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
+Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);
