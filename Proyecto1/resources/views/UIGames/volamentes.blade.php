@@ -11,18 +11,9 @@
 
 <body>
 
-    <div class="area-juego-volamentes">
-
-        <h3>Volamentes</h3>
-        <p>Selecciona el fragmento correcto para completar el codigo</p>
-
-        <div id="contenedor_pregunta"></div>
-
-        <div id="puntaje"></div>
+    <div class="contenedor_juego"></div>
 
         <button id="btnSiguiente">Siguiente</button>
-
-    </div>
 
     <script src="{{ asset('js/scriptJuegos/volamentes.js') }}"></script>
 </body>
