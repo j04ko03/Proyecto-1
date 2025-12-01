@@ -17,6 +17,11 @@ class RutasControlador extends Controller
     {
         return view('home');
     }
+
+    public function metricasView()
+    {
+        return view('metricas');
+    }
     
     public function juego1View()
     {
