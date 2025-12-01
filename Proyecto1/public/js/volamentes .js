@@ -1,149 +1,154 @@
+// Arreglo de preguntas
 const preguntas = [
     {
         texto: "¿Cómo se muestra un mensaje en consola en JavaScript?",
         antes: "",
         despues: "('Hola Mundo');",
-        opciones: ["alert, ", "console.log", "print"],
+        opciones: ["alert", "console.log", "print"],
         correcta: "console.log"
     },
     {
         texto: "¿Cómo se declara una variable en JavaScript?",
         antes: "",
         despues: ' nombre = "Juan";',
-        opciones: ["let, ", "varr", "constante"],
+        opciones: ["let", "var", "const"],
         correcta: "let"
     },
     {
         texto: "¿Qué método convierte un JSON a objeto en JS?",
         antes: "const obj =",
         despues: "('textoJSON');",
-        opciones: ["JSON.parse, ", "JSON.stringify", "parseJSON"],
+        opciones: ["JSON.parse", "JSON.stringify", "parseJSON"],
         correcta: "JSON.parse"
     },
-
+    {
+        texto: "¿Cómo se crea una función en JavaScript?",
+        antes: "function",
+        despues: "(nombre) { /* código */ }",
+        opciones: ["func", "function", "def"],
+        correcta: "function"
+    },
+    {
+        texto: "¿Qué operador sirve para sumar números?",
+        antes: "let resultado = 5",
+        despues: "3;",
+        opciones: ["+", "-", "*"],
+        correcta: "+"
+    },
+    {
+        texto: "¿Cómo se hace un comentario de una línea?",
+        antes: "",
+        despues: "",
+        opciones: ["// Esto es un comentario", "/* Comentario */", "# Comentario"],
+        correcta: "// Esto es un comentario"
+    },
+    {
+        texto: "¿Cuál es la forma correcta de declarar un arreglo?",
+        antes: "const miArreglo = ",
+        despues: ";",
+        opciones: ["[]", "{}", "()"],
+        correcta: "[]"
+    },
+    {
+        texto: "¿Qué palabra reservada crea una constante?",
+        antes: "",
+        despues: ' PI = 3.14;',
+        opciones: ["let", "const", "var"],
+        correcta: "const"
+    },
+    {
+        texto: "¿Cómo se llama un bucle que se repite mientras una condición sea verdadera?",
+        antes: "while (condición) {",
+        despues: " /* código */ }",
+        opciones: ["for", "while", "do"],
+        correcta: "while"
+    },
+    {
+        texto: "¿Qué función convierte un objeto a JSON?",
+        antes: "",
+        despues: "(objeto);",
+        opciones: ["JSON.parse", "JSON.stringify", "Object.toJSON"],
+        correcta: "JSON.stringify"
+    }
 ];
 
-let indice = 0;
-let puntaje = 0;
-let seleccionActual = null;
+// Seleccionamos el contenedor principal
+const contenedorJuego = document.getElementById("contenedor_juego");
+const btnSiguiente = document.getElementById("btnSiguiente")
 
-const contenedor = document.getElementById("contenedor_pregunta");
-const btnSiguiente = document.getElementById("btnSiguiente");
-const puntajeTexto = document.getElementById("puntaje");
+//Indice de la pregunta actual / Empezar desde 0
+let Indice = 0;
 
-// Estado para saber si ya iniciamos el juego
-let juegoIniciado = false;
+// Fúncion que muestra la pregunta actual
+function mostraPreguntas() {
+    const p = preguntas[Indice];
 
-// Esconde el boton al iniciar
+    // Limpiar el contenedor principal
+    contenedorJuego.innerHTML = "";
 
-btnSiguiente.textContent = "Iniciar";
-btnSiguiente.style.display = "inline-block";
-
-// Limpiar el contenedor y puntuaje al principio
-
-contenedor.innerHTML = "";
-puntajeTexto.textContent = "";
-
-function mostrarPregunta() {
-    const p = preguntas[indice];
-    contenedor.innerHTML = `<p><b>Pregunta ${indice + 1}:</b></p>
-    <div class="linea-codigo">
-        <span>${p.antes}</span>
-        <span class="dropzone" id="zona">[ Código ]</span>
-        <span>${p.despues}</span>
-    </div>
-    <div class="opciones">
-    ${p.opciones.map(op => `<div class="codigo" data-text="${op}"></div>`).join("")}
-    </div>
-    <p id="menaje"></p>
-    `;
+    // Crear contenedor de la pregunta
+    const contenedorPregunta = document.createElement("div");
+    contenedorPregunta.id = "contenedor_pregunta";
 
 
-    seleccionActual = null;
-    const opciones = contenedor.querySelectorAll('.codigo');
-    const zona = contenedor.querySelector('#zona');
-    const mensaje = contenedor.querySelector('#menaje');
 
-    opciones.forEach(op => {
-        op.addEventListener('click', () => {
-            if (seleccionActual == op) {
-                op.classList.remove('seleccionado');
-                seleccionActual = null;
-            } else {
-                opciones.forEach(o => o.classList.remove('seleccionado'));
-                op.classList.add('seleccionado');
-                seleccionActual = op;
+    // Crear párrafo para mostrar la pregunta
+    const preguntaTexto = document.createElement("p");
+    preguntaTexto.textContent = p.texto;
+    // Agregar la pregunta al contenedor
+    contenedorPregunta.appendChild(preguntaTexto);
+
+
+
+    // Crear contenedor de opciones
+    const opcionesDiv = document.createElement("div");
+    opcionesDiv.id = "opciones";
+
+    p.opciones.forEach(opcion => {
+        const opcionBtn = document.createElement("button");
+        opcionBtn.textContent = opcion;
+
+        //Evento click en cada opción
+        opcionBtn.addEventListener("click", () => {
+            const todos = opcionesDiv.querySelectorAll("button");
+
+            // Bloquear todos los botones despúes de un click
+            todos.forEach(b => b.disabled = true);
+
+            // Colorear la respuesta correcta/incorrecta
+            if (opcion === p.correcta) {
+                opcionBtn.classList.add("correcta");
+            }else{
+                opcionBtnñ.classList.add("incorrecta")
+                // Marcar la correcta también
+
+                todos.forEach(b => {
+                    if(b.textContent === p.correcta) b.classList.add("correcta")
+                });
             }
-        });
+
     });
 
-
-    zona.addEventListener('click', () => {
-        if (zona.dataset.fijado === "true") {
-            zona.textContent = "[ Código ]";
-            zona.dataset.fijado = "false";
-            zona.classList.remove('correcto', 'incorrecto');
-            mensaje.textContent = "";
-            return;
-        }
-
-        if (!seleccionActual) {
-            mensaje.textContent = "Haz clic primero en un opcion";
-            mensaje.style.color = "#f44336";
-            return;
-        }
-
-        const texto = seleccionActual.dataset.text;
-        zona.textContent = texto;
-
-        if (texto === p.correcta) {
-            zona.classList.add('correcto');
-            mensaje.textContent = "¡Correcto!";
-            mensaje.style.color = "#4CAF50";
-            zona.dataset.fijado = "true";
-            puntaje++;
-            btnSiguiente.style.display = "inline-block";
-
-        } else {
-            zona.classList.add('incorrecto');
-            mensaje.textContent = "Incorrecto, intenta de nuevo.";
-            mensaje.style.color = "#f44336";
-            setTimeout(() => {
-                zona.textContent = "[ Código ]";
-                zona.classList.remove('incorrecto');
-            }, 1000);
-        }
-    });
-
-    actualizarPuntaje();
-    btnSiguiente.style.display = "none";
-}
-
-function actualizarPuntaje() {
-    puntajeTexto.textContent = `Puntaje: ${puntaje} / ${preguntas.length}`;
-}
-
-
-btnSiguiente.addEventListener('click', () => {
-    if (!juegoIniciado) {
-        // Primer click: Inicia el juego y cargar la primera pregunta
-        juegoIniciado = true;
-        btnSiguiente.textContent = "Siguiente";
-        mostrarPregunta();
-    } else {
-        indice++;
-        if (indice < preguntas.length) {
-            mostrarPregunta();
-        } else {
-            contenedor.innerHTML = `<h2>Has completado Volamentes!</h2>
-    <p>Tu puntuación final es: <b>${puntaje} / ${preguntas.length}</b></p>
-    `;
-            btnSiguiente.style.display = "none";
-        }
-    }
+    opcionesDiv.appendChild(opcionBtn);
 });
 
-mostrarPregunta();
+contenedorJuego.appendChild(contenedorPregunta);
+contenedorJuego.appendChild(opcionesDiv);
+}
+
+// Mostrar primera pregunta al cargar
+mostraPreguntas();
 
 
+// Botón Siguiente
+btnSiguiente.addEventListener("click", () => {
+    Indice++;
+
+    if (Indice >= preguntas.length) {
+        contenedorJuego.innerHTML = "<h2>Juego Termiando</h2>"
+        btnSiguiente.disabled = true;
+        return;
+    }
+    mostraPreguntas();
+});
 

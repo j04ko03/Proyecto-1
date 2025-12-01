@@ -72,9 +72,22 @@ document.addEventListener("DOMContentLoaded", function () {
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
 
+            if (window.homeS) {
+                window.homeS.pause();
+                window.homeS.currentTime = 0;
+            }
+
             console.log("Se clickeó el juego:", this.dataset.juego);
 
             try {
+                //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
+                const usuarioLogeado = window.usuarioLogeado;
+                const JuegoActual = this.dataset.cartucho;  
+                guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
+                const dades = extreureCookie("user");
+                console.log(dades.user); 
+                console.log(dades.game);
+                
                 // Antes de cargar un juego nuevo, cerramos el anterior
                 cerrarJuego();
 
@@ -101,6 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 // ahora sí el DOM tiene #PROVA
                 if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
                     window.astroJugable();
+                }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
+                    window.capiJugable();
                 }
 
 
@@ -129,6 +144,18 @@ document.addEventListener("DOMContentLoaded", function () {
                                 };
                                 document.body.appendChild(scriptAstro);
                                 break;
+                            case 'CapiMates':
+                                const scriptCapi = document.createElement("script");
+                                scriptCapi.src = "./js/CapiMates/CapiMates.js";
+                                scriptCapi.setAttribute("data-juego", "true");
+                                scriptCapi.onload = () => {
+                                    console.log("CapiMates.js cargado, ejecutando inicializadorCapiMates...");
+                                    if (typeof window.capiJugable === "function") {
+                                        window.capiJugable();
+                                    }
+                                };
+                                document.body.appendChild(scriptCapi);
+                                break
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };
@@ -154,6 +181,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+function guardarCookie(nom, valors, dies){
+    const valorG = JSON.stringify(valors);
+    let expiracio = "";
+    if (dies) {
+        const date = new Date();
+        date.setTime(date.getTime() + (dies*24*60*60*1000));
+        expiracio = "; expires=" + date.toUTCString();
+    }
+    document.cookie = nom + "=" + (valorG || "") + expiracio + "; path=/";
+}
+
+function extreureCookie(clau) {
+    const cookies = document.cookie.split('; ');
+    let vuelta = null;
+    for (let c of cookies) {
+        const [key, value] = c.split('=');
+        if (key === clau){
+            vuelta = JSON.parse(value);
+        }
+    }
+    return vuelta;
+}
 
 
 /*
