@@ -16,9 +16,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
 
-    Route::get('/volamentes', function () {
-        return view('volamentes');
-    });
+    Route::get('/Volamentes', [RutasControlador::class, 'juego2View'])->name('volamentes.controller');
 });
 
 // Route::get('/filtrar', [HomeController::class, 'filtrar'])->name('filtrar.controller');
