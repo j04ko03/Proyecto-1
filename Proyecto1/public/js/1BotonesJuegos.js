@@ -82,12 +82,12 @@ document.addEventListener("DOMContentLoaded", function () {
             try {
                 //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
                 const usuarioLogeado = window.usuarioLogeado;
-                const JuegoActual = this.dataset.cartucho;  
+                const JuegoActual = this.dataset.cartucho;
                 guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
                 const dades = extreureCookie("user");
-                console.log(dades.user); 
+                console.log(dades.user);
                 console.log(dades.game);
-                
+
                 // Antes de cargar un juego nuevo, cerramos el anterior
                 cerrarJuego();
 
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const script = document.createElement("script");
                     script.src = scriptJs;
                     script.setAttribute("data-juego", "true");
-                    
+
                     script.onload = async () => {
                         if (typeof window.redimensionador === "function") {
                             window.redimensionador();
@@ -156,13 +156,25 @@ document.addEventListener("DOMContentLoaded", function () {
                                 };
                                 document.body.appendChild(scriptCapi);
                                 break
+                            case 'Volamentes':
+                                const scriptVolamentes = document.createElement("script");
+                                scriptAstro.src = "./js/scriptJuegos/volamentes.js";
+                                scriptAstro.setAttribute("data-juego", "true");
+                                scriptAstro.onload = () => {
+                                    console.log("Astro.js cargado, ejecutando astroJugable...");
+                                    if (typeof window.astroJugable === "function") {
+                                        window.astroJugable();
+                                    }
+                                };
+                                document.body.appendChild(scriptVolamentes);
+                                break;
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };
 
                     document.body.appendChild(script);
 
-                    
+
 
                 } else {
                     // Si ya está cargado, solo llamamos a redimensionador si existe
