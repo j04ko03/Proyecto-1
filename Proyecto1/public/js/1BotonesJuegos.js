@@ -72,9 +72,22 @@ document.addEventListener("DOMContentLoaded", function () {
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
 
+            if (window.homeS) {
+                window.homeS.pause();
+                window.homeS.currentTime = 0;
+            }
+
             console.log("Se clickeó el juego:", this.dataset.juego);
 
             try {
+                //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
+                const usuarioLogeado = window.usuarioLogeado;
+                const JuegoActual = this.dataset.cartucho;
+                guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
+                const dades = extreureCookie("user");
+                console.log(dades.user);
+                console.log(dades.game);
+
                 // Antes de cargar un juego nuevo, cerramos el anterior
                 cerrarJuego();
 
@@ -112,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const script = document.createElement("script");
                     script.src = scriptJs;
                     script.setAttribute("data-juego", "true");
-                    
+
                     script.onload = async () => {
                         if (typeof window.redimensionador === "function") {
                             window.redimensionador();
@@ -143,13 +156,27 @@ document.addEventListener("DOMContentLoaded", function () {
                                 };
                                 document.body.appendChild(scriptCapi);
                                 break
+                            case 'Volamentes':
+                                // Cargar el script específico de Volamentes correctamente
+                                const scriptVolamentes = document.createElement("script");
+                                scriptVolamentes.src = "./js/scriptJuegos/volamentes.js";
+                                scriptVolamentes.setAttribute("data-juego", "true");
+                                scriptVolamentes.onload = () => {
+                                    console.log("volamentes.js cargado");
+                                    // Si el script define un inicializador global, llamarlo
+                                    if (typeof window.inicializarVolamentes === "function") {
+                                        try { window.inicializarVolamentes(); } catch (e) { console.error(e); }
+                                    }
+                                };
+                                document.body.appendChild(scriptVolamentes);
+                                break;
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };
 
                     document.body.appendChild(script);
 
-                    
+
 
                 } else {
                     // Si ya está cargado, solo llamamos a redimensionador si existe
@@ -168,6 +195,29 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
+function guardarCookie(nom, valors, dies){
+    const valorG = JSON.stringify(valors);
+    let expiracio = "";
+    if (dies) {
+        const date = new Date();
+        date.setTime(date.getTime() + (dies*24*60*60*1000));
+        expiracio = "; expires=" + date.toUTCString();
+    }
+    document.cookie = nom + "=" + (valorG || "") + expiracio + "; path=/";
+}
+
+function extreureCookie(clau) {
+    const cookies = document.cookie.split('; ');
+    let vuelta = null;
+    for (let c of cookies) {
+        const [key, value] = c.split('=');
+        if (key === clau){
+            vuelta = JSON.parse(value);
+        }
+    }
+    return vuelta;
+}
 
 
 /*
