@@ -76,8 +76,8 @@ const preguntas = [
 const contenedorJuego = document.getElementById("contenedor_juego");
 const btnSiguiente = document.getElementById("btnSiguiente")
 
-//Indice de la pregunta actual / Empezar desde 0
-let Indice = 0;
+//Indice de la pregunta actual
+let Indice = -1;
 
 // Fúncion que muestra la pregunta actual
 function mostraPreguntas() {
@@ -105,40 +105,60 @@ function mostraPreguntas() {
     opcionesDiv.id = "opciones";
 
     p.opciones.forEach(opcion => {
-        const opcionBtn = document.createElement("button");
-        opcionBtn.textContent = opcion;
+        const opcionDiv = document.createElement("button");
+        opcionDiv.textContent = opcion;
+        opcionDiv.className = "opcion-btn";
+
 
         //Evento click en cada opción
-        opcionBtn.addEventListener("click", () => {
-            const todos = opcionesDiv.querySelectorAll("button");
+        opcionDiv.addEventListener("click", () => {
+            const todas = opcionesDiv.querySelectorAll(".opcion-btn");
 
-            // Bloquear todos los botones despúes de un click
-            todos.forEach(b => b.disabled = true);
-
-            // Colorear la respuesta correcta/incorrecta
-            if (opcion === p.correcta) {
-                opcionBtn.classList.add("correcta");
-            }else{
-                opcionBtnñ.classList.add("incorrecta")
-                // Marcar la correcta también
-
-                todos.forEach(b => {
-                    if(b.textContent === p.correcta) b.classList.add("correcta")
+            if (opcion !== p.correcta) {
+                opcionDiv.style.backgroundColor = "red";
+                todas.forEach(b => {
+                    if (b.textContent !== p.correcta) b.style.backgroundColor = "red";
                 });
+                return;
             }
 
+            // si es correcta
+            opcionDiv.style.backgroundColor = "green";
+            todas.forEach(b => b.disabled = true);
+        });
+
+        opcionesDiv.appendChild(opcionDiv);
     });
 
-    opcionesDiv.appendChild(opcionBtn);
-});
+    //Elemnto de puntaje (Vacio por ahora)
+    const puntaje = document.createElement("p");
+    puntaje.id = "Puntaje"
 
-contenedorJuego.appendChild(contenedorPregunta);
-contenedorJuego.appendChild(opcionesDiv);
+    // Agregar todo el contenedor principal
+
+    contenedorJuego.appendChild(contenedorPregunta);
+    contenedorJuego.appendChild(opcionesDiv);
+    contenedorJuego.appendChild(puntaje);
+
 }
 
-// Mostrar primera pregunta al cargar
-mostraPreguntas();
 
+
+
+
+// Función que muestra la primera pregunta de forma simple
+function iniciarVolamentes() {
+
+
+    // Crear elemento de puntaje (Inicialemnte vacío)
+    const puntaje = document.createElement("p");
+    puntaje.id = "puntaje";
+
+    //Agregar todo al contenedor principal
+    contenedorJuego.appendChild(contenedorPregunta);
+    contenedorJuego.appendChild(opcionesDiv);
+    contenedorJuego.appendChild(puntaje);
+}
 
 // Botón Siguiente
 btnSiguiente.addEventListener("click", () => {
@@ -146,9 +166,7 @@ btnSiguiente.addEventListener("click", () => {
 
     if (Indice >= preguntas.length) {
         contenedorJuego.innerHTML = "<h2>Juego Termiando</h2>"
-        btnSiguiente.disabled = true;
         return;
     }
     mostraPreguntas();
 });
-
