@@ -7,10 +7,18 @@
 
     @if (Auth::user()->id_rol == 3)
         <!-- BUSCADOR -->
-        <div class="buscador">
-            <input type="text" id="searchInput" placeholder="Buscar juego...">
-        </div>
+        <form action="{{ route('home.controller') }}" method="get">
+            @csrf
+            <div class="buscador">
+                <input type="text" id="searchInput" name="codi_buscar" value="" placeholder="Buscar juego...">
+            </div>
+            <div class="col-2 pt-2">
+                <button type="submit" class="btn btn-primary" style="color: white">Filtrar</button>
+            </div>
+        </form>
     @endif
+    
+
 
     <!-- ENGRANAJE -->
     @include('components.rueda-settings')

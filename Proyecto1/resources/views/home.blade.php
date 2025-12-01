@@ -60,5 +60,8 @@ background-image: url('public\img\fondo.png');
     @endforeach
 </div>
 
-
+<script>
+    window.usuarioLogeado = {{ auth()->user()->id ?? 'null' }};
+</script>
+<script src="{{ url('/js/homeMusic.js') }}"></script>
 @endsection

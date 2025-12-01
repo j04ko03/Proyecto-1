@@ -1,10 +1,11 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JuegoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RutasControlador;
 use App\Http\Controllers\UsuarioController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
 Route::middleware(['auth'])->group(function () {
@@ -13,10 +14,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
+    Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
+
     Route::get('/volamentes', function () {
         return view('volamentes');
     });
 });
+
+// Route::get('/filtrar', [HomeController::class, 'filtrar'])->name('filtrar.controller');
 
 //Al entrar en una de las rutas dentro de este apartado, se mirará si el usuario está autentificado y a parte que rol tiene (En este apartado entra SuperAdmin y Admin)
 Route::middleware(['auth', 'rol: 1,2'])->group(function () {
@@ -48,3 +53,9 @@ Route::get('/logout', [LoginController::class, 'doLogout'])->name('logout.contro
 //RUTAS PARA LOS CONTROLADORES CREADOS
     //Si queremos importar todas las metodologías de la classe, se hace así ->
 Route::resource('usuarios', UsuarioController::class);
+
+//Rutas para implementar datos con el juego de Astro
+Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
+Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
+Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
+Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);

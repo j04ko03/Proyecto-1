@@ -71,4 +71,5 @@
             <img src="{{ asset('img/capiLogin.png') }}" alt="Avion" class="avion" />
         </div>
     </div>
+    <script src="{{ url('/js/registroMusic.js') }}"></script>
 @endsection
