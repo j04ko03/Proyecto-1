@@ -1,4 +1,5 @@
 
+<link rel="stylesheet" href="{{ asset('assets/css/UIVolamentes.css') }}">
     <div id="contenedorCanvas" class="contenedorCanvas">
         <canvas id="canvas"></canvas>
     </div>
