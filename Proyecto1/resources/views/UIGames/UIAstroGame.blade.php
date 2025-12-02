@@ -18,6 +18,9 @@
                 </div>
             </div>
         </div>
+        <div id="borras" class="ui-left">
+            <button id="heelp" class="pixel-btn">Ayuda</button>
+        </div>
         <div class="ui-right">
             Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Tiempo: <span id="mejor">0</span>
         </div>

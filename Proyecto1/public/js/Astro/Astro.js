@@ -104,6 +104,11 @@ window.iniciarAstro = function () {
     let miraDerecha = true;
     let estaSaltando = false;
     let caminando = false;
+
+    //////////////////////////////////////////////////////////////
+    let respuestaHelp = 0;
+    let clicksFets = 0;
+    let vieneDeJuego = false;
     
     let frame = 0;
     let pasoFrame = 0;
@@ -136,7 +141,7 @@ window.iniciarAstro = function () {
     const puntosEl  = document.getElementById('puntos');
     const timmer    = document.getElementById('mejor');
     
-
+    const helpButton = document.getElementById('heelp');
 
     /* Modal pregunta */
     const modal = document.getElementById('modal');
@@ -200,6 +205,19 @@ window.iniciarAstro = function () {
         iniciarTimmer();
 
         iniciarAstro();
+    });
+
+    helpButton.addEventListener('click', () => {
+        console.log("Botó Retro pulsado....");
+        vieneDeJuego = true;
+        clicksFets += 1;
+        if(clicksFets <= 3){
+            mostrarMensaje("Respuesta", respuestaHelp);
+        }else {
+            const ccc    = document.getElementById('borras');
+            ccc.style.display = "none"; 
+        }
+        
     });
 
     /* ------------- Mundo / Plataformas ------------- */
@@ -654,6 +672,8 @@ window.iniciarAstro = function () {
         }
 
         if(vidas === 0){
+            respuestaHelp = 0;
+            clicksFets = 0;
             soundS.pause();
             muerteS.currentTime = 0;
             muerteS.volume = 0.3;
@@ -736,7 +756,7 @@ window.iniciarAstro = function () {
                     numeroIntentos: numeroIntentos,
                     errores:  erroresEnNivel,
                     puntuacion: puntos,
-                    helpclicks: ayudas,
+                    helpclicks: clicksFets,
                     returningPlayer: isReturningPlayer      
                 })
             })
@@ -1044,6 +1064,8 @@ window.iniciarAstro = function () {
 
         if(modalOpen) return; // Si ya está abierto, no hacer nada
 
+        respuestaHelp = plataforma.respuesta;
+
         modalOpen = true;
         gameActive = false;
 
@@ -1162,10 +1184,16 @@ window.iniciarAstro = function () {
     function mostrarMensaje(title, body){
         msg.style.display = 'block';
         document.getElementById('msg-title').textContent = title;
-        if(nivel === 5){
+        if(nivel === 5 && vidas > 0){
             document.getElementById('msg-body').innerHTML = body;
             document.getElementById('start-btn').style.visibility = "hidden";
+            
+        }
 
+        if(vieneDeJuego){
+            document.getElementById('msg-body').innerHTML = body;
+            document.getElementById('start-btn').style.visibility = "visible";
+            vieneDeJuego = false
         }
         gameActive = false;
     }
