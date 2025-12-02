@@ -6,11 +6,14 @@ use App\Http\Controllers\JuegoController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RutasControlador;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\MetricasController;
 
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
 Route::middleware(['auth'])->group(function () {
 //Route to get Home
     Route::get('/home', [HomeController::class, 'index'])->name('home.controller');
+
+    Route::get('/metricas', [RutasControlador::class, 'metricasView'])->name('metricas.controller');
 
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
@@ -57,3 +60,8 @@ Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro
 Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
 Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
 Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);
+
+//Rutas de las metricas
+Route::get('/metrics/sessions', [MetricasController::class, 'exportDatosSesionJson']);
+Route::get('/metrics/sessions.csv', [MetricasController::class, 'exportDatosSesionCsv']);
+Route::get('/run-ml', [MetricasController::class, 'runML']);

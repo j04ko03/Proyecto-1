@@ -25,10 +25,10 @@
         <img src="{{ asset('img/iconoSettings.png') }}" alt="Opciones" class="iconoEngranaje">
 
         <div class="dropdown">
-            <a href="#">Configuración</a>
+            <a href="{{ route('home.controller') }}">Home</a>
             <a href="#">Perfil</a>
             <a href="{{ route('usuarios.index') }}">Usuarios</a>
-            <a href="#">Estadísticas</a>
+            <a href="{{ route('metricas.controller') }}">Estadísticas</a>
             <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
         </div>
     </div>
