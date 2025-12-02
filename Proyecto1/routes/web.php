@@ -15,6 +15,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
     Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
+    
+    Route::get('/Bosque', [RutasControlador::class, 'juego4View'])->name('bosque.controller');
 
     Route::get('/Volamentes', [RutasControlador::class, 'juego2View'])->name('volamentes.controller');
 });

@@ -32,6 +32,9 @@
         @yield('content')
     </main>
 
+
+    @include('components.desplegable')
+    
     <script>
         window.rutaScripts = {
             redimensionador: "{{ asset('js/RedimensionCava.js') }}",

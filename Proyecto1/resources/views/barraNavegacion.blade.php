@@ -21,7 +21,7 @@
 
 
     <!-- ENGRANAJE -->
-    @include('components.rueda-settings')
+    @include('components.desplegable')
     
     </div>
 </div>
