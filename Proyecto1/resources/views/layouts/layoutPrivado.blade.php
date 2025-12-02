@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameAstro.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameCapiMates.css') }}">
 
+    <!-- CSRF token para peticiones AJAX -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- CSS de vistas hijas -->
     @stack('styles')
 </head>
