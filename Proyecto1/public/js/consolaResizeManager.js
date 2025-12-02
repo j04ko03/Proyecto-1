@@ -36,7 +36,7 @@ class ConsolaResizeManager {
     }
     
     adjustControls() {
-        // Los controles se ajustan automáticamente con CSS
+        // Los controles se ajustan automátiscamente con CSS
         // Puedes añadir lógica específica aquí si necesitas
     }
     
