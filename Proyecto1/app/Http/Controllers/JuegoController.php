@@ -68,9 +68,9 @@ class JuegoController extends Controller
     }
 
     public function iniciarJuegoAstro(Request $request)
-    {   //Obtener
-        $returningPLayerX = 0;
-
+    {   
+        $isReturningPLayer = 0;
+        //Obtener
         $usuarioId = $request->input('usuarioId');
         $juegoId   = $request->input('juegoId');
         \Log::info("Iniciar juego Astro: usuarioId={$usuarioId}, juegoId={$juegoId}");
@@ -96,15 +96,18 @@ class JuegoController extends Controller
         $datosSesion = new DatosSesion();
         $datosSesion->id_SesionUsuario = $sesionActiva->id;
         $datosSesion->startTime = now();
-        
+        $datosSesion->returningPlayer = $isReturningPLayer;
 
-        //Obtener Sesiones del usuario en el juego
-        $sesionesEnPlataforma = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)->count();
-        if($sesionesEnPlataforma > 1){
-           $returningPLayerX = 1;             
-        } 
+        //Se controla cuantas Datos sesion tiene el usuario
+        $usuarioDS = Usuario::with('sesionUsuario.datosSesion')->find($usuarioId);
+        $conteo = 0;
+        foreach ($usuarioDS->sesionUsuario as $sesion) {
+            $conteo += $sesion->datosSesion->count();
+        }
 
-        $datosSesion->returningPlayer = $returningPLayerX;
+        if($conteo > 2){
+            $datosSesion->returningPlayer = 1;
+        }
 
         $datosSesion->save();
         
