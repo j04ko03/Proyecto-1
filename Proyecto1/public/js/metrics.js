@@ -29,27 +29,66 @@ async function runMetrics() {
 
         status && (status.textContent = "Executant pipeline Python...");
 
-        // 🔥 Conversió correcta: JS Array → Python List
+        // 🔥 Conversió correcta: JS Array/Object → Python dict/list
         const pyData = pyodide.toPy(raw);
-
-        // 🔥 Pasar al entorno Python como objeto válido
         pyodide.globals.set("raw_json", pyData);
 
-        // Ejecutar el pipeline de Python
+        // Executar el pipeline
         pyodide.runPython(`result = run_pipeline(raw_json)`);
 
-        // Convertir el resultado Python → JSON
-        const out_json = pyodide.runPython(`import json; json.dumps(result)`);
+        // Convertir Python → JSON JS
+        const out_json = pyodide.runPython(`
+            import json
+            json.dumps(result)
+        `);
+
         const parsed = JSON.parse(out_json);
 
-        // Insertar imágenes generadas
-        document.getElementById('img_cm').src = parsed.images.confusion_matrix || '';
-        document.getElementById('img_roc').src = parsed.images.roc_curve || '';
-        document.getElementById('img_feat').src = parsed.images.feature_importances || '';
-        document.getElementById('img_hist').src = parsed.images.session_hist || '';
-        document.getElementById('img_dau').src = parsed.images.dau || '';
+        console.log("IMAGES KEYS:", Object.keys(parsed.images));
 
-        // Mostrar métricas
+        // ============================
+        // 🔥 NOVETAT: MOSTRAR TOTES LES IMATGES DINÀMICAMENT
+        // ============================
+        const container = document.getElementById("all_images");
+        if (container) {
+            container.innerHTML = "";
+
+            for (const [key, b64] of Object.entries(parsed.images)) {
+                const div = document.createElement("div");
+                div.className = "metric-box";
+
+                const title = document.createElement("h3");
+                title.textContent = key.replaceAll("_", " ");
+
+                const img = document.createElement("img");
+                img.src = b64;
+                img.className = "metric-img";
+
+                div.appendChild(title);
+                div.appendChild(img);
+                container.appendChild(div);
+            }
+        }
+
+        // ============================
+        // 🔥 Mantinc els teus <img> existents
+        // ============================
+        const safe = (name) => parsed.images[name] || "";
+
+        const ids = {
+            img_cm: "confusion_matrix",
+            img_roc: "roc_curve",
+            img_feat: "feature_importances",
+            img_hist: "session_hist",
+            img_dau: "dau"
+        };
+
+        for (const [htmlId, imgKey] of Object.entries(ids)) {
+            const el = document.getElementById(htmlId);
+            if (el) el.src = safe(imgKey);
+        }
+
+        // Mostrar mètriques
         document.getElementById('metrics_text').textContent =
             JSON.stringify(parsed.metrics, null, 2);
 
