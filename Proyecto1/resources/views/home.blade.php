@@ -7,9 +7,6 @@
 
 @section('content')
 {{-- Consola Gamer --}}
-
-background-image: url('public\img\fondo.png');
-
 <div class="consola">
     <div class="led-power"></div>
     
@@ -59,6 +56,8 @@ background-image: url('public\img\fondo.png');
         <x-cartucho :cartucho="$cartucho" />
     @endforeach
 </div>
+
+<script src="{{ asset('js/consolaResizeManager.js') }}"></script>
 
 
 @endsection
