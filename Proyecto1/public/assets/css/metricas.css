@@ -1,0 +1,29 @@
+#metrics { 
+    padding: 20px; 
+    font-family: sans-serif; 
+}
+
+.metric-img {
+    max-width: 100%; 
+    margin: 12px 0; 
+    border: 1px solid #ddd; 
+}
+
+.metrics-grid { 
+    display:flex; 
+    gap:12px; 
+    flex-wrap:wrap; 
+}
+
+.metric-box { 
+    flex:1 1 300px; 
+    min-width: 280px; 
+}
+
+pre { 
+    background:#111; 
+    color:#bcd; 
+    padding:12px; 
+    border-radius:6px; 
+    overflow:auto; 
+}
