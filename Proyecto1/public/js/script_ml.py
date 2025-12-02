@@ -1,69 +1,58 @@
-import pandas as pd
+import base64
+import io
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
-import io, base64
-from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, roc_curve, auc, accuracy_score
+from sklearn.metrics import confusion_matrix, roc_curve, auc
 
-# ============================================
-# Utility → figura → base64
-# ============================================
-def _fig_to_base64(fig):
+
+# ======================================================================
+# Convertir figures a base64
+# ======================================================================
+def fig_to_base64():
     buf = io.BytesIO()
-    fig.savefig(buf, format="png", bbox_inches="tight")
+    plt.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
-    img = "data:image/png;base64," + base64.b64encode(buf.read()).decode()
-    plt.close(fig)
-    return img
+    return "data:image/png;base64," + base64.b64encode(buf.read()).decode()
 
 
-# ============================================
-# 1️⃣ Cargar y preparar datos
-# ============================================
+# ======================================================================
+# 1) Convertir JSON a DataFrame
+# ======================================================================
 def json_to_df(raw_json):
-
     df = pd.DataFrame(raw_json)
 
-    # Seguridad: columnas que pueden faltar
     expected = [
-        "user_id", "session_id", "session_date",
-        "startTime", "endTime",
-        "session_length","level_reached",
-        "points_scored","errors","n_attempts","help_clicks"
+        "user_id","session_id","session_date",
+        "startTime","endTime","session_length",
+        "level_reached","points_scored","errors",
+        "n_attempts","help_clicks"
     ]
     for col in expected:
         if col not in df.columns:
             df[col] = 0
 
-    # Convertir fechas
     df["session_date"] = pd.to_datetime(df["session_date"], errors="coerce")
     df["startTime"] = pd.to_datetime(df["startTime"], errors="coerce")
     df["endTime"] = pd.to_datetime(df["endTime"], errors="coerce")
 
-    # Duración real
     df["session_length"] = (df["endTime"] - df["startTime"]).dt.total_seconds()
 
-    df = df.drop_duplicates(subset=["session_id"])
-    df = df.dropna(subset=["user_id", "session_id", "session_length"])
+    df = df.dropna(subset=["user_id", "session_id"])
     df = df[df["session_length"] > 0]
-    df = df[df["session_length"] < 3*3600]
 
-    # Numericos seguros
-    numeric_cols = ["session_length", "level_reached", "points_scored",
-                    "errors", "n_attempts", "help_clicks"]
-    for col in numeric_cols:
-        df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
+    num_cols = ["session_length","level_reached","points_scored",
+                "errors","n_attempts","help_clicks"]
 
-    df["success"] = (df["points_scored"] > 0).astype(int)
+    for c in num_cols:
+        df[c] = pd.to_numeric(df[c], errors="coerce").fillna(0)
 
-    df["player_count"] = df["user_id"].nunique()
+    # Retenció
+    counts = df.groupby("user_id")["session_id"].nunique()
+    df["returning_player"] = df["user_id"].map(lambda u: 1 if counts[u] > 1 else 0)
 
-    session_counts = df.groupby("user_id")["session_id"].nunique()
-    df["returning_player"] = df["user_id"].map(lambda u: 1 if session_counts[u] > 1 else 0)
-
-    df["retention_rate"] = df["returning_player"].mean()
-    df["churn_rate"] = 1 - df["returning_player"].mean()
+    df["churn_rate"] = 1 - df["returning_player"]
 
     df["day"] = df["session_date"].dt.date
     dau = df.groupby("day")["user_id"].nunique()
@@ -74,178 +63,144 @@ def json_to_df(raw_json):
     return df, dau, mau
 
 
-# ============================================
-# 2️⃣ Gráficos (con manejo de datos mínimos)
-# ============================================
+# ======================================================================
+# 2) Gràfics robustos
+# ======================================================================
 def generar_grafics(df, dau, mau):
-
     images = {}
 
-    # ---------------------------
-    # Histograma puntuaciones (aunque sea 1 punto)
-    # ---------------------------
-    fig, ax = plt.subplots()
-    ax.hist(df["points_scored"], bins=max(1, min(10, df["points_scored"].nunique())))
-    ax.set_title("Distribució de puntuacions")
-    images["points_hist"] = _fig_to_base64(fig)
+    # Histograma punts
+    plt.figure(figsize=(6,4))
+    unique_vals = df["points_scored"].nunique()
+    bins = max(unique_vals, 20)   # <- assegura 20 o més
+    plt.hist(df["points_scored"], bins=bins)
+    plt.title("Distribució de puntuacions")
+    images["points_hist"] = fig_to_base64()
+    plt.close()
 
-    # ---------------------------
     # Errors per nivell
-    # ---------------------------
-    err = df.groupby("level_reached")["errors"].mean()
-
-    fig, ax = plt.subplots()
-    ax.bar(err.index.astype(str), err.values)
-    ax.set_title("Errors mitjans per nivell (mínim 1)")
-    images["errors_per_level"] = _fig_to_base64(fig)
-
-    # ---------------------------
-    # Scatter intents vs punts (jitter si todos iguales)
-    # ---------------------------
-    x = df["n_attempts"].astype(float)
-    y = df["points_scored"].astype(float)
-
-    if x.nunique() <= 1:
-        x = x + np.random.normal(0, 0.1, size=len(x))  # JITTER
-
-    if y.nunique() <= 1:
-        y = y + np.random.normal(0, 0.1, size=len(y))  # JITTER
-
-    fig, ax = plt.subplots()
-    ax.scatter(x, y)
-    ax.set_title("Intents vs Puntuació (amb jitter)")
-    images["scatter_attempts_points"] = _fig_to_base64(fig)
-
-    # ---------------------------
-    # DAU (si hay 1 día, mostrar punto claro)
-    # ---------------------------
-    fig, ax = plt.subplots()
-    if len(dau) <= 1:
-        ax.scatter([0], dau.values, s=100)
-        ax.set_xticks([0])
-        ax.set_xticklabels([str(dau.index[0])])
-        ax.set_title("DAU (solo 1 día)")
+    plt.figure(figsize=(6,4))
+    if df["errors"].sum() == 0:
+        plt.bar(["Cap error"], [1])
     else:
-        ax.plot(dau.index.astype(str), dau.values, marker="o")
-        ax.set_title("DAU - Jugadors actius per dia")
-    images["dau"] = _fig_to_base64(fig)
+        lvl = df.groupby("level_reached")["errors"].mean()
+        plt.bar(lvl.index.astype(str), lvl.values)
+    plt.title("Errors mitjans per nivell")
+    images["errors_per_level"] = fig_to_base64()
+    plt.close()
 
-    # ---------------------------
-    # MAU (si hay 1 mes, mostrar barra)
-    # ---------------------------
-    fig, ax = plt.subplots()
-    if len(mau) <= 1:
-        ax.bar([str(mau.index[0])], mau.values)
-        ax.set_title("MAU (solo 1 mes)")
-    else:
-        ax.plot(mau.index.astype(str), mau.values, marker="o")
-        ax.set_title("MAU - Jugadors actius per mes")
-    images["mau"] = _fig_to_base64(fig)
+    # Scatter intents vs points (jitter)
+    plt.figure(figsize=(6,4))
+    jitter_x = df["n_attempts"] + np.random.normal(0, 0.05, len(df))
+    jitter_y = df["points_scored"] + np.random.normal(0, 0.05, len(df))
+    plt.scatter(jitter_x, jitter_y, s=30)
+    plt.title("Intents vs Puntuació (amb jitter)")
+    images["scatter_attempts_points"] = fig_to_base64()
+    plt.close()
+
+    # DAU
+    plt.figure(figsize=(6,4))
+    plt.plot(dau.index.astype(str), dau.values, marker="o")
+    plt.xticks(rotation=45)
+    plt.title("DAU")
+    images["dau"] = fig_to_base64()
+    plt.close()
+
+    # MAU
+    plt.figure(figsize=(6,4))
+    plt.plot(mau.index.astype(str), mau.values, marker="o")
+    plt.xticks(rotation=45)
+    plt.title("MAU")
+    images["mau"] = fig_to_base64()
+    plt.close()
 
     return images
 
 
-# ============================================
-# 3️⃣ Modelo predictivo (adaptado para 1 sola clase)
-# ============================================
+# ======================================================================
+# 3) Model predictiu segur
+# ======================================================================
 def model_predictiu(df):
-
-    features = ["session_length", "points_scored", "errors", "n_attempts", "help_clicks"]
-    X = df[features]
-    y = df["returning_player"]
-
     images = {}
 
-    # 🚨 Caso: solo una clase en y → evitar error sklearn
-    if y.nunique() < 2:
-        # Accuracy trivial
-        accuracy = 1.0
-        roc_auc = 0.0
+    features = ["session_length","points_scored","errors","n_attempts","help_clicks"]
+    X = df[features]
+    y = df["churn_rate"].astype(int)
 
-        # Imagen dummy matriz confusión
-        fig, ax = plt.subplots()
-        ax.imshow([[len(y), 0], [0, 0]])
-        ax.set_title("Confusion matrix (no hay clase positiva)")
-        images["confusion_matrix"] = _fig_to_base64(fig)
+    # --------------------------
+    # Confusion matrix
+    # --------------------------
+    plt.figure(figsize=(5,4))
+    if len(np.unique(y)) < 2:
+        plt.imshow([[len(y), 0],[0, 0]], cmap="viridis")
+        plt.title("Confusion matrix (una sola classe)")
+        plt.colorbar()
+        images["confusion_matrix"] = fig_to_base64()
+        plt.close()
 
-        # Imagen dummy ROC
-        fig, ax = plt.subplots()
-        ax.plot([0, 1], [0, 1])
-        ax.set_title("ROC no disponible (solo una clase)")
-        images["roc_curve"] = _fig_to_base64(fig)
+        # ROC i FI no disponibles
+        plt.figure(figsize=(5,4))
+        plt.plot([0,1], [0,1])
+        plt.title("ROC no disponible")
+        images["roc_curve"] = fig_to_base64()
+        plt.close()
 
-        # Imagen dummy feature importance
-        fig, ax = plt.subplots()
-        ax.bar(features, np.zeros(len(features)))
-        ax.set_title("Feature importance no disponible")
+        plt.figure(figsize=(6,4))
+        plt.bar(features, [0]*len(features))
         plt.xticks(rotation=45)
-        images["feature_importances"] = _fig_to_base64(fig)
+        plt.title("Feature importance no disponible")
+        images["feature_importances"] = fig_to_base64()
+        plt.close()
 
-        return {
-            "accuracy": accuracy,
-            "roc_auc": roc_auc
-        }, images
+        return {"roc_auc": None}, images
 
-    # -------------------------------------------------------
-    # 🚀 Entrenamiento normal (dos clases)
-    # -------------------------------------------------------
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
-
+    # --------------------------
+    # Si hi ha 2 classes
+    # --------------------------
     model = RandomForestClassifier()
-    model.fit(X_train, y_train)
+    model.fit(X, y)
+    preds = model.predict(X)
 
-    y_pred = model.predict(X_test)
-    y_prob = model.predict_proba(X_test)[:, 1]
+    cm = confusion_matrix(y, preds)
 
-    accuracy = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
+    plt.imshow(cm, cmap="viridis")
+    plt.title("Confusion matrix")
+    plt.colorbar()
+    images["confusion_matrix"] = fig_to_base64()
+    plt.close()
 
     # ROC
-    fpr, tpr, _ = roc_curve(y_test, y_prob)
+    probs = model.predict_proba(X)[:,1]
+    fpr, tpr, _ = roc_curve(y, probs)
     roc_auc = auc(fpr, tpr)
 
-    # Matriz confusión
-    fig, ax = plt.subplots()
-    ax.imshow(cm)
-    ax.set_title("Matriu de confusió")
-    images["confusion_matrix"] = _fig_to_base64(fig)
-
-    # ROC
-    fig, ax = plt.subplots()
-    ax.plot(fpr, tpr)
-    ax.set_title(f"Corba ROC (AUC={roc_auc:.2f})")
-    images["roc_curve"] = _fig_to_base64(fig)
+    plt.figure(figsize=(5,4))
+    plt.plot(fpr, tpr, label=f"AUC={roc_auc:.2f}")
+    plt.legend()
+    plt.title("ROC curve")
+    images["roc_curve"] = fig_to_base64()
+    plt.close()
 
     # Feature importance
-    fig, ax = plt.subplots()
-    ax.bar(features, model.feature_importances_)
-    ax.set_title("Importància de característiques")
+    plt.figure(figsize=(6,4))
+    plt.bar(features, model.feature_importances_)
     plt.xticks(rotation=45)
-    images["feature_importances"] = _fig_to_base64(fig)
+    plt.title("Feature Importances")
+    images["feature_importances"] = fig_to_base64()
+    plt.close()
 
-    return {
-        "accuracy": float(accuracy),
-        "roc_auc": float(roc_auc)
-    }, images
+    return {"roc_auc": float(roc_auc)}, images
 
 
-# ============================================
-# 4️⃣ Pipeline final
-# ============================================
+# ======================================================================
+# 4) RUN PIPELINE (la funció que faltava!)
+# ======================================================================
 def run_pipeline(raw_json):
-
     df, dau, mau = json_to_df(raw_json)
 
-    # Gráficos
-    images_data = generar_grafics(df, dau, mau)
+    imgs_basic = generar_grafics(df, dau, mau)
+    metrics_model, imgs_model = model_predictiu(df)
 
-    # Modelo
-    model_metrics, model_images = model_predictiu(df)
-
-    print("IMAGES KEYS:", list(images_data.keys()))
-    print("MODEL IMG KEYS:", list(model_images.keys()))
-
-    # Convertir columnas no-serializables
     df = df.copy()
     df["session_date"] = df["session_date"].astype(str)
     df["startTime"] = df["startTime"].astype(str)
@@ -255,14 +210,14 @@ def run_pipeline(raw_json):
 
     return {
         "metrics": {
-            "player_count": int(df["player_count"].iloc[0]),
-            "retention_rate": float(df["retention_rate"].iloc[0]),
-            "churn_rate": float(df["churn_rate"].iloc[0]),
+            "player_count": int(df["user_id"].nunique()),
+            "retention_rate": float(df["returning_player"].mean()),
+            "churn_rate": float(df["churn_rate"].mean()),
             "average_session_length": float(df["session_length"].mean()),
-            "dau_count": {str(k): int(v) for k, v in dau.to_dict().items()},
-            "mau_count": {str(k): int(v) for k, v in mau.to_dict().items()}
+            "dau_count": {str(k): int(v) for k,v in dau.to_dict().items()},
+            "mau_count": {str(k): int(v) for k,v in mau.to_dict().items()}
         },
-        "model_metrics": model_metrics,
-        "images": {**images_data, **model_images},
+        "model_metrics": metrics_model,
+        "images": {**imgs_basic, **imgs_model},
         "cleaned_df": df.to_dict(orient="records")
     }
