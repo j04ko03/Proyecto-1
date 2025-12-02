@@ -54,7 +54,7 @@ h1 { font-size: 1.4rem; margin: 0.5em 0 0.3em 0; }
     z-index: 3;
 }
 
-body { background: url("../assets/images/bg-volamentes.jpg") center/cover no-repeat fixed; }
+body { background: url("volamentes/fondoVolamentes.png") center/cover no-repeat fixed; }
 .background-overlay {
     position: fixed;
     left: 0; top: 0;

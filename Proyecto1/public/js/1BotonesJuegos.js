@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             case 'Volamentes':
                                 // Cargar el script específico de Volamentes correctamente
                                 const scriptVolamentes = document.createElement("script");
-                                scriptVolamentes.src = "./js/scriptJuegos/volamentes.js";
+                                scriptVolamentes.src = "./js/Volamentes/volamentes.js";
                                 scriptVolamentes.setAttribute("data-juego", "true");
                                 scriptVolamentes.onload = () => {
                                     console.log("volamentes.js cargado");
