@@ -21,7 +21,20 @@
 
 
     <!-- ENGRANAJE -->
+<<<<<<< HEAD
     @include('components.desplegable')
     
+=======
+    <div class="opciones">
+        <img src="{{ asset('img/iconoSettings.png') }}" alt="Opciones" class="iconoEngranaje">
+
+        <div class="dropdown">
+            <a href="{{ route('home.controller') }}">Home</a>
+            <a href="#">Perfil</a>
+            <a href="{{ route('usuarios.index') }}">Usuarios</a>
+            <a href="{{ route('metricas.controller') }}">Estadísticas</a>
+            <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
+        </div>
+>>>>>>> main
     </div>
 </div>
