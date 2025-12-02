@@ -2,44 +2,36 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import io
 import base64
+import numpy as np
 
+def _fig_to_base64(fig):
+    buf = io.BytesIO()
+    fig.savefig(buf, format="png")
+    buf.seek(0)
+    img = "data:image/png;base64," + base64.b64encode(buf.read()).decode()
+    plt.close(fig)
+    return img
+
+# --------------------------------------------------------
+# 1) Convertir JSON → DataFrame
+# --------------------------------------------------------
 def json_to_df(raw_json):
-    """
-    Convierte la lista JSON en un DataFrame válido para el modelo.
-    Asegura columnas numéricas y crea la columna success si falta.
-    """
     df = pd.DataFrame(raw_json)
 
-    # Asegurar que todas las columnas esperadas existan
-    expected = [
-        "session_length",
-        "points_scored",
-        "errors",
-        "n_attempts",
-        "help_clicks"
-    ]
-
+    expected = ["session_length","points_scored","errors","n_attempts","help_clicks"]
     for col in expected:
         if col not in df.columns:
-            df[col] = 0   # si no existe, se crea con 0
-
-    # Convertir a numérico
-    for col in expected:
+            df[col] = 0
         df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0)
 
-    # Crear etiqueta de éxito
-    # regla ejemplo: éxito si puntos > 0 y errores == 0
-    if "success" not in df.columns:
-        df["success"] = (df["points_scored"] > 0).astype(int)
-
+    # Etiqueta de éxito para demo
+    df["success"] = (df["points_scored"] > 0).astype(int)
     return df
 
-
+# --------------------------------------------------------
+# 2) Entrenar modelo simple + generar imágenes DEMO
+# --------------------------------------------------------
 def entrenar_i_avaluar(df):
-    """
-    Ejemplo simplificado: solo genera métricas falsas
-    para confirmar que el pipeline funciona sin errores.
-    """
 
     metrics = {
         "total_sessions": len(df),
@@ -49,23 +41,64 @@ def entrenar_i_avaluar(df):
         "success_rate": df["success"].mean()
     }
 
-    # generar una imagen simple para probar
+    images = {}
+
+    # ----------------------------------------------------
+    # Imagen 1 — Histograma real
+    # ----------------------------------------------------
     fig, ax = plt.subplots()
     ax.hist(df["points_scored"])
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png")
-    buf.seek(0)
-    img_b64 = "data:image/png;base64," + base64.b64encode(buf.read()).decode()
-    plt.close(fig)
+    ax.set_title("Histograma points_scored")
+    images["session_hist"] = _fig_to_base64(fig)
 
-    return metrics, {"session_hist": img_b64}
+    # ----------------------------------------------------
+    # Imagen 2 — Matriz de confusión FAKE
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()
+    ax.imshow([[30, 5], [4, 20]])
+    ax.set_title("Confusion matrix DEMO")
+    images["confusion_matrix"] = _fig_to_base64(fig)
+
+    # ----------------------------------------------------
+    # Imagen 3 — ROC curve FAKE
+    # ----------------------------------------------------
+    fig, ax = plt.subplots()
+    ax.plot([0, 0.1, 1], [0, 0.9, 1])
+    ax.set_title("ROC DEMO")
+    images["roc_curve"] = _fig_to_base64(fig)
+
+    # ----------------------------------------------------
+    # Imagen 4 — Feature importance DEMO
+    # ----------------------------------------------------
+    features = ["session_length","points_scored","errors","n_attempts","help_clicks"]
+    vals = np.random.rand(len(features))
+
+    fig, ax = plt.subplots()
+    ax.bar(features, vals)
+    ax.set_title("Feature importance DEMO")
+    plt.xticks(rotation=45)
+    images["feature_importances"] = _fig_to_base64(fig)
+
+    # ----------------------------------------------------
+    # Imagen 5 — DAU DEMO
+    # ----------------------------------------------------
+    dau = df.groupby(df.index // 8).size()
+
+    fig, ax = plt.subplots()
+    ax.plot(dau.index, dau.values)
+    ax.set_title("DAU DEMO")
+    images["dau"] = _fig_to_base64(fig)
+
+    return metrics, images
 
 
+# --------------------------------------------------------
+# 3) Pipeline principal
+# --------------------------------------------------------
 def run_pipeline(raw_json):
     df = json_to_df(raw_json)
     metrics, images = entrenar_i_avaluar(df)
 
-    # retornar estructura compatible con JS
     return {
         "metrics": metrics,
         "images": images
