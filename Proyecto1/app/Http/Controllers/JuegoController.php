@@ -69,10 +69,13 @@ class JuegoController extends Controller
 
     public function iniciarJuegoAstro(Request $request)
     {   //Obtener
+        $returningPLayerX = 0;
+
         $usuarioId = $request->input('usuarioId');
         $juegoId   = $request->input('juegoId');
         \Log::info("Iniciar juego Astro: usuarioId={$usuarioId}, juegoId={$juegoId}");
-
+        
+        
         //Obtener Sesion activa del usuario
         $sesionActiva = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
             ->orderBy('fechaSesion', 'desc')
@@ -93,6 +96,15 @@ class JuegoController extends Controller
         $datosSesion = new DatosSesion();
         $datosSesion->id_SesionUsuario = $sesionActiva->id;
         $datosSesion->startTime = now();
+        
+
+        //Obtener Sesiones del usuario en el juego
+        $sesionesEnPlataforma = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)->count();
+        if($sesionesEnPlataforma > 1){
+           $returningPLayerX = 1;             
+        } 
+
+        $datosSesion->returningPlayer = $returningPLayerX;
 
         $datosSesion->save();
         
@@ -210,7 +222,7 @@ class JuegoController extends Controller
                 'errores'        => $request->errores,
                 'puntuacion'     => $request->puntuacion,
                 'helpclicks'     => $request->helpclicks,
-                'returningPlayer'=> $request->returningPlayer,
+                //'returningPlayer'=> $request->returningPlayer,
             ]);
 
         return ['status' => 'ok'];
