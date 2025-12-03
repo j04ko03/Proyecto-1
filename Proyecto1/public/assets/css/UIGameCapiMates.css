@@ -82,10 +82,10 @@
 .personaje {
     width: 60px;
     height: 80px;
-    background-image: url('../../../Astro/paso2 derecha.png');
+    background-image: url('../../../Astro/piederecho2.png');
     background-size: cover;
     position: absolute;
-    bottom: 0px;
+    bottom: 14px;
     left: 10px;
 }
 
@@ -103,7 +103,6 @@
     bottom: 15px;
     left: 150px;
     background-image: url('../../../CapiMates/roca.png');
-    animation: respawn 10s linear infinite;
 }
 
 .obstaculo.paused {
@@ -128,25 +127,10 @@
     bottom: 12px;
     left: 70px;
     background-image: url('../../../CapiMates/tronco.png');
-    animation: respawn1 10s linear infinite;
 }
 
 .obstaculo1.paused {
     animation-play-state: paused;
-}
-
-@keyframes respawn1 {
-    0% {
-        left: 3000px;
-    }
-
-    50% {
-        left: 1900px;
-    }
-
-    100% {
-        left: -400px;
-    }
 }
 
 .piso {
@@ -168,3 +152,85 @@
         background-position: -1500px 0;
     }
 }
+
+.paused {
+    animation-play-state: paused !important;
+}
+
+/* Pop-up bosque */
+
+.quiz-popup {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px;
+    border: 4px solid #162710;
+    background: #284321;
+    box-shadow: 0 0 0 4px #0f180b, 8px 8px 0 #000;
+    image-rendering: pixelated;
+    color: #ffeec1;
+    text-shadow: 0 2px 0 #000;
+    z-index: 999;
+  }
+
+
+  .hidden {
+    display: none;
+  }
+
+  .quiz-header {
+    background: linear-gradient(#3b5b24, #213314);
+    padding: 6px 10px;
+    border-bottom: 4px solid #0f180b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+  }
+
+  .quiz-title {
+    letter-spacing: 1px;
+  }
+
+  .quiz-close {
+    cursor: pointer;
+    padding: 0 4px;
+  }
+
+  .quiz-body {
+    padding: 12px;
+    text-align: center;
+  }
+
+  #quizQuestion {
+    margin: 8px 0 10px;
+  }
+
+  #quizAnswer {
+    width: 80%;
+    padding: 4px;
+    margin-bottom: 8px;
+    font-size: 14px;
+    border: 3px solid #0f180b;
+    background: #14301a;
+    color: #ffeec1;
+  }
+
+  #quizAnswer:focus {
+    outline: none;
+    background: #1b3f21;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 4px 18px;
+    border: 3px solid #0f180b;
+    background: #f59b1b;   /* naranja tipo fruta */
+    cursor: pointer;
+    text-transform: uppercase;
+  }
+
+  button:hover {
+    background: #ffb73f;
+  }
