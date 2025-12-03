@@ -5,6 +5,7 @@ window.iniciarCapiMates = function () {
     let rocaInterval, troncoInterval;
     let animacionId;
     let obstaculosArray = [];
+    let intervaloPreguntas;
 
 
     /* ------------- UI CAPIMATES izq ------------- */
@@ -14,13 +15,38 @@ window.iniciarCapiMates = function () {
     /* ------------- UI CAPIMATES der ------------- */
     let puntos = 0;
     let ultimoPuntoTiempo = 0;
-    let puntosJugador = 0;
+
+    /* ------------- JUGADOR ------------- */
+
+    let personajeY = 5;           // posición vertical bottom
+    let velocidadY = 0;            // velocidad vertical
+    let enSuelo = true;            // está tocando suelo
+
+    const GRAVEDAD = 0.05;
+    const FUERZA_SALTO = 3;
+
+    // Estados
+    let saltando = false;
+    let cayendo = false;
+
+    // Animaciones
+    const imgIdle = "url('/Proyecto-1/Proyecto1/Astro/piederecho2.png')";
+    const imgSalto = "url('/Proyecto-1/Proyecto1/Astro/saltoderecha1.png')";
+
+    let keys = {};
+
+    // Botones y elementos del DOM
 
     const msg = document.getElementById('mensaje');
     const startBtn = document.getElementById('start-btn');
+    const revisarRestuestaBtn = document.getElementById('revisar-respuesta-btn');
+    const cerrarPopup = document.getElementById('cerrar-popup');
     const juegoCapiMates = document.getElementById('juegoCapiMates');
     const personaje = document.getElementById('personaje');
     const enemigoContainer = document.getElementById('enemigos');
+
+    // Bloques de preguntas
+
     const bloque1 = [
         {
             pregunta: "¿Cuánto es 3 + 2?",
@@ -111,12 +137,95 @@ window.iniciarCapiMates = function () {
     ];
 
 
-
     startBtn.addEventListener('click', () => {
         console.log("Iniciar juego pulsado, cerrando Mensaje....");
         ocultarMensaje();
         iniciarCapiMates();
     });
+
+    revisarRestuestaBtn.addEventListener('click', () => {
+        revisarRespuesta();
+    });
+
+    cerrarPopup.addEventListener('click', () => {
+        cerrarPopUp();
+    });
+
+    // Logicas de jugador
+
+    window.addEventListener("keydown", e => {
+
+        if ((e.code === "ArrowUp" || e.code === "KeyW" || e.code === "Space")
+            && enSuelo) {
+
+            velocidadY = FUERZA_SALTO;
+            enSuelo = false;
+            saltando = true;
+            cayendo = false;
+        }
+
+    });
+
+    window.addEventListener("keyup", e => {
+        keys[e.code] = false;
+    });
+
+    function actualizarFisicas() {
+        // SI ESTÁ EN EL AIRE → aplicar gravedad
+        if (!enSuelo) {
+            velocidadY -= GRAVEDAD;
+            personajeY += velocidadY;
+        }
+
+        // SUELO REAL DEL JUEGO
+        const sueloY = 14;
+
+        // Llega al suelo
+        if (personajeY <= sueloY) {
+            personajeY = sueloY;
+            velocidadY = 0;
+            enSuelo = true;
+            saltando = false;
+            cayendo = false;
+        }
+
+        // Estados según velocidad
+        if (!enSuelo) {
+            if (velocidadY > 0) {
+                saltando = true;
+                cayendo = false;
+            } else if (velocidadY < -2) {
+                saltando = false;
+                cayendo = true;
+            }
+        }
+
+        actualizarAnimacion();
+
+    }
+
+    function actualizarAnimacion() {
+
+        if (enSuelo) {
+            personaje.style.backgroundImage = imgIdle;
+            return;
+        }
+
+        if (saltando) {
+            personaje.style.backgroundImage = imgSalto;
+            return;
+        }
+
+        if (cayendo) {
+            personaje.style.backgroundImage = imgSalto;
+            return;
+        }
+
+    }
+
+    function dibujarJugador() {
+        personaje.style.bottom = personajeY + "px";
+    }
 
     // Mensajes de juego
 
@@ -124,27 +233,32 @@ window.iniciarCapiMates = function () {
         msg.style.display = 'block';
         document.getElementById('msg-title').textContent = title;
         document.getElementById('msg-body').innerHTML = body;
-        juegoActivo = false;
 
-        detenerObstaculos();
-        juegoCapiMates.classList.add("paused");
+
+        pausarJuego();
     }
 
     function ocultarMensaje() {
         msg.style.display = 'none';
-        juegoActivo = true;
+        reanudarJuego();
+    }
 
-        juegoCapiMates.classList.remove("paused");
+    function cerrarPopUp() {
+        hideQuiz();
+        reanudarJuego();
     }
 
     // Logica de obstaculos
 
     function generadorObstaculos() {
+
         if (!juegoActivo) return;
 
         rocaInterval = setInterval(() => {
             let roca = document.createElement("div");
             roca.classList.add("obstaculo");
+            roca.style.animation = "respawn 10s linear infinite";
+
 
             enemigoContainer.appendChild(roca);
             obstaculosArray.push(roca);
@@ -154,20 +268,13 @@ window.iniciarCapiMates = function () {
         troncoInterval = setInterval(() => {
             let tronco = document.createElement("div");
             tronco.classList.add("obstaculo1");
+            tronco.style.animation = "respawn 10s linear infinite";
 
             enemigoContainer.appendChild(tronco);
             obstaculosArray.push(tronco);
+            console.log("Tronco agregado");
 
-        }, 8000);
-    }
-
-    function detenerObstaculos() {
-        clearInterval(rocaInterval);
-        clearInterval(troncoInterval);
-
-        for (let obstaculo of obstaculosArray) {
-            obstaculo.classList.add("paused");
-        }
+        }, 4000);
     }
 
     // Logica de colisiones
@@ -195,7 +302,6 @@ window.iniciarCapiMates = function () {
     // Logica de vidas y puntos
 
     function perderVida() {
-
         const corazones = document.getElementById(`corazon${vidas}`);
 
         if (corazones) {
@@ -206,7 +312,7 @@ window.iniciarCapiMates = function () {
 
         if (vidas <= 0) {
             juegoActivo = false;
-            detenerObstaculos();
+            clearInterval(intervaloPreguntas);
             mostrarMensaje("Juego Terminado", "Has perdido todas tus vidas. Pulsa JUGAR para reiniciar.");
         }
     }
@@ -224,61 +330,49 @@ window.iniciarCapiMates = function () {
 
     // Preguntas
 
+    function obtenerBloqueAleatorio() {
+        const bloques = [bloque1, bloque2, bloque3, bloque4];
+        return bloques[Math.floor(Math.random() * bloques.length)];
+    }
+
     function obtenerPreguntaAleatoria(bloque) {
         return bloque[Math.floor(Math.random() * bloque.length)];
     }
 
-    function obtenerPreguntaPorPuntos(puntos) {
-        if (puntos < 15) {
-            const p = obtenerPreguntaAleatoria(bloque1);
-            return { ...p, bloque: 1 };
-        } else if (puntos < 25) {
-            const p = obtenerPreguntaAleatoria(bloque2);
-            return { ...p, bloque: 2 };
-        } else if (puntos < 35) {
-            const p = obtenerPreguntaAleatoria(bloque3);
-            return { ...p, bloque: 3 };
-        } else {
-            const p = obtenerPreguntaAleatoria(bloque4);
-            return { ...p, bloque: 4 };
-        }
-    }
-
     function mostrarPregunta() {
 
+        pausarJuego();
         showQuiz();
-        const preguntaObj = obtenerPreguntaPorPuntos(puntos);
+
+        const bloque = obtenerBloqueAleatorio();
+        const preguntaObj = obtenerPreguntaAleatoria(bloque);
 
         document.getElementById("quizQuestion").textContent = preguntaObj.pregunta;
 
         window.respuestaCorrecta = preguntaObj.respuesta;
-        window.bloqueActual = preguntaObj.bloque;  // ✔ AHORA SE GUARDA
 
         document.getElementById("quizAnswer").value = "";
+
     }
 
-    function revisarRespuesta() {
-        const respuestaUsuario = document.getElementById("quizAnswer").value.trim();
-
-        if (respuestaUsuario === window.respuestaCorrecta) {
-
-            if (window.bloqueActual === 1) ganarPuntos(2);
-            else if (window.bloqueActual === 2) ganarPuntos(4);
-            else if (window.bloqueActual === 3) ganarPuntos(6);
-            else if (window.bloqueActual === 4) ganarPuntos(8);
-
-        }
-
-        hideQuiz();
-        mostrarPregunta(puntosJugador);
+    function showQuiz() {
+        document.getElementById("quizPopup").classList.remove("hidden");
     }
 
     function hideQuiz() {
         document.getElementById("quizPopup").classList.add("hidden");
     }
 
-    function showQuiz() {
-        document.getElementById("quizPopup").classList.remove("hidden");
+    function revisarRespuesta() {
+        const respuestaUsuario = document.getElementById("quizAnswer").value.trim();
+
+        if (respuestaUsuario === window.respuestaCorrecta) {
+            ganarPuntos(5);
+
+        }
+
+        hideQuiz();
+        reanudarJuego();
     }
 
     function ganarPuntos(cantidad = 1) {
@@ -294,12 +388,62 @@ window.iniciarCapiMates = function () {
         puntos = 0;
         vidas = 3;
 
-        generadorObstaculos();
-        mostrarPregunta(puntosJugador);
+
+        intervaloPreguntas = setInterval(() => {
+            if (juegoActivo) {
+                mostrarPregunta();
+            }
+        }, 15000);
+
+
         dibujarVidas();
         loop();
     }
 
+    // Logicas del juego
+
+    function pausarJuego() {
+        juegoActivo = false;
+
+        juegoCapiMates.classList.add("paused");
+
+        for (let obs of obstaculosArray) {
+            obs.style.animation = "none";
+            obs.dataset.oldLeft = obs.style.left;
+            obs.style.left = "2000px";
+        }
+
+        // Detener generación de obstáculos
+        clearInterval(rocaInterval);
+        clearInterval(troncoInterval);
+    }
+
+    function reanudarJuego() {
+        juegoActivo = true;
+
+        // Reanudar animación del fondo
+        juegoCapiMates.classList.remove("paused");
+
+        for (let obs of obstaculosArray) {
+
+            // Restaurar posición donde estaba
+            if (obs.dataset.oldLeft) {
+                obs.style.left = obs.dataset.oldLeft;
+            }
+
+            // Restaurar animación
+            if (obs.classList.contains("obstaculo")) {
+                obs.style.animation = "respawn 10s linear infinite";
+            } else if (obs.classList.contains("obstaculo1")) {
+                obs.style.animation = "respawn1 10s linear infinite";
+            }
+        }
+
+        generadorObstaculos();
+
+        // Volver al bucle del juego
+        if (!animacionId) loop();
+    }
 
     // Cosas que se tienen que repetir en el juego
 
@@ -309,6 +453,8 @@ window.iniciarCapiMates = function () {
             return;
         }
 
+        actualizarFisicas();
+        dibujarJugador();
         detectarColisiones();
 
         if (timestamp - ultimoPuntoTiempo > 1000) {
@@ -321,6 +467,7 @@ window.iniciarCapiMates = function () {
 
     /* Iniciar mostrando mensaje inicial */
     mostrarMensaje("¡Bienvenido a CapiMates!", "Consigue los maximos puntos resolviendo las operaciones matemáticas. Usa la barra spaciadora o 'W' para poder saltar. Presiona <strong>JUGAR</strong> para empezar.");
+
 
 }
 

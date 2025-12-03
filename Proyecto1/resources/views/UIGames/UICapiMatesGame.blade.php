@@ -40,7 +40,7 @@
 
         <div class="quiz-header">
           <span class="quiz-title">Preguntas del bosque</span>
-          <span class="quiz-close" onclick="hideQuiz()">✖</span>
+          <span id="cerrar-popup" class="quiz-close" onclick="cerrarPopUp()">✖</span>
         </div>
 
         <div class="quiz-body">
@@ -49,7 +49,7 @@
 
           <input id="quizAnswer" type="text" placeholder="Escribe tu respuesta"/>
 
-          <button onclick="submitQuiz()">Responder</button>
+          <button id="revisar-respuesta-btn" onclick="revisarRespuesta()">Responder</button>
 
         </div>
     </div>

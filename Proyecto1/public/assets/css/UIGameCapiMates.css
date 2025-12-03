@@ -82,10 +82,10 @@
 .personaje {
     width: 60px;
     height: 80px;
-    background-image: url('../../../Astro/paso2 derecha.png');
+    background-image: url('../../../Astro/piederecho2.png');
     background-size: cover;
     position: absolute;
-    bottom: 0px;
+    bottom: 14px;
     left: 10px;
 }
 
@@ -103,7 +103,6 @@
     bottom: 15px;
     left: 150px;
     background-image: url('../../../CapiMates/roca.png');
-    animation: respawn 10s linear infinite;
 }
 
 .obstaculo.paused {
@@ -128,25 +127,10 @@
     bottom: 12px;
     left: 70px;
     background-image: url('../../../CapiMates/tronco.png');
-    animation: respawn1 10s linear infinite;
 }
 
 .obstaculo1.paused {
     animation-play-state: paused;
-}
-
-@keyframes respawn1 {
-    0% {
-        left: 3000px;
-    }
-
-    50% {
-        left: 1900px;
-    }
-
-    100% {
-        left: -400px;
-    }
 }
 
 .piso {
@@ -169,6 +153,10 @@
     }
 }
 
+.paused {
+    animation-play-state: paused !important;
+}
+
 /* Pop-up bosque */
 
 .quiz-popup {
@@ -186,7 +174,7 @@
     z-index: 999;
   }
 
-  
+
   .hidden {
     display: none;
   }
