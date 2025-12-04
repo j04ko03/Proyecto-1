@@ -118,8 +118,12 @@ class CartuchoManager {
             1: { // ASTRO
                 main: window.rutaScripts?.astro,
                 inicializador: window.rutaScripts?.astroInicializador
-            }
+            },
             // Agregar más juegos aquí según necesites
+            4: { // BOSQUE
+                main: window.rutaScripts?.bosque,
+                inicializador: window.rutaScripts?.bosqueInicializador
+            }
         };
 
         const scripts = scriptsMap[idJuego];
@@ -135,6 +139,12 @@ class CartuchoManager {
             await this.cargarScript(scripts.inicializador, () => {
                 if (typeof inicializadorAstro === 'function') {
                     inicializadorAstro();
+                }
+            });
+        } else (scripts.inicializador) {
+            await this.cargarScript(scripts.inicializador, () => {
+                if (typeof inicializadorBosque === 'function') {
+                    inicializadorBosque();
                 }
             });
         }
