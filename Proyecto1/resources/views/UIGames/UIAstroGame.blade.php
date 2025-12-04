@@ -32,7 +32,7 @@
     </div>
     
     <!-- Story de capi -->
-    <div id="mensaje" class="mensaje">
+    <div id="mensaje" class="mensaje" style="z-index: 9999999">
         <h2 id="msg-title" class="msg-title" style="color: white">¡Bienvenido a Misión Matemática!</h2>
         <div id="msg-body" class="msg-body" style="color: white">
             Llega al final del nivel resolviendo las sumas. Presiona <strong>JUGAR</strong> para empezar.
