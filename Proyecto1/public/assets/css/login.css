@@ -1,5 +1,4 @@
 .contenedorPrincipal{
-    border: 1px solid red;
     width: 100%;   /* ancho fijo */
     height: 700px;   /* alto fijo */
     position: relative;
@@ -7,7 +6,6 @@
 }
 
 .contenedorLogin{
-    border: 1px solid orange;
     width: 100%;
     height: 100%;
     display: flex;

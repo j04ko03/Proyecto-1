@@ -8,14 +8,8 @@
         "name": "Launch Chrome",
         "request": "launch",
         "type": "chrome",
-        "url": "http://localhost:80/Proyecto-1/Proyecto1/public",
+        "url": "http://localhost:80/Proyecto-1/Proyecto1/public/login",
         "webRoot": "${workspaceFolder}"
-    },
-        {
-            "name": "Listen for Xdebug",
-            "type": "php",
-            "request": "launch",
-            "port": 9003
-        },
+    }
     ]
 }

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
     // Objeto para guardar cosas que necesitamos limpiar cuando cambiamos de juego
     window.juegoActivo = {
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-});
+
 
 function guardarCookie(nom, valors, dies){
     const valorG = JSON.stringify(valors);
