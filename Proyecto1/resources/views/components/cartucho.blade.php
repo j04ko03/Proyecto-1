@@ -1,11 +1,16 @@
-<div class="cartucho cartucho-{{ $cartucho->id }}" 
+<div class="cartucho cartucho-{{ $cartucho->id }} {{ $cartucho->isBlocked ? 'bloqueado' : '' }}" 
     data-cartucho="{{ $cartucho->id }}" 
     data-juego="{{ $cartucho->nombre }}"
     data-route="{{ $cartucho->ruta ?? '#' }}" 
-    role="button" 
     aria-label="Jugar {{ $cartucho->nombre }}" 
-    tabindex="0"
-    data-script="{{ asset('js/' . 'RedimensionCava' . '.js') }}">
+    data-script="{{ asset('js/' . 'RedimensionCava' . '.js') }}"
+    @unless($cartucho->isBlocked)
+        role="button"
+        tabindex="0"
+    @endunless
+
+    data-bloqueado="{{ ($cartucho->isBlocked === '1') ? 'bloqueado' : '' }}"
+    >
 
     <div class="cartucho-imagen">
         <img src="{{ asset('img/cartuchoVerde.png') }}" alt="{{ $cartucho->nombre }}" class="cartucho-base">
@@ -20,7 +25,7 @@
         @endif
     </div>
 
-    <div class="cartucho-info">
+    {{-- <div class="cartucho-info">
         <div class="cartucho-normas">
             <h4>📜 Normas</h4>
             <ul>
@@ -41,5 +46,5 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>

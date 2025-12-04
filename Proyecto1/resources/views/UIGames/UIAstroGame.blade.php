@@ -18,6 +18,9 @@
                 </div>
             </div>
         </div>
+        <div id="borras" class="ui-left">
+            <button id="heelp" class="pixel-btn">Ayuda</button>
+        </div>
         <div class="ui-right">
             Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Tiempo: <span id="mejor">0</span>
         </div>
@@ -29,13 +32,15 @@
     </div>
     
     <!-- Story de capi -->
-    <div id="mensaje" class="mensaje">
+    <div id="mensaje" class="mensaje" style="z-index: 9999999">
         <h2 id="msg-title" class="msg-title" style="color: white">¡Bienvenido a Misión Matemática!</h2>
         <div id="msg-body" class="msg-body" style="color: white">
             Llega al final del nivel resolviendo las sumas. Presiona <strong>JUGAR</strong> para empezar.
         </div>
-        <div style="margin-top:8px;">
+        <div style="margin-top:8px; display: flex; justify-content: center; align-items: center">
+            <button class="small cancel" id="cancel-btn1" style="none">CANCELAR</button>
             <button id="start-btn" class="start-btn" style="color: white">JUGAR</button>
+            <button class="small cancel" id="cancel-btn2" style="none">CANCELAR</button>
         </div>
     </div>
 
