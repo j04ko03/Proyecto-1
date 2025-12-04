@@ -25,7 +25,7 @@
         @endif
     </div>
 
-    <div class="cartucho-info">
+    {{-- <div class="cartucho-info">
         <div class="cartucho-normas">
             <h4>📜 Normas</h4>
             <ul>
@@ -46,5 +46,5 @@
                 @endforeach
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
