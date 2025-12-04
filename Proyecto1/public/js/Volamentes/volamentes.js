@@ -38,12 +38,30 @@ window.inicializarVolamentes = function () {
     let preguntaActual = 0;
     let puntaje = 0;
     let respuestaSeleccionada = false;
+    let esperaSiguienteNivel = false; // indica que estamos mostrando resumen de nivel
+    const puntajesPorNivel = niveles.map(() => 0);
 
     const fondo = document.getElementById("fondo");
     const textoPregunta = document.getElementById("textoPregunta");
     const opcionesDiv = document.getElementById("opciones");
     const puntajeTxt = document.getElementById("puntaje");
     const btnSiguiente = document.getElementById("btnSiguiente");
+
+    // Usaremos el mismo <h1 class="titulo-juego"> (si existe) para mostrar
+    // "Nivel X : Nombre" y mantener el mismo estilo visual.
+    const tituloJuegoEl = document.querySelector('.titulo-juego');
+    const tituloOriginal = tituloJuegoEl ? tituloJuegoEl.textContent : 'Volamentes';
+
+    function mostrarNivelNombre() {
+        const nivel = niveles[nivelActual];
+        if (tituloJuegoEl && nivel && nivel.nombre) {
+            tituloJuegoEl.textContent = `Nivel ${nivelActual + 1} : ${nivel.nombre}`;
+        }
+    }
+
+    function ocultarNivelNombre() {
+        if (tituloJuegoEl) tituloJuegoEl.textContent = tituloOriginal;
+    }
 
     function actualizarFondo() {
         if (!fondo) return;
@@ -71,6 +89,9 @@ window.inicializarVolamentes = function () {
 
         opcionesDiv.innerHTML = "";
         respuestaSeleccionada = false;
+        esperaSiguienteNivel = false;
+        // Asegurar que el botón muestra la etiqueta por defecto
+        if (btnSiguiente) btnSiguiente.textContent = 'Siguiente';
 
         p.opciones.forEach((op, index) => {
             const btn = document.createElement("button");
@@ -103,6 +124,7 @@ window.inicializarVolamentes = function () {
         if (index === correctaIdx) {
             botones[index].classList.add("correcta");
             puntaje += 10;
+            puntajesPorNivel[nivelActual] += 10;
         } else {
             botones[index].classList.add("incorrecta");
             if (botones[correctaIdx]) botones[correctaIdx].classList.add("correcta");
@@ -120,37 +142,69 @@ window.inicializarVolamentes = function () {
 
             // Si estamos iniciando el juego (primera pulsación para comenzar)
             if (preguntaActual === 0 && puntaje === 0 && !respuestaSeleccionada) {
+                // Mostrar título del nivel y cargar la primera pregunta
+                mostrarNivelNombre();
                 actualizarFondo();
                 cargarPregunta();
                 return;
             }
 
             // No avanzar si el usuario no ha respondido la pregunta actual
-            if (!respuestaSeleccionada) return;
+            if (!respuestaSeleccionada && !esperaSiguienteNivel) return;
 
-            // avanzar a la siguiente pregunta
-            preguntaActual++;
-
-            // Si el nivel terminó
-            if (preguntaActual >= (nivel && nivel.preguntas ? nivel.preguntas.length : 0)) {
+            // Si estamos mostrando el resumen del nivel, al pulsar avanzamos al siguiente nivel
+            if (esperaSiguienteNivel) {
                 nivelActual++;
                 preguntaActual = 0;
+                respuestaSeleccionada = false;
+                esperaSiguienteNivel = false;
 
                 // si no hay más niveles
                 if (nivelActual >= niveles.length) {
+                    ocultarNivelNombre();
                     if (textoPregunta) textoPregunta.textContent = "¡Felicidades, has terminado todos los niveles!";
                     if (opcionesDiv) opcionesDiv.innerHTML = "";
                     btnSiguiente.style.display = "none";
                     return;
                 }
 
+                // Mostrar título del nuevo nivel y cargar sus preguntas
+                mostrarNivelNombre();
                 actualizarFondo();
                 cargarPregunta();
                 return;
             }
 
+            // avanzar a la siguiente pregunta
+            preguntaActual++;
+
+            // Si el nivel terminó -> mostrar resumen de nivel en lugar de avanzar inmediatamente
+            if (preguntaActual >= (nivel && nivel.preguntas ? nivel.preguntas.length : 0)) {
+                // Mostrar resumen del nivel actual
+                mostrarResumenNivel(nivelActual);
+                esperaSiguienteNivel = true;
+                // cambiar el texto del botón a "Continuar"
+                if (btnSiguiente) btnSiguiente.textContent = 'Continuar';
+                return;
+            }
+
             cargarPregunta();
         });
+    }
+
+    function mostrarResumenNivel(indiceNivel) {
+        const puntos = puntajesPorNivel[indiceNivel] || 0;
+        if (textoPregunta) textoPregunta.textContent = `¡Felicidades! Tus puntos en este nivel son ${puntos}.`;
+        if (opcionesDiv) opcionesDiv.innerHTML = '';
+        // mantener el puntaje total visible
+        if (puntajeTxt) puntajeTxt.textContent = `Puntaje total: ${puntaje}`;
+    }
+
+    function mostrarResumenFinal() {
+        if (textoPregunta) textoPregunta.textContent = `¡Has completado el juego! Puntaje final: ${puntaje}`;
+        if (opcionesDiv) opcionesDiv.innerHTML = '';
+        if (puntajeTxt) puntajeTxt.textContent = `Puntaje total: ${puntaje}`;
+        if (btnSiguiente) btnSiguiente.style.display = 'none';
     }
 
     // Inicializamos los textos visible
