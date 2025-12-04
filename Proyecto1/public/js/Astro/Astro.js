@@ -142,6 +142,7 @@ window.iniciarAstro = function () {
     const timmer    = document.getElementById('mejor');
     
     const helpButton = document.getElementById('heelp');
+    const cancelHelp = document.getElementById('cancel-btn2');
 
     /* Modal pregunta */
     const modal = document.getElementById('modal');
@@ -196,6 +197,9 @@ window.iniciarAstro = function () {
             timmerId = null;
         }
     }
+    cancelHelp.addEventListener('click', () => {
+        ocultarMensaje();
+    });
 
     startBtn.addEventListener('click', () => {
         console.log("Iniciar juego pulsado, cerrando Mensaje....");
@@ -213,8 +217,12 @@ window.iniciarAstro = function () {
         clicksFets += 1;
         if(clicksFets <= 3){
             mostrarMensaje("Respuesta", respuestaHelp);
+            //cerrarModalPregunta();
+            //modalOpen = false;
+            gameActive = true;
+            //modal.style.display = 'none';
         }else {
-            const ccc    = document.getElementById('borras');
+            const ccc = document.getElementById('borras');
             ccc.style.display = "none"; 
         }
         
@@ -1184,7 +1192,9 @@ window.iniciarAstro = function () {
     function mostrarMensaje(title, body){
         msg.style.display = 'block';
         document.getElementById('msg-title').textContent = title;
-        if(nivel === 5 && vidas > 0){
+        document.getElementById('cancel-btn2').style.visibility = "hidden";
+        document.getElementById('cancel-btn1').style.visibility = "hidden";
+        if(nivel === 5 && vidas > 0 && !vieneDeJuego){
             document.getElementById('msg-body').innerHTML = body;
             document.getElementById('start-btn').style.visibility = "hidden";
             
@@ -1192,13 +1202,14 @@ window.iniciarAstro = function () {
 
         if(vieneDeJuego){
             document.getElementById('msg-body').innerHTML = body;
-            document.getElementById('start-btn').style.visibility = "visible";
-            vieneDeJuego = false
+            document.getElementById('start-btn').style.visibility = "hidden";
+            document.getElementById('cancel-btn2').style.visibility = "visible";
+            vieneDeJuego = false;
         }
         gameActive = false;
     }
 
-    function ocultarMensaje(){
+    function ocultarMensaje(){  
         msg.style.display = 'none';
         gameActive = true;
     }

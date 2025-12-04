@@ -37,8 +37,10 @@
         <div id="msg-body" class="msg-body" style="color: white">
             Llega al final del nivel resolviendo las sumas. Presiona <strong>JUGAR</strong> para empezar.
         </div>
-        <div style="margin-top:8px;">
+        <div style="margin-top:8px; display: flex; justify-content: center; align-items: center">
+            <button class="small cancel" id="cancel-btn1" style="none">CANCELAR</button>
             <button id="start-btn" class="start-btn" style="color: white">JUGAR</button>
+            <button class="small cancel" id="cancel-btn2" style="none">CANCELAR</button>
         </div>
     </div>
 
