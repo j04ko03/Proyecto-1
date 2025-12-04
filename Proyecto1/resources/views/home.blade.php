@@ -62,4 +62,6 @@
     window.usuarioLogeado = {{ auth()->user()->id ?? 'null' }};
 </script>
 <script src="{{ url('/js/homeMusic.js') }}"></script>
+
+
 @endsection

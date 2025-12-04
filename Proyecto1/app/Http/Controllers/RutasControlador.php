@@ -36,4 +36,9 @@ class RutasControlador extends Controller
     {
         return view('UIGames.UICapiMatesGame');
     }
-}
+
+    public function juego4View()
+    {
+        return view('UIGames.UIBosqueGame');
+    }   
+} 

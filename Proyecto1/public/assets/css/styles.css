@@ -29,3 +29,7 @@ input,
 label {
     font-family: 'Pixelify Sans', sans-serif;
 }
+
+body {
+    background-image: url('public\img\fondo.png');
+}

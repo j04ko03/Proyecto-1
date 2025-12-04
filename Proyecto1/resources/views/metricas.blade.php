@@ -15,8 +15,11 @@
         <!-- Todas las imágenes dinámicas -->
         <div id="all_images" class="metrics-grid"></div>
 
+        <div>
         <h3>Mètriques numèriques</h3>
         <pre id="metrics_text">Esperant resultats...</pre>
+        </div>
+        
     </div>
 
     <!-- Pyodide -->

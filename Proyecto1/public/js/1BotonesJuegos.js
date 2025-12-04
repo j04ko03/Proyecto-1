@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
     // Objeto para guardar cosas que necesitamos limpiar cuando cambiamos de juego
     window.juegoActivo = {
@@ -71,6 +71,11 @@ document.addEventListener("DOMContentLoaded", function () {
     cartuchos.forEach(element => {
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
+
+            if (this.dataset.bloqueado === "1") {
+                console.log("Cartucho bloqueado. No se puede jugar.");
+                return; // No hacer nada
+            }
 
             if (window.homeS) {
                 window.homeS.pause();
@@ -194,7 +199,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-});
+
 
 function guardarCookie(nom, valors, dies){
     const valorG = JSON.stringify(valors);

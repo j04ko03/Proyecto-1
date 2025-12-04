@@ -135,3 +135,104 @@ button.cancel{
     background:#ff6b6b; 
     color:#fff;
 }
+
+/* CSS: botón retro pixel-art */
+:root{
+  --btn-bg: #ffd24d;    /* fondo principal */
+  --btn-fg: #1b1b1b;    /* texto */
+  --btn-border: #000;   /* borde exterior */
+  --btn-shadow: #000;   /* sombra "pixel" */
+  --btn-highlight: rgba(255,255,255,0.7); /* brillo superior */
+  --btn-padding-x: 18px;
+  --btn-padding-y: 12px;
+  --pixel-offset: 6px;  /* tamaño sombra */
+  --pixel-size: 3px;    /* grosor de los "escalones" */
+}
+
+/* Reset pequeño */
+.pixel-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+/* Estilo principal */
+.pixel-btn {
+  display: inline-block;
+  position: relative;
+  padding: var(--btn-padding-y) var(--btn-padding-x);
+  color: var(--btn-fg);
+  background: var(--btn-bg);
+  font-family: "Press Start 2P", monospace;
+  font-size: 12px;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+
+  /* borde "pixelado" (consistente con grosor fijo) */
+  box-shadow:
+    /* sombra tipo 8-bit: varios pasos para efecto escalonado */
+    calc(var(--pixel-offset)) calc(var(--pixel-offset)) 0 0 var(--btn-shadow),
+    calc(var(--pixel-offset) * 2) calc(var(--pixel-offset) * 2) 0 0 var(--btn-shadow);
+
+  outline: 4px solid var(--btn-border);
+  /* fuerza bordes nítidos en transformaciones */
+  image-rendering: pixelated;
+  transform-origin: center;
+  transition: transform 80ms linear, box-shadow 80ms linear, filter 80ms linear;
+}
+
+/* pequeño "highlight" superior izquierdo simulando luz */
+.pixel-btn::before{
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 10px;
+  height: 6px;
+  background: var(--btn-highlight);
+  /* borde cuadrado para parecer píxel */
+  box-shadow: 10px 0 0 0 var(--btn-highlight), 0 6px 0 0 var(--btn-highlight);
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+/* borde interior oscuro para más contraste (look pixel) */
+.pixel-btn::after{
+  content: "";
+  position: absolute;
+  inset: 6px; /* espacio interno para mostrar el "borde" */
+  pointer-events: none;
+  border: 2px solid rgba(0,0,0,0.25);
+}
+
+/* Interacciones */
+.pixel-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  filter: drop-shadow(0 0 0 rgba(0,0,0,0.0)); /* mantiene nitidez */
+}
+
+/* Estado "presionado" (como tecla 8-bit) */
+.pixel-btn:active {
+  transform: translate(calc(var(--pixel-offset) / 2), calc(var(--pixel-offset) / 2));
+  box-shadow:
+    calc(var(--pixel-offset) / 4) calc(var(--pixel-offset) / 4) 0 0 var(--btn-shadow);
+  transition: transform 40ms linear, box-shadow 40ms linear;
+}
+
+/* Accesibilidad: enfoque visible y cuadrado */
+.pixel-btn:focus {
+  outline: 3px dashed #fff;
+  outline-offset: 3px;
+}
+
+/* Tamaños alternativos (ejemplo) */
+.pixel-btn.small { font-size: 10px; padding: 8px 12px; }
+.pixel-btn.large { font-size: 14px; padding: 16px 24px; }
+
+/* Temas rápidos — cambia variables para adaptar */
+.pixel-btn.theme-red { --btn-bg: #ff6b6b; --btn-fg: #111; }
+.pixel-btn.theme-blue { --btn-bg: #6bc1ff; --btn-fg: #001; }
