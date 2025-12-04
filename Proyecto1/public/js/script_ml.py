@@ -164,7 +164,7 @@ def model_predictiu(df):
     # --------------------------
     # Si hi ha 2 classes
     # --------------------------
-    model = RandomForestClassifier()
+    model = RandomForestClassifier()   
     model.fit(X, y)
     preds = model.predict(X)
 
