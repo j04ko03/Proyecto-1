@@ -1,5 +1,4 @@
 .contenedorPrincipal {
-    border: 1px solid red;
     width: 100%;   /* ancho fijo */
     height: 700px;   /* alto fijo */
     margin: 0 auto;  /* centrar horizontalmente */
@@ -8,14 +7,12 @@
 }
 
 .contenedorLogin {
-    border: 1px solid orange;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: flex-end;
     position: relative;
-    background-color: #000; /* para que contraste igual que tu login */
     overflow: hidden; /* evita que la imagen se salga */
 }
 

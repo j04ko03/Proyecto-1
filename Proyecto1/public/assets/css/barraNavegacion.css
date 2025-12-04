@@ -30,26 +30,28 @@
 /* ENGRANAJE */
 .opciones {
     position: relative;
-    border: 1px solid red;
-    z-index: 100;
+    /* border: 1px solid red; */
 }
 
 .iconoEngranaje {
-    width: 120px;
+    width: 150px;
     cursor: pointer;
+    height: auto;
+    padding-bottom: 13px;
 }
 
 /* MENU DESPLEGABLE */
 .dropdown {
     display: none;
     position: absolute;
-    top: 70px;
-    right: -25px;
+    top: 99px;
+    right: -6px;
     background: #000;
     border: 2px solid #0f0;
     padding: 10px;
     width: 160px;
     box-shadow: 0 0 10px #0f0;
+    z-index: 9999999999999999999999999;
 }
 
 .dropdown a {

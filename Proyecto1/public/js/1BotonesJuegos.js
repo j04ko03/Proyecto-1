@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+// document.addEventListener("DOMContentLoaded", function () {
 
     // Objeto para guardar cosas que necesitamos limpiar cuando cambiamos de juego
     window.juegoActivo = {
@@ -121,6 +121,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     window.astroJugable();
                 }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
                     window.capiJugable();
+                }else if (this.dataset.juego === 'Volamentes' && typeof window.inicializarVolamentes === 'function') {
+                    window.inicializarVolamentes();
                 }
 
 
@@ -164,15 +166,16 @@ document.addEventListener("DOMContentLoaded", function () {
                             case 'Volamentes':
                                 // Cargar el script específico de Volamentes correctamente
                                 const scriptVolamentes = document.createElement("script");
-                                scriptVolamentes.src = "./js/scriptJuegos/volamentes.js";
+                                scriptVolamentes.src = "./js/Volamentes/volamentes.js";
                                 scriptVolamentes.setAttribute("data-juego", "true");
-                                scriptVolamentes.onload = () => {
+                                /*scriptVolamentes.onload = () => {*/
                                     console.log("volamentes.js cargado");
+                                    console.log(window);
                                     // Si el script define un inicializador global, llamarlo
                                     if (typeof window.inicializarVolamentes === "function") {
                                         try { window.inicializarVolamentes(); } catch (e) { console.error(e); }
                                     }
-                                };
+                                /*};*/
                                 document.body.appendChild(scriptVolamentes);
                                 break;
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
@@ -199,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-});
+
 
 function guardarCookie(nom, valors, dies){
     const valorG = JSON.stringify(valors);

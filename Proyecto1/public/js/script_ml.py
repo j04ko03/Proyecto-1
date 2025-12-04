@@ -91,8 +91,8 @@ def generar_grafics(df, dau, mau):
 
     # Scatter intents vs points (jitter)
     plt.figure(figsize=(6,4))
-    jitter_x = df["n_attempts"] + np.random.normal(0, 0.05, len(df))
-    jitter_y = df["points_scored"] + np.random.normal(0, 0.05, len(df))
+    jitter_x = df["n_attempts"] + np.random.normal(0, 0.2, len(df))
+    jitter_y = df["points_scored"] + np.random.normal(0, 0.2, len(df))
     plt.scatter(jitter_x, jitter_y, s=30)
     plt.title("Intents vs Puntuació (amb jitter)")
     images["scatter_attempts_points"] = fig_to_base64()
@@ -103,7 +103,7 @@ def generar_grafics(df, dau, mau):
     plt.plot(dau.index.astype(str), dau.values, marker="o")
     plt.xticks(rotation=45)
     plt.title("DAU")
-    images["dau"] = fig_to_base64()
+    images["Dau"] = fig_to_base64()
     plt.close()
 
     # MAU
@@ -111,7 +111,7 @@ def generar_grafics(df, dau, mau):
     plt.plot(mau.index.astype(str), mau.values, marker="o")
     plt.xticks(rotation=45)
     plt.title("MAU")
-    images["mau"] = fig_to_base64()
+    images["Mau"] = fig_to_base64()
     plt.close()
 
     return images
@@ -131,17 +131,24 @@ def model_predictiu(df):
     # Confusion matrix
     # --------------------------
     plt.figure(figsize=(5,4))
-    if len(np.unique(y)) < 2:
+    unique_classes = np.unique(y)
+    if len(unique_classes) < 2:
+        print("Només una classe present en y; es salten els càlculs del model ROC i FI.")
         plt.imshow([[len(y), 0],[0, 0]], cmap="viridis")
         plt.title("Confusion matrix (una sola classe)")
         plt.colorbar()
-        images["confusion_matrix"] = fig_to_base64()
+        images["Confusion_matrix"] = fig_to_base64()
         plt.close()
 
         # ROC i FI no disponibles
         plt.figure(figsize=(5,4))
-        plt.plot([0,1], [0,1])
-        plt.title("ROC no disponible")
+        plt.plot([0,1], [0,1], linestyle='--', color='navy', label='Modelo aleatorio')
+        plt.text(0.5, 0.5, 'ROC no disponible\n(solo una clase en target)', 
+                ha='center', va='center')
+        plt.xlabel('False Positive Rate')
+        plt.ylabel('True Positive Rate')
+        plt.title('Curva ROC')
+        plt.legend()
         images["roc_curve"] = fig_to_base64()
         plt.close()
 
@@ -149,7 +156,7 @@ def model_predictiu(df):
         plt.bar(features, [0]*len(features))
         plt.xticks(rotation=45)
         plt.title("Feature importance no disponible")
-        images["feature_importances"] = fig_to_base64()
+        images["Feature_importances"] = fig_to_base64()
         plt.close()
 
         return {"roc_auc": None}, images
@@ -157,7 +164,7 @@ def model_predictiu(df):
     # --------------------------
     # Si hi ha 2 classes
     # --------------------------
-    model = RandomForestClassifier()
+    model = RandomForestClassifier()   
     model.fit(X, y)
     preds = model.predict(X)
 
