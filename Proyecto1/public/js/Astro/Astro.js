@@ -217,10 +217,7 @@ window.iniciarAstro = function () {
         clicksFets += 1;
         if(clicksFets <= 3){
             mostrarMensaje("Respuesta", respuestaHelp);
-            //cerrarModalPregunta();
-            //modalOpen = false;
             gameActive = true;
-            //modal.style.display = 'none';
         }else {
             const ccc = document.getElementById('borras');
             ccc.style.display = "none"; 

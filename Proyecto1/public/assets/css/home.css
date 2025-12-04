@@ -355,6 +355,14 @@
     font-family: 'Fira Code', 'Courier New', monospace;
 }
 
+/* Poner en gris en caso de bloqueo*/
+.cartucho.bloqueado {
+    pointer-events: none;   /* No se puede clicar */
+    opacity: 0.45;          /* Se ve gris */
+    filter: grayscale(100%); 
+    cursor: not-allowed;
+}
+
 /* Badge */
 .cartucho-badge {
     position: absolute;
