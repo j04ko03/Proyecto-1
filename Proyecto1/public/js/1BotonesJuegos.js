@@ -116,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     window.astroJugable();
                 }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
                     window.capiJugable();
+                }else if (this.dataset.juego === 'Volamentes' && typeof window.inicializarVolamentes === 'function') {
+                    window.inicializarVolamentes();
                 }
 
 
@@ -161,13 +163,14 @@ document.addEventListener("DOMContentLoaded", function () {
                                 const scriptVolamentes = document.createElement("script");
                                 scriptVolamentes.src = "./js/Volamentes/volamentes.js";
                                 scriptVolamentes.setAttribute("data-juego", "true");
-                                scriptVolamentes.onload = () => {
+                                /*scriptVolamentes.onload = () => {*/
                                     console.log("volamentes.js cargado");
+                                    console.log(window);
                                     // Si el script define un inicializador global, llamarlo
                                     if (typeof window.inicializarVolamentes === "function") {
                                         try { window.inicializarVolamentes(); } catch (e) { console.error(e); }
                                     }
-                                };
+                                /*};*/
                                 document.body.appendChild(scriptVolamentes);
                                 break;
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización

@@ -20,4 +20,5 @@
 
 </div>
 
-<script src="{{ asset('js/scriptJuegos/volamentes.js') }}"></script>
+<script src="{{ asset('js/Volamentes/volamentes.js') }}"></script>
+    

@@ -30,7 +30,7 @@
 /* ENGRANAJE */
 .opciones {
     position: relative;
-    border: 1px solid red;
+    border: 1px solid rgb(255, 255, 255);
     z-index: 100;
 }
 
