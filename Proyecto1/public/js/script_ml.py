@@ -3,8 +3,8 @@ import io
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import confusion_matrix, roc_curve, auc
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import roc_curve, auc
 
 
 # ======================================================================
@@ -118,143 +118,151 @@ def generar_grafics(df, dau, mau):
 
 
 # ======================================================================
-# 3) Model predictiu segur - SOLO ROC Y FEATURE IMPORTANCE
+# 3) Model predictiu con ÁRBOL DE DECISIÓN específico para ROC y FI
 # ======================================================================
 def model_predictiu(df):
     images = {}
     
-    # 1. Definir características (features) que usaremos
+    # Features para el modelo
     features = ["session_length", "points_scored", "errors", 
                 "n_attempts", "help_clicks"]
     
-    # Asegurar que todas las features existen en el DataFrame
+    # Asegurar que existen las columnas
     for feature in features:
         if feature not in df.columns:
-            df[feature] = 0  # Si no existe, crear con valor 0
+            df[feature] = 0
     
-    # 2. Preparar datos de entrada (X) y objetivo (y)
     X = df[features]
-    y = df["churn_rate"].astype(int)  # Convertir a entero (0 o 1)
+    y = df["churn_rate"].astype(int)
     
-    # 3. Verificar si tenemos suficientes clases para calcular ROC
-    if len(np.unique(y)) < 2:
-        # Caso: solo una clase (todos 0 o todos 1)
+    # Verificar que tenemos al menos 2 clases
+    unique_classes = np.unique(y)
+    if len(unique_classes) < 2:
         print("⚠️ Solo hay una clase en los datos. No se puede calcular ROC.")
         
-        # Crear gráfico ROC vacío
-        plt.figure(figsize=(6, 5))
-        plt.plot([0, 1], [0, 1], linestyle='--', color='gray', label='Modelo aleatorio')
-        plt.text(0.5, 0.5, 'ROC no disponible\n(Solo hay una clase en los datos)', 
-                ha='center', va='center', fontsize=12)
-        plt.xlabel('False Positive Rate')
-        plt.ylabel('True Positive Rate')
-        plt.title('Curva ROC')
-        plt.legend()
+        # Gráfico ROC de error
+        plt.figure(figsize=(5,4))
+        plt.plot([0, 1], [0, 1], linestyle='--', color='gray')
+        plt.text(0.5, 0.5, 'Solo una clase\nROC no disponible', 
+                ha='center', va='center')
+        plt.title("Curva ROC")
         images["roc_curve"] = fig_to_base64()
         plt.close()
         
-        # Crear gráfico Feature Importance vacío
-        plt.figure(figsize=(8, 5))
-        plt.bar(features, [0] * len(features), color='lightgray')
-        plt.xticks(rotation=45, ha='right')
-        plt.ylabel('Importancia')
-        plt.title('Importancia de Características')
-        plt.tight_layout()
+        # Gráfico Feature Importance de error
+        plt.figure(figsize=(6,4))
+        plt.bar(features, [0]*len(features), color='lightgray')
+        plt.xticks(rotation=45)
+        plt.title("Feature Importance")
         images["feature_importances"] = fig_to_base64()
         plt.close()
         
-        return {"roc_auc": None, 
-                "error": "Solo una clase en los datos"}, images
+        return {"roc_auc": None, "error": "Solo una clase"}, images
     
-    # 4. Entrenar el modelo RandomForest
-    print(f"✅ Entrenando RandomForest con {len(X)} muestras...")
-    model = RandomForestClassifier(
-        n_estimators=100,    # 100 árboles en el bosque
-        random_state=42,     # Para reproducibilidad
-        max_depth=5          # Limitar profundidad para evitar overfitting
+    # ================================================
+    # ENTRENAR ÁRBOL DE DECISIÓN ESPECÍFICO
+    # ================================================
+    
+    # Configurar el árbol de decisión
+    # max_depth=5 para que sea interpretable pero no demasiado simple
+    arbol_model = DecisionTreeClassifier(
+        max_depth=5,           # Controla complejidad
+        min_samples_split=10,  # Mínimo muestras para dividir
+        min_samples_leaf=5,    # Mínimo muestras en hoja
+        random_state=42        # Reproducibilidad
     )
     
-    # Entrenar el modelo (según instrucciones: usar todos los datos)
-    model.fit(X, y)
+    # Entrenar el árbol (según instrucciones, con todos los datos)
+    arbol_model.fit(X, y)
     
-    # 5. Obtener probabilidades para calcular ROC
-    # Usamos predict_proba para obtener probabilidades (no solo 0/1)
-    y_probs = model.predict_proba(X)[:, 1]  # Probabilidad de clase 1 (churn)
+    # ================================================
+    # 1. CURVA ROC CON EL ÁRBOL
+    # ================================================
     
-    # 6. Calcular curva ROC y AUC
+    # Obtener probabilidades para ROC (árbol da probabilidades de clase)
+    y_probs = arbol_model.predict_proba(X)[:, 1]
+    
+    # Calcular curva ROC
     fpr, tpr, thresholds = roc_curve(y, y_probs)
     roc_auc = auc(fpr, tpr)
     
-    # 7. Crear gráfico de la curva ROC
+    # Gráfico de la curva ROC
     plt.figure(figsize=(8, 6))
     
-    # Dibujar la curva ROC
-    plt.plot(fpr, tpr, color='darkorange', linewidth=2.5,
-             label=f'RandomForest (AUC = {roc_auc:.3f})')
+    # Curva ROC del árbol
+    plt.plot(fpr, tpr, color='green', lw=2.5,
+             label=f'Árbol de Decisión (AUC = {roc_auc:.3f})')
     
     # Línea de referencia (modelo aleatorio)
-    plt.plot([0, 1], [0, 1], color='navy', linewidth=1.5, 
+    plt.plot([0, 1], [0, 1], color='navy', lw=1.5, 
              linestyle='--', label='Modelo aleatorio (AUC = 0.5)')
     
     # Rellenar área bajo la curva
-    plt.fill_between(fpr, tpr, alpha=0.2, color='darkorange')
+    plt.fill_between(fpr, tpr, alpha=0.2, color='green')
     
-    # Configurar ejes y título
+    # Configurar gráfico
     plt.xlim([-0.02, 1.02])
     plt.ylim([-0.02, 1.02])
-    plt.xlabel('False Positive Rate (1 - Especificidad)', fontsize=12)
-    plt.ylabel('True Positive Rate (Sensibilidad)', fontsize=12)
-    plt.title('Curva ROC - Predicción de Abandono de Jugadores', fontsize=14, pad=15)
+    plt.xlabel('False Positive Rate', fontsize=12)
+    plt.ylabel('True Positive Rate', fontsize=12)
+    plt.title('Curva ROC - Árbol de Decisión para Churn', fontsize=14)
     plt.legend(loc="lower right", fontsize=11)
     plt.grid(True, alpha=0.3)
     
-    # Añadir texto informativo
+    # Añadir información de métricas
     plt.figtext(0.15, 0.75, 
                 f'AUC = {roc_auc:.3f}\n'
                 f'Muestras = {len(X)}\n'
-                f'Clase 0: {(y == 0).sum()}\n'
-                f'Clase 1: {(y == 1).sum()}',
+                f'Profundidad: {arbol_model.get_depth()}\n'
+                f'Hojas: {arbol_model.get_n_leaves()}',
                 fontsize=10,
                 bbox=dict(boxstyle="round,pad=0.5", 
-                         facecolor="lightyellow", 
+                         facecolor="lightgreen", 
                          alpha=0.8,
-                         edgecolor='orange'))
+                         edgecolor='darkgreen'))
     
-    # Guardar como imagen base64
     images["roc_curve"] = fig_to_base64()
     plt.close()
     
-    # 8. Crear gráfico de Feature Importance
-    importancias = model.feature_importances_
+    # ================================================
+    # 2. FEATURE IMPORTANCE DEL ÁRBOL
+    # ================================================
     
-    # Ordenar de mayor a menor importancia
-    indices = np.argsort(importancias)[::-1]
-    features_ordenadas = [features[i] for i in indices]
-    importancias_ordenadas = importancias[indices]
+    # Obtener importancia de características del árbol
+    importancias = arbol_model.feature_importances_
     
+    # Crear DataFrame para ordenar
+    importancia_df = pd.DataFrame({
+        'Feature': features,
+        'Importance': importancias
+    }).sort_values('Importance', ascending=True)
+    
+    # Gráfico de barras horizontales
     plt.figure(figsize=(10, 6))
     
-    # Crear gráfico de barras horizontales
-    barras = plt.barh(range(len(features_ordenadas)), 
-                     importancias_ordenadas,
-                     color='steelblue', 
-                     alpha=0.8,
-                     height=0.7)
+    # Colores según importancia
+    colors = ['lightblue' if imp < 0.1 else 'steelblue' if imp < 0.3 else 'darkblue' 
+              for imp in importancia_df['Importance']]
     
-    # Etiquetas en el eje Y
-    plt.yticks(range(len(features_ordenadas)), features_ordenadas, fontsize=11)
-    plt.xlabel('Importancia Relativa', fontsize=12)
-    plt.title('Importancia de Características para Predecir Churn', 
-              fontsize=14, pad=15)
+    bars = plt.barh(range(len(importancia_df)), 
+                   importancia_df['Importance'],
+                   color=colors,
+                   alpha=0.8,
+                   height=0.6)
     
-    # Añadir valores numéricos a las barras
-    for i, (bar, importancia) in enumerate(zip(barras, importancias_ordenadas)):
+    # Añadir valores numéricos
+    for i, (bar, importancia) in enumerate(zip(bars, importancia_df['Importance'])):
         plt.text(importancia + 0.005, bar.get_y() + bar.get_height()/2,
                 f'{importancia:.3f} ({importancia*100:.1f}%)',
                 ha='left', va='center', fontsize=10)
     
-    # Añadir línea vertical en la importancia promedio
-    importancia_promedio = np.mean(importancias_ordenadas)
+    # Configurar gráfico
+    plt.yticks(range(len(importancia_df)), importancia_df['Feature'], fontsize=11)
+    plt.xlabel('Importancia Relativa', fontsize=12)
+    plt.title('Importancia de Características - Árbol de Decisión', fontsize=14)
+    
+    # Línea de importancia promedio
+    importancia_promedio = np.mean(importancias)
     plt.axvline(x=importancia_promedio, color='red', linestyle='--', 
                 alpha=0.6, label=f'Promedio: {importancia_promedio:.3f}')
     plt.legend(loc='lower right')
@@ -262,27 +270,116 @@ def model_predictiu(df):
     plt.grid(axis='x', alpha=0.3)
     plt.tight_layout()
     
-    # Guardar como imagen base64
     images["feature_importances"] = fig_to_base64()
     plt.close()
     
-    # 9. Información para la consola (opcional, para debugging)
-    print(f"\n📊 RESULTADOS DEL MODELO:")
-    print(f"   AUC-ROC: {roc_auc:.4f}")
-    print(f"   Muestras totales: {len(X)}")
-    print(f"   Distribución de clases: 0={(y == 0).sum()}, 1={(y == 1).sum()}")
-    print(f"   Característica más importante: {features_ordenadas[0]} "
-          f"({importancias_ordenadas[0]*100:.1f}%)")
+    # ================================================
+    # 3. VISUALIZACIÓN DEL ÁRBOL (OPCIONAL PERO ÚTIL)
+    # ================================================
     
-    # 10. Retornar resultados
-    return {"roc_auc": float(roc_auc),
-            "n_samples": len(X),
-            "best_feature": features_ordenadas[0],
-            "best_feature_importance": float(importancias_ordenadas[0])}, images
+    plt.figure(figsize=(16, 10))
+    
+    # Visualizar el árbol de decisión
+    plot_tree(arbol_model,
+              feature_names=features,
+              class_names=['No Churn', 'Churn'],
+              filled=True,
+              rounded=True,
+              fontsize=9,
+              proportion=True,
+              precision=2)
+    
+    plt.title('Árbol de Decisión Entrenado (max_depth=5)\nReglas para predecir abandono', 
+              fontsize=14, pad=20)
+    plt.tight_layout()
+    
+    images["decision_tree"] = fig_to_base64()
+    plt.close()
+    
+    # ================================================
+    # 4. REGLAS DEL ÁRBOL (TEXTO)
+    # ================================================
+    
+    # Función para extraer reglas del árbol
+    def get_tree_rules(tree, feature_names):
+        from sklearn.tree import _tree
+        
+        tree_ = tree.tree_
+        feature_name = [
+            feature_names[i] if i != _tree.TREE_UNDEFINED else "undefined!"
+            for i in tree_.feature
+        ]
+        
+        rules = []
+        
+        def recurse(node, depth, rule):
+            if tree_.feature[node] != _tree.TREE_UNDEFINED:
+                name = feature_name[node]
+                threshold = tree_.threshold[node]
+                
+                # Rama izquierda
+                new_rule = f"{rule} AND {name} <= {threshold:.2f}" if rule else f"{name} <= {threshold:.2f}"
+                recurse(tree_.children_left[node], depth + 1, new_rule)
+                
+                # Rama derecha
+                new_rule = f"{rule} AND {name} > {threshold:.2f}" if rule else f"{name} > {threshold:.2f}"
+                recurse(tree_.children_right[node], depth + 1, new_rule)
+            else:
+                # Hoja
+                class_prob = tree_.value[node][0]
+                total_samples = class_prob.sum()
+                churn_prob = class_prob[1] / total_samples if total_samples > 0 else 0
+                
+                rule_clean = rule.replace("AND ", "").strip()
+                rules.append({
+                    'rule': rule_clean,
+                    'samples': int(total_samples),
+                    'churn_probability': float(churn_prob),
+                    'prediction': 1 if churn_prob > 0.5 else 0
+                })
+        
+        recurse(0, 1, "")
+        return rules
+    
+    # Extraer reglas
+    tree_rules = get_tree_rules(arbol_model, features)
+    
+    # ================================================
+    # 5. RETORNAR RESULTADOS
+    # ================================================
+    
+    metrics = {
+        "roc_auc": float(roc_auc),
+        "tree_depth": int(arbol_model.get_depth()),
+        "tree_leaves": int(arbol_model.get_n_leaves()),
+        "best_feature": importancia_df.iloc[-1]['Feature'],
+        "best_feature_importance": float(importancia_df.iloc[-1]['Importance']),
+        "n_samples": len(X),
+        "class_distribution": {int(k): int(v) for k, v in zip(*np.unique(y, return_counts=True))},
+        "tree_rules_count": len(tree_rules)
+    }
+    
+    # Mostrar información por consola
+    print(f"\n🌳 ÁRBOL DE DECISIÓN - RESULTADOS:")
+    print(f"   AUC-ROC: {roc_auc:.4f}")
+    print(f"   Profundidad del árbol: {arbol_model.get_depth()}")
+    print(f"   Número de hojas: {arbol_model.get_n_leaves()}")
+    print(f"   Característica más importante: {metrics['best_feature']} ({metrics['best_feature_importance']*100:.1f}%)")
+    print(f"   Reglas extraídas: {len(tree_rules)}")
+    
+    # Mostrar algunas reglas importantes
+    if tree_rules:
+        print(f"\n📋 REGLAS IMPORTANTES DEL ÁRBOL:")
+        for i, rule in enumerate(sorted(tree_rules, key=lambda x: x['samples'], reverse=True)[:3]):
+            print(f"   {i+1}. Si {rule['rule']}")
+            print(f"      → Probabilidad de churn: {rule['churn_probability']:.1%}")
+            print(f"      → Muestras: {rule['samples']}")
+    
+    return metrics, images
 
 
 # ======================================================================
-# 4) RUN PIPELINE (la funció que faltava!)
+# 4) RUN PIPELINE
 # ======================================================================
 def run_pipeline(raw_json):
     df, dau, mau = json_to_df(raw_json)
@@ -310,3 +407,58 @@ def run_pipeline(raw_json):
         "images": {**imgs_basic, **imgs_model},
         "cleaned_df": df.to_dict(orient="records")
     }
+
+
+# ======================================================================
+# EJEMPLO DE USO
+# ======================================================================
+if __name__ == "__main__":
+    # Datos de ejemplo para probar
+    datos_ejemplo = [
+        {
+            "user_id": "user1",
+            "session_length": 300,
+            "points_scored": 50,
+            "errors": 5,
+            "n_attempts": 3,
+            "help_clicks": 2,
+            "churn_rate": 0
+        },
+        {
+            "user_id": "user2", 
+            "session_length": 150,
+            "points_scored": 20,
+            "errors": 10,
+            "n_attempts": 5,
+            "help_clicks": 6,
+            "churn_rate": 1
+        }
+    ] * 50  # Multiplicamos para tener más datos
+    
+    # Añadir más variabilidad
+    import random
+    for i in range(len(datos_ejemplo)):
+        datos_ejemplo[i]["level_reached"] = random.randint(1, 20)
+        if i % 3 == 0:
+            datos_ejemplo[i]["churn_rate"] = 1
+    
+    # Ejecutar pipeline
+    resultados = run_pipeline(datos_ejemplo)
+    
+    print("\n" + "="*50)
+    print("✅ PIPELINE COMPLETADO")
+    print("="*50)
+    print(f"📊 Métricas básicas:")
+    print(f"   Jugadores: {resultados['metrics']['player_count']}")
+    print(f"   Tasa de retención: {resultados['metrics']['retention_rate']:.1%}")
+    print(f"   Tasa de churn: {resultados['metrics']['churn_rate']:.1%}")
+    
+    if resultados['model_metrics'].get('roc_auc'):
+        print(f"\n🤖 Métricas del modelo (Árbol de Decisión):")
+        print(f"   AUC-ROC: {resultados['model_metrics']['roc_auc']:.4f}")
+        print(f"   Característica más importante: {resultados['model_metrics']['best_feature']}")
+        print(f"   Importancia: {resultados['model_metrics']['best_feature_importance']*100:.1f}%")
+    
+    print(f"\n🖼️ Gráficos generados:")
+    for key in resultados['images'].keys():
+        print(f"   - {key}")
