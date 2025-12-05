@@ -12,7 +12,7 @@ body {
 }
 
 main.main-content {
-    height: 100vh;
+    height: 80vh;
     /* altura de toda la pantalla */
     display: flex;
     flex-direction: column;
