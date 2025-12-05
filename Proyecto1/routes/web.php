@@ -63,6 +63,7 @@ Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel'
 Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
 Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);
 
+//Rutas para CapiMates
 Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
 Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
 Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
