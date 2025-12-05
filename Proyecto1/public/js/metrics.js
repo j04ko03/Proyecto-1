@@ -76,10 +76,13 @@ async function runMetrics() {
         const safe = (name) => parsed.images[name] || "";
 
         const ids = {
-            img_cm: "confusion_matrix",
-            img_roc: "roc_curve",
-            img_feat: "feature_importances",
-            img_hist: "session_hist",
+            img_cm: "confusion_matrix_tree",
+            img_roc: "roc_curve_tree",
+            img_feat: "tree_feature_importances",
+            img_rf_cm: "confusion_matrix_rf",
+            img_rf_roc: "roc_curve_rf",
+            img_rf_feat: "feature_importances_rf",
+            img_hist: "session_length_hist",
             img_dau: "dau"
         };
 
