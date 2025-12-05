@@ -3,33 +3,33 @@ window.inicializarVolamentes = function () {
 
     console.log("inicializarVolamentes ejecutando...");
 
-    // Arreglo de preguntas para niños (estructura tolerante a variantes)
+    // Arreglo de preguntas (3 niveles × 3 preguntas) — temas de programación para niños 8-9 años
     const niveles = [
         {
             nombre: "Fácil",
             fondo: '',
             preguntas: [
-                { pregunta: "¿Qué color es el cielo?", opciones: ["Verde", "Azul", "Rojo"], correcta: 1 },
-                { pregunta: "¿Cuánto es 2 + 2?", opciones: ["3", "4", "5"], correcta: 1 },
-                { pregunta: "¿Qué animal dice 'Miau'?", opciones: ["Perro", "Gato", "Vaca"], correcta: 1 }
+                { pregunta: "¿Qué hace el comando 'print' en muchos lenguajes?", opciones: ["Dibujar imágenes", "Mostrar texto en pantalla", "Borrar archivos"], correcta: 1 },
+                { pregunta: "¿Qué es una variable?", opciones: ["Un lugar donde guardas un valor", "Un tipo de comida", "Un dibujo"], correcta: 0 },
+                { pregunta: "¿Para qué sirve un bucle (loop)?", opciones: ["Repetir acciones varias veces", "Guardar datos", "Imprimir texto"], correcta: 0 }
             ]
         },
         {
             nombre: "Medio",
             fondo: '',
             preguntas: [
-                { pregunta: "¿Cuál es la fruta amarilla?", opciones: ["Manzana", "Plátano", "Uva"], correcta: 1 },
-                { pregunta: "¿Qué instrumento tiene teclas y suena así: 'do re mi'?", opciones: ["Guitarra", "Piano", "Batería"], correcta: 1 },
-                { pregunta: "¿Qué animal nada en el agua?", opciones: ["Pez", "Perro", "Caballo"], correcta: 0 }
+                { pregunta: "¿Qué hace una condición 'if' en programación?", opciones: ["Elige una acción si se cumple algo", "Cuenta hasta 10", "Dibuja un círculo"], correcta: 0 },
+                { pregunta: "¿Qué es una lista (array)?", opciones: ["Una secuencia de elementos ordenados", "Un número", "Una función"], correcta: 0 },
+                { pregunta: "¿Qué significa 'debug' o depurar?", opciones: ["Encontrar y arreglar errores", "Escribir música", "Borrar archivos"], correcta: 0 }
             ]
         },
         {
             nombre: "Difícil",
             fondo: '',
             preguntas: [
-                { pregunta: "Si tengo 5 manzanas y me como 2, ¿Cuántas quedan?", opciones: ["2", "3", "4"], correcta: 1 },
-                { pregunta: "¿Cuál es la capital de España?", opciones: ["Madrid", "Barcelona", "Sevilla"], correcta: 0 },
-                { pregunta: "¿Qué número sigue: 2, 4, 6, ___ ?", opciones: ["7", "8", "6"], correcta: 1 }
+                { pregunta: "Si quiero repetir algo 5 veces, ¿qué usaría?", opciones: ["Un bucle (loop)", "Una variable", "Un botón"], correcta: 0 },
+                { pregunta: "¿Qué hace una función en programación?", opciones: ["Agrupa código que realiza una tarea", "Guarda imágenes", "Cambia el color de la pantalla"], correcta: 0 },
+                { pregunta: "¿Por qué es bueno comentar el código?", opciones: ["Para explicar qué hace y facilitar entenderlo", "Para hacerlo más lento", "Para que no funcione"], correcta: 0 }
             ]
         }
     ];
@@ -41,6 +41,12 @@ window.inicializarVolamentes = function () {
     let esperaSiguienteNivel = false; // indica que estamos mostrando resumen de nivel
     const puntajesPorNivel = niveles.map(() => 0);
 
+    // Puntos y umbrales globales
+    const POINTS_PER_QUESTION = 100; // cada pregunta vale 100 puntos
+    const MIN_TOTAL_TO_PASS = 700;   // mínimo total para poder pasar al siguiente juego
+    const TARGET_PUNTOS_POR_NIVEL = Math.ceil(MIN_TOTAL_TO_PASS / niveles.length);
+    let volverAIntentar = false; // si estamos en último nivel y no alcanzó mínimo
+
     const fondo = document.getElementById("fondo");
     const textoPregunta = document.getElementById("textoPregunta");
     const opcionesDiv = document.getElementById("opciones");
@@ -51,6 +57,18 @@ window.inicializarVolamentes = function () {
     // "Nivel X : Nombre" y mantener el mismo estilo visual.
     const tituloJuegoEl = document.querySelector('.titulo-juego');
     const tituloOriginal = tituloJuegoEl ? tituloJuegoEl.textContent : 'Volamentes';
+
+    // Inyectar estilo para el efecto 'mal' (sacudida / movimiento)
+    (function ensureStyles(){
+        if (document.getElementById('volamentes-styles')) return;
+        const s = document.createElement('style');
+        s.id = 'volamentes-styles';
+        s.textContent = `
+        .mal { color: #ff3b3b; font-weight: 700; animation: shake 0.8s ease-in-out infinite; }
+        @keyframes shake { 0%{ transform: translateX(0);} 20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} 100%{ transform: translateX(0);} }
+        `;
+        document.head.appendChild(s);
+    })();
 
     function mostrarNivelNombre() {
         const nivel = niveles[nivelActual];
@@ -123,8 +141,8 @@ window.inicializarVolamentes = function () {
         const correctaIdx = p.correcta;
         if (index === correctaIdx) {
             botones[index].classList.add("correcta");
-            puntaje += 10;
-            puntajesPorNivel[nivelActual] += 10;
+            puntaje += POINTS_PER_QUESTION;
+            puntajesPorNivel[nivelActual] += POINTS_PER_QUESTION;
         } else {
             botones[index].classList.add("incorrecta");
             if (botones[correctaIdx]) botones[correctaIdx].classList.add("correcta");
@@ -152,8 +170,16 @@ window.inicializarVolamentes = function () {
             // No avanzar si el usuario no ha respondido la pregunta actual
             if (!respuestaSeleccionada && !esperaSiguienteNivel) return;
 
-            // Si estamos mostrando el resumen del nivel, al pulsar avanzamos al siguiente nivel
+            // Si estamos mostrando el resumen del nivel
             if (esperaSiguienteNivel) {
+                // Si estamos en modo 'volver a intentar' (último nivel y no alcanzó mínimo)
+                if (volverAIntentar) {
+                    // reiniciar el juego
+                    resetGame();
+                    volverAIntentar = false;
+                    return;
+                }
+                // avanzar al siguiente nivel
                 nivelActual++;
                 preguntaActual = 0;
                 respuestaSeleccionada = false;
@@ -198,13 +224,97 @@ window.inicializarVolamentes = function () {
         if (opcionesDiv) opcionesDiv.innerHTML = '';
         // mantener el puntaje total visible
         if (puntajeTxt) puntajeTxt.textContent = `Puntaje total: ${puntaje}`;
+
+            // Mostrar si alcanzó la meta o no
+            // eliminamos clases previas
+            if (textoPregunta) {
+                textoPregunta.classList.remove('mal');
+                textoPregunta.classList.remove('bien');
+            }
+
+            if (puntos >= TARGET_PUNTOS_POR_NIVEL) {
+                // nivel superado
+                if (textoPregunta) textoPregunta.textContent += ' 🎉 Objetivo alcanzado.';
+            } else {
+                // nivel no alcanzado: mostrar mensaje con efecto de movimiento
+                if (textoPregunta) {
+                    textoPregunta.textContent = `¡Muy mal! Necesitabas ${TARGET_PUNTOS_POR_NIVEL} puntos.`;
+                    textoPregunta.classList.add('mal');
+                }
+            }
+
+            // Si este era el último nivel, comprobamos el mínimo total necesario
+            if (nivelActual + 1 >= niveles.length) {
+                if (puntaje >= MIN_TOTAL_TO_PASS) {
+                    // El jugador alcanza el mínimo global: mostrar botón Jugar de nuevo
+                    if (!document.getElementById('btnReiniciar')) {
+                        const btn = document.createElement('button');
+                        btn.id = 'btnReiniciar';
+                        btn.className = 'btn-volamentes';
+                        btn.textContent = 'Jugar de nuevo';
+                        btn.style.marginTop = '12px';
+                        btn.addEventListener('click', resetGame);
+                        if (opcionesDiv) opcionesDiv.appendChild(btn);
+                    }
+                    if (btnSiguiente) btnSiguiente.style.display = 'none';
+                } else {
+                    // No alcanzó el mínimo global: cambiar botón Continuar por Volver a Intentar
+                    if (textoPregunta) textoPregunta.textContent = 'No has llegado al límite requerido';
+                    if (btnSiguiente) {
+                        btnSiguiente.textContent = 'Volver a Intentar';
+                        volverAIntentar = true;
+                    }
+                }
+            }
+
+        // Opcional: aquí se podría enviar el resultado del nivel al servidor.
+        // Se ha eliminado el ejemplo de fetch por claridad. Para guardar en
+        // backend usa el endpoint `POST /juego/guardar-volamentes` con JSON
+        // que incluya al menos `datosSesionId` y `score`.
     }
+
+    // Opcional: para iniciar la sesión de juego desde el cliente (crear DatosSesion),
+    // llama al endpoint `POST /juego/iniciar-volamentes`. El servidor devolverá
+    // `datosSesionId` para usar en los posteriores guardados.
 
     function mostrarResumenFinal() {
         if (textoPregunta) textoPregunta.textContent = `¡Has completado el juego! Puntaje final: ${puntaje}`;
         if (opcionesDiv) opcionesDiv.innerHTML = '';
         if (puntajeTxt) puntajeTxt.textContent = `Puntaje total: ${puntaje}`;
         if (btnSiguiente) btnSiguiente.style.display = 'none';
+    }
+
+    // Reinicia las variables del juego y UI para jugar de nuevo
+    function resetGame() {
+        // reset valores
+        nivelActual = 0;
+        preguntaActual = 0;
+        puntaje = 0;
+        respuestaSeleccionada = false;
+        esperaSiguienteNivel = false;
+        // reset puntajes por nivel
+        for (let i = 0; i < puntajesPorNivel.length; i++) puntajesPorNivel[i] = 0;
+        volverAIntentar = false;
+
+        // Restaurar UI
+        if (puntajeTxt) puntajeTxt.textContent = "Puntaje: 0";
+        if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
+        if (tituloJuegoEl) tituloJuegoEl.textContent = tituloOriginal;
+        if (opcionesDiv) opcionesDiv.innerHTML = '';
+        if (btnSiguiente) {
+            btnSiguiente.style.display = '';
+            btnSiguiente.textContent = 'Siguiente';
+        }
+
+        // eliminar boton reiniciar si existe
+        const rein = document.getElementById('btnReiniciar');
+        if (rein && rein.parentNode) rein.parentNode.removeChild(rein);
+
+        // quitar clases de animacion
+        if (textoPregunta) {
+            textoPregunta.classList.remove('mal');
+            textoPregunta.classList.remove('bien');
+        }
     }
 
     // Inicializamos los textos visible
