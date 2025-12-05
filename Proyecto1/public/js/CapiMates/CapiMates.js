@@ -6,6 +6,10 @@ window.iniciarCapiMates = function () {
     let animacionId;
     let obstaculosArray = [];
     let intervaloPreguntas;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    let datosSesionIdX = 0;
+    let usuarioId = null;
+    let juegoId = null;
 
 
     /* ------------- UI CAPIMATES izq ------------- */
@@ -313,8 +317,81 @@ window.iniciarCapiMates = function () {
         if (vidas <= 0) {
             juegoActivo = false;
             clearInterval(intervaloPreguntas);
-            mostrarMensaje("Juego Terminado", "Has perdido todas tus vidas. Pulsa JUGAR para reiniciar.");
+
+            guardarPuntuacionFinal();
+
+            // DESBLOQUEAR SIGUIENTE JUEGO
+            fetch('/Proyecto-1/Proyecto1/public/juegos/capimates/desbloquear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    juegoId: juegoId   // ID del juego actual desde tus cookies
+                })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log("Juego desbloqueado:", data);
+
+                    if (data.status === "ok") {
+                        mostrarMensaje(
+                            "¡Juego completado!",
+                            "¡Has desbloqueado un nuevo juego! 🎉"
+                        );
+                    } else if (data.status === "already-unlocked") {
+                        mostrarMensaje(
+                            "Juego ya desbloqueado",
+                            "El siguiente juego ya estaba disponible."
+                        );
+                    } else if (data.status === "no-more-games") {
+                        mostrarMensaje(
+                            "¡Fin de la aventura!",
+                            "No hay más juegos para desbloquear."
+                        );
+                    }
+
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
+
+                })
+                .catch(err => {
+                    console.error("ERROR AL DESBLOQUEAR:", err);
+                    mostrarMensaje("Error", "No se pudo desbloquear el siguiente juego.");
+                });
         }
+    }
+
+    function guardarPuntuacionFinal() {
+
+        fetch('/Proyecto-1/Proyecto1/public/juegos/capimates/finalizar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                datosSesionId: datosSesionIdX,
+                score: puntos,
+                numeroIntentos: 0,
+                errores: 0,
+                puntuacion: puntos,
+                helpclicks: 0,
+                returningPlayer: false
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log("✔ Puntuación guardada en BD:", data);
+            })
+            .catch(err => {
+                console.error("❌ ERROR al guardar puntuación:", err);
+            });
+
     }
 
     function dibujarVidas() {
@@ -384,20 +461,57 @@ window.iniciarCapiMates = function () {
     //Iniciar el Juego, Ver para futuro implementar mas niveles
 
     function iniciarCapiMates() {
-        juegoActivo = true;
-        puntos = 0;
-        vidas = 3;
 
+        const dades = extreureCookie("user");
+        usuarioId = dades.user;
+        juegoId = parseInt(dades.game);
 
-        intervaloPreguntas = setInterval(() => {
-            if (juegoActivo) {
-                mostrarPregunta();
+        // 1. Crear la sesión en server
+        fetch('/Proyecto-1/Proyecto1/public/juegos/capimates/iniciar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({
+                usuarioId: usuarioId,
+                juegoId: juegoId
+            })
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                datosSesionIdX = data.datosSesionId;
+
+                // 2. Iniciar juego realmente
+                juegoActivo = true;
+                puntos = 0;
+                vidas = 3;
+
+                intervaloPreguntas = setInterval(() => {
+                    if (juegoActivo) mostrarPregunta();
+                }, 15000);
+
+                dibujarVidas();
+                loop();
+
+            }).catch(err => {
+                console.error("ERROR al iniciar sesión del juego:", err);
+            });
+    }
+
+    function extreureCookie(clau) {
+        const cookies = document.cookie.split('; ');
+        let vuelta = null;
+
+        for (let c of cookies) {
+            const [key, value] = c.split('=');
+            if (key === clau) {
+                vuelta = JSON.parse(value);
             }
-        }, 15000);
-
-
-        dibujarVidas();
-        loop();
+        }
+        return vuelta;
     }
 
     // Logicas del juego

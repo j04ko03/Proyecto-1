@@ -49,7 +49,7 @@
 
           <input id="quizAnswer" type="text" placeholder="Escribe tu respuesta"/>
 
-          <button id="revisar-respuesta-btn" onclick="revisarRespuesta()">Responder</button>
+          <button id="revisar-respuesta-btn">Responder</button>
 
         </div>
     </div>
