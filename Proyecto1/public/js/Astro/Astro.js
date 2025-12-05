@@ -34,6 +34,7 @@ window.iniciarAstro = function () {
 
         //canvas.width = width;
         //canvas.height = height;
+        //canvas.style.width = width + "px";
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
         canvas.style = "border: 1px solid blue";

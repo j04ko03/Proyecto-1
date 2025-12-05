@@ -27,8 +27,8 @@
     </div>
 
     <!-- canva elemento html5 Lienzo donde para dibujar gráficos dinámicos usando el JavaScript -->
-    <div id="contenedorCanvas" class="contenedorCanvas">
-        <canvas id="canvas"></canvas>
+    <div id="contenedorCanvas" class="contenedorCanvas" style="width: 100%; height: 350px; display: flex; justify-content: center; align-content: center;">
+        <canvas id="canvas" class="conCan" style="width: 100%;"></canvas>
     </div>
     
     <!-- Story de capi -->

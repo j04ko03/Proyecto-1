@@ -32,7 +32,7 @@
         </div>
 
         {{-- Pantalla central --}}
-            <div id="pantallaJuego" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
+            <div id="pantallaJuego" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                 {{-- Aquí se cargará el contenido del juego vía AJAX --}}
 
                     <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; border-radius: 50%;">

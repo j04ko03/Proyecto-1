@@ -492,7 +492,12 @@
 }
 
 /* ==================== RESPONSIVE ==================== */
-
+@media screen and (max-width: 1599px) {
+    #pantallaJuego {
+        min-height: 400px;
+        height: 400px;
+    }
+}
 /* Tablet y laptops pequeñas */
 @media screen and (max-width: 1024px) {
     .consola {
@@ -528,6 +533,7 @@
     
     #pantallaJuego {
         min-height: 350px;
+        height: 350px;
     }
 }
 
@@ -558,7 +564,10 @@
     
     #pantallaJuego {
         order: 2;
-        min-height: 300px;
+        min-height: 275px;
+        height: 250px;
+        min-width: 300px;
+        width: 300px;
     }
     
     .derecha {
