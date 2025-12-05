@@ -19,7 +19,7 @@
     background: #090909;
     border-bottom: 3px solid #0f0;
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
     padding: 0 25px;
@@ -52,6 +52,7 @@
     width: 160px;
     box-shadow: 0 0 10px #0f0;
     z-index: 9999999999999999999999999;
+    margin-top: 3%;
 }
 
 .dropdown a {

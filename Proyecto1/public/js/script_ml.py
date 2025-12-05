@@ -103,7 +103,7 @@ def generar_grafics(df, dau, mau):
     plt.plot(dau.index.astype(str), dau.values, marker="o")
     plt.xticks(rotation=45)
     plt.title("DAU")
-    images["dau"] = fig_to_base64()
+    images["DAU"] = fig_to_base64()
     plt.close()
 
     # MAU
@@ -111,7 +111,7 @@ def generar_grafics(df, dau, mau):
     plt.plot(mau.index.astype(str), mau.values, marker="o")
     plt.xticks(rotation=45)
     plt.title("MAU")
-    images["mau"] = fig_to_base64()
+    images["MAU"] = fig_to_base64()
     plt.close()
 
     return images
@@ -149,7 +149,7 @@ def model_predictiu(df):
         plt.bar(features, [0]*len(features))
         plt.xticks(rotation=45)
         plt.title("Feature importance no disponible")
-        images["feature_importances"] = fig_to_base64()
+        images["FEATURE IMPORTANCE"] = fig_to_base64()
         plt.close()
 
         return {"roc_auc": None}, images
@@ -166,7 +166,7 @@ def model_predictiu(df):
     plt.imshow(cm, cmap="viridis")
     plt.title("Confusion matrix")
     plt.colorbar()
-    images["confusion_matrix"] = fig_to_base64()
+    images["CONFUSION MATRIX"] = fig_to_base64()
     plt.close()
 
     # ROC
@@ -178,7 +178,7 @@ def model_predictiu(df):
     plt.plot(fpr, tpr, label=f"AUC={roc_auc:.2f}")
     plt.legend()
     plt.title("ROC curve")
-    images["roc_curve"] = fig_to_base64()
+    images["ROC CURVE"] = fig_to_base64()
     plt.close()
 
     # Feature importance
@@ -186,7 +186,7 @@ def model_predictiu(df):
     plt.bar(features, model.feature_importances_)
     plt.xticks(rotation=45)
     plt.title("Feature Importances")
-    images["feature_importances"] = fig_to_base64()
+    images["FEATURE IMPORTANCES"] = fig_to_base64()
     plt.close()
 
     return {"roc_auc": float(roc_auc)}, images
