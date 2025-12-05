@@ -67,6 +67,11 @@ Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoA
 Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
 Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
 
+// Rutas para Volamentes (consistentes con los fetch usados en el frontend)
+Route::post('/juego/iniciar-volamentes', [JuegoController::class, 'iniciarJuegoVolamentes']);
+Route::post('/juego/guardar-volamentes', [JuegoController::class, 'guardarVolamentes']);
+Route::post('/juego/desbloquear-volamentes', [JuegoController::class, 'desbloquearJuego']);
+
 //Rutas de las metricas
 Route::get('/metrics/sessions', [MetricasController::class, 'exportDatosSesionJson']);
 Route::get('/metrics/sessions.csv', [MetricasController::class, 'exportDatosSesionCsv']);

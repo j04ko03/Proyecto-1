@@ -256,6 +256,19 @@ window.inicializarVolamentes = function () {
                         btn.addEventListener('click', resetGame);
                         if (opcionesDiv) opcionesDiv.appendChild(btn);
                     }
+
+                    // Mostrar botón para desbloquear el siguiente juego
+                    if (!document.getElementById('btnContinuar')) {
+                        const btnC = document.createElement('button');
+                        btnC.id = 'btnContinuar';
+                        btnC.className = 'btn-volamentes';
+                        btnC.textContent = 'Continuar (desbloquear siguiente juego)';
+                        btnC.style.marginTop = '12px';
+                        btnC.style.marginLeft = '8px';
+                        btnC.addEventListener('click', desbloquearSiguienteJuego);
+                        if (opcionesDiv) opcionesDiv.appendChild(btnC);
+                    }
+
                     if (btnSiguiente) btnSiguiente.style.display = 'none';
                 } else {
                     // No alcanzó el mínimo global: cambiar botón Continuar por Volver a Intentar
@@ -314,6 +327,39 @@ window.inicializarVolamentes = function () {
         if (textoPregunta) {
             textoPregunta.classList.remove('mal');
             textoPregunta.classList.remove('bien');
+        }
+    }
+
+    // Acción para desbloquear el siguiente juego cuando se alcanza el mínimo requerido
+    function desbloquearSiguienteJuego() {
+        console.log('Solicitando desbloqueo del siguiente juego...');
+        // UI feedback inmediato
+        if (textoPregunta) textoPregunta.textContent = '¡Siguiente juego desbloqueado! Redirigiendo...';
+
+        // Si quieres notificar al servidor, descomenta el fetch y ajusta la ruta
+        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+        if (window.datosSesionId) {
+            fetch('/juego/desbloquear-volamentes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrf
+                },
+                body: JSON.stringify({ datosSesionId: window.datosSesionId, score: puntaje })
+            }).then(res => res.json()).then(data => {
+                console.log('Servidor respondió desbloqueo:', data);
+                // Si el servidor devuelve una URL para continuar, redirigimos
+                if (data && data.siguienteUrl) {
+                    window.location.href = data.siguienteUrl;
+                }
+            }).catch(err => {
+                console.warn('No se pudo notificar al servidor, continúa localmente.', err);
+            });
+        } else {
+            // Fallback: si no hay datosSesionId, simplemente mostrar mensaje.
+            setTimeout(() => {
+                if (textoPregunta) textoPregunta.textContent = 'Puedes continuar al siguiente juego.';
+            }, 800);
         }
     }
 
