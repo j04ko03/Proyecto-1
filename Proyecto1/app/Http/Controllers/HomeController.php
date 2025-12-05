@@ -98,6 +98,9 @@ class HomeController extends Controller
     {
         $etiquetas = [
             1 => 'MATEMÁTICAS',
+            2 => 'INFORMATICA',
+            3 => 'MATEMÁTICAS',
+            4 => 'INFORMATICA'
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';
