@@ -143,7 +143,6 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     y = df["churn_rate"].astype(int).values
 
     if len(np.unique(y)) < 2:
-        # Solo una clase: no podemos entrenar modelo
         plt.figure(figsize=(5,4))
         plt.plot([0,1],[0,1])
         plt.title("ROC no disponible (una sola clase)")
@@ -157,11 +156,11 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     # Decision Tree
     tree = DecisionTreeClassifier(max_depth=3, random_state=random_state)
     tree.fit(X_train, y_train)
-    y_pred_tree = tree.predict(X_test)
     y_prob_tree = tree.predict_proba(X_test)[:,1]
 
     plt.figure(figsize=(20,10))
-    plot_tree(tree, feature_names=features, class_names=["No Churn","Churn"], filled=True, rounded=True, fontsize=12)
+    plot_tree(tree, feature_names=features, class_names=["No Churn","Churn"],
+              filled=True, rounded=True, fontsize=12)
     images["decision_tree_plot"] = fig_to_base64()
 
     plt.figure(figsize=(6,4))
@@ -174,7 +173,7 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     roc_auc_tree = auc(fpr_t, tpr_t)
     plt.figure(figsize=(6,4))
     plt.plot(fpr_t, tpr_t, label=f"AUC={roc_auc_tree:.2f}")
-    plt.plot([0,1],[0,1], 'k--')
+    plt.plot([0,1],[0,1],'k--')
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
     plt.title("ROC Curve (Decision Tree)")
@@ -184,11 +183,11 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     # Random Forest
     rf = RandomForestClassifier(random_state=random_state)
     rf.fit(X_train, y_train)
-    y_pred_rf = rf.predict(X_test)
     y_prob_rf = rf.predict_proba(X_test)[:,1]
+    y_pred_rf = rf.predict(X_test)
 
-    plt.figure(figsize=(5,4))
     cm_rf = confusion_matrix(y_test, y_pred_rf)
+    plt.figure(figsize=(5,4))
     plt.imshow(cm_rf, cmap="viridis")
     plt.title("Confusion Matrix (Random Forest)")
     plt.colorbar()
@@ -219,7 +218,6 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     }
 
     return metrics, images
-
 # ======================================================================
 # 4) RUN PIPELINE
 # ======================================================================
