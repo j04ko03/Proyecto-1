@@ -497,6 +497,21 @@
     animation: cartuchoGlow 2s infinite;
 }
 
+/* Cartucho bloqueado: gris + sin interacción */
+.cartucho.bloqueado {
+    filter: grayscale(100%) brightness(0.7);
+    cursor: not-allowed !important;
+    pointer-events: none; /* DESACTIVA CLICK COMPLETAMENTE */
+    transform: none !important;
+    opacity: 0.6;
+}
+
+/* Evitar hover y efectos */
+.cartucho.bloqueado:hover {
+    transform: none !important;
+    filter: grayscale(100%) brightness(0.7) !important;
+}
+
 @keyframes cartuchoGlow {
     0%, 100% { 
         filter: drop-shadow(0 0 20px rgba(79, 195, 247, 0.8))
