@@ -36,7 +36,7 @@ window.iniciarAstro = function () {
         //canvas.height = height;
         //canvas.style.width = width + "px";
         //canvas.style.height = height + "px";
-        canvas.style = "border: 1px solid blue";
+        //canvas.style = "border: 1px solid blue";
 
         // aquí puedes adaptar tu juego en caliente:
         // actualizar cámara, bounds, físicas, HUD, etc.

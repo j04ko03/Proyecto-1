@@ -8,7 +8,6 @@ function redimensionarCanva(){
     const contenedorCanvas = document.getElementById('contenedorCanvas');
     canvas.width = contenedorCanvas.clientWidth;   
     canvas.height = contenedorCanvas.clientHeight; 
-    canvas.style = "border: 1px solid red";
 
     //Ajustar tamaño del canva en caso de una redimensión de ventana
     function ajustarCanvas() {
