@@ -1,4 +1,4 @@
-<div id="contenedorJuego" class="contenedorJuego">
+<div id="contenedorJuego" class="contenedorJuego" style="height: 100%">
     <div id="ui" class="ui">
         <div class="ui-left" style="display: flex; flex-wrap: wrap; width: 150px;">
             <div style="width: 30%;">
@@ -27,8 +27,8 @@
     </div>
 
     <!-- canva elemento html5 Lienzo donde para dibujar gráficos dinámicos usando el JavaScript -->
-    <div id="contenedorCanvas" class="contenedorCanvas">
-        <canvas id="canvas"></canvas>
+    <div id="contenedorCanvas" class="contenedorCanvas" style="display: flex; justify-content: center; align-items: center; align-content: center;">
+        <canvas id="canvas" class="cann" style="height: 100%"></canvas>
     </div>
     
     <!-- Story de capi -->

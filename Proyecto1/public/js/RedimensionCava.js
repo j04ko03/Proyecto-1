@@ -12,9 +12,9 @@ function redimensionarCanva(){
 
     //Ajustar tamaño del canva en caso de una redimensión de ventana
     function ajustarCanvas() {
-        canvas.width = contenedorCanvas.clientWidth;
+        /*canvas.width = contenedorCanvas.clientWidth;
         canvas.height = contenedorCanvas.clientHeight;
-        console.log('Redimensionando...');
+        console.log('Redimensionando...');*/
 
         // 🔥 Emitimos un evento indicando que cambió el tamaño
         window.dispatchEvent(
