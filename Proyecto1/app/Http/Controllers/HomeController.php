@@ -26,7 +26,7 @@ class HomeController extends Controller
     }
 
     // ORDENAR SIEMPRE POR NOMBRE
-    $query->orderBy('nombre', 'asc');
+    //$query->orderBy('nombre', 'asc');
 
     $cartuchos = $query->get();
 

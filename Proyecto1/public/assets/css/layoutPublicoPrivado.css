@@ -1,7 +1,6 @@
 html,
 body {
     height: 100%;
-    margin: 0;
 }
 
 .background {
@@ -9,6 +8,7 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    height: 69%;
 }
 
 main.main-content {
