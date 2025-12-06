@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="{{ asset('assets/css/UIVolamentes.css') }}">
 
 <div id="fondo" class="fondo"></div>
 
@@ -20,4 +19,4 @@
 
 </div>
 
-<script src="{{ asset('js/scriptJuegos/volamentes.js') }}"></script>
+<script src="{{ asset('js/Volamentes/volamentes.js') }}"></script>

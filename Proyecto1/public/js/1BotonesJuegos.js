@@ -72,6 +72,11 @@
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
 
+            if (this.dataset.bloqueado === "1") {
+                console.log("Cartucho bloqueado. No se puede jugar.");
+                return; // No hacer nada
+            }
+
             if (window.homeS) {
                 window.homeS.pause();
                 window.homeS.currentTime = 0;

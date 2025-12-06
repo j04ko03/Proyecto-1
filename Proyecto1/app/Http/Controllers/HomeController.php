@@ -9,7 +9,8 @@ class HomeController extends Controller
 {
     public function index(Request $request)
 {
-     $query = Cartucho::where('isBlocked', false);
+     //$query = Cartucho::where('isBlocked', false);
+     $query = Cartucho::query();
 
     // FILTRO POR NOMBRE (SI EL USUARIO ESCRIBE ALGO)
     if ($request->filled('codi_buscar')) {
@@ -25,7 +26,7 @@ class HomeController extends Controller
     }
 
     // ORDENAR SIEMPRE POR NOMBRE
-    $query->orderBy('nombre', 'asc');
+    //$query->orderBy('nombre', 'asc');
 
     $cartuchos = $query->get();
 
@@ -97,6 +98,9 @@ class HomeController extends Controller
     {
         $etiquetas = [
             1 => 'MATEMÁTICAS',
+            2 => 'INFORMATICA',
+            3 => 'MATEMÁTICAS',
+            4 => 'INFORMATICA'
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';

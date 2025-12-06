@@ -118,8 +118,28 @@ class UsuarioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Usuario $usuario)
+    public function destroy($id)
     {
-        //
+        $auth = auth()->user();          // Usuario que está logueado
+        $target = Usuario::find($id);    // Usuario a eliminar
+
+        if (!$target) {
+            return back()->with('error', 'Usuario no encontrado.');
+        }
+
+        // No eliminarse a sí mismo
+        if ($auth->id == $target->id) {
+            return back()->with('error', 'No puedes eliminar tu propio usuario.');
+        }
+
+        if (
+            ($auth->id_rol == 1 && ($target->id_rol == 2 || $target->id_rol == 3)) ||
+            ($auth->id_rol == 2 && $target->id_rol == 3)
+        ) {
+            $target->delete();
+            return back()->with('success', 'Usuario eliminado correctamente.');
+        }
+
+        return back()->with('error', 'No tienes permiso para eliminar a este usuario.');
     }
 }

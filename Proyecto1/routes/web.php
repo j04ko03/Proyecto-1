@@ -18,7 +18,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/Astro', [RutasControlador::class, 'juego1View'])->name('astro.controller');
 
     Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
-    
+
     Route::get('/Bosque', [RutasControlador::class, 'juego4View'])->name('bosque.controller');
 
     Route::get('/Volamentes', [RutasControlador::class, 'juego2View'])->name('volamentes.controller');
@@ -62,6 +62,15 @@ Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro
 Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
 Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
 Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);
+
+Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
+Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
+Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
+
+// Rutas para Volamentes (consistentes con los fetch usados en el frontend)
+Route::post('/juego/iniciar-volamentes', [JuegoController::class, 'iniciarJuegoVolamentes']);
+Route::post('/juego/guardar-volamentes', [JuegoController::class, 'guardarVolamentes']);
+Route::post('/juego/desbloquear-volamentes', [JuegoController::class, 'desbloquearJuego']);
 
 //Rutas de las metricas
 Route::get('/metrics/sessions', [MetricasController::class, 'exportDatosSesionJson']);
