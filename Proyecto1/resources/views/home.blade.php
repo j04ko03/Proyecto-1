@@ -3,23 +3,24 @@
 @push('styles')
     <link rel="stylesheet" href="{{ asset('assets/css/styles.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/UIVolamentes.css') }}">
 @endpush
 
 @section('content')
 {{-- Consola Gamer --}}
 <div class="consola">
     <div class="led-power"></div>
-    
+
     <!-- Detalles decorativos -->
     <div class="corner-detail top-left"></div>
     <div class="corner-detail top-right"></div>
     <div class="corner-detail bottom-left"></div>
     <div class="corner-detail bottom-right"></div>
-    
+
     <div class="side-line top"></div>
     <div class="side-line bottom"></div>
-    
-    <div class="interiorConsola" style="display: flex; flex-wrap: nowrap; align-content: center; justify-content: center;">
+
+    <div class="interiorConsola">
         {{-- D-Pad izquierdo --}}
         <div class="izquierda">
             <div class="d-pad-container">
@@ -29,19 +30,19 @@
                 <button class="d-pad-btn left" data-key="a" aria-label="Izquierda"></button>
             </div>
         </div>
-        
+
         {{-- Pantalla central --}}
-            <div id="pantallaJuego" style="width: 100%; height: 400px; display: flex; align-items: center; justify-content: center;">
+            <div id="pantallaJuego">
                 {{-- Aquí se cargará el contenido del juego vía AJAX --}}
-                
+
                     <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; border-radius: 50%;">
                         <div style="font-size: 3em; margin-bottom: 20px;">🎮</div>
                         <div style="font-size: 1.2em; color: #bdc3c7;">Selecciona un juego</div>
                         <div style="font-size: 0.9em; color: #bdc3c7;">Haz click en un cartucho para comenzar</div>
                     </div>
-                    
+
             </div>
-        
+
         {{-- Botones A/B derechos --}}
         <div class="derecha">
             <button class="action-btn btn-a" data-key="space" aria-label="Botón A">A</button>
@@ -61,4 +62,6 @@
     window.usuarioLogeado = {{ auth()->user()->id ?? 'null' }};
 </script>
 <script src="{{ url('/js/homeMusic.js') }}"></script>
+
+
 @endsection

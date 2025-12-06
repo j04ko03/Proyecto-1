@@ -27,9 +27,18 @@ class RutasControlador extends Controller
     {
         return view('UIGames.UIAstroGame');
     }
+        public function juego2View()
+    {
+        return view('UIGames.volamentes');
+    }
 
     public function juego3View()
     {
         return view('UIGames.UICapiMatesGame');
+    }
+
+    public function juego4View()
+    {
+        return view('UIGames.UIBosqueGame');
     }   
 } 

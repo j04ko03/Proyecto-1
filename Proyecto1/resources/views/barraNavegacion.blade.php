@@ -1,4 +1,4 @@
-<div class="retro-navbar" style="border: 1px solid purple; height: 10%; width: 100%;">
+<div class="retro-navbar" style="height: 10%; width: 100%;">
 
     <!-- NOMBRE DEL USUARIO -->
     <div class="nombre">
@@ -17,18 +17,24 @@
             </div>
         </form>
     @endif
-    
+
 
 
     <!-- ENGRANAJE -->
+    @include('components.desplegable')
+
     <div class="opciones">
         <img src="{{ asset('img/iconoSettings.png') }}" alt="Opciones" class="iconoEngranaje">
 
-        <div class="dropdown">
+        <div class="dropdown">             {{--//////// Rol: 1 = SuperAdmin, Rol 2 = Admin, Rol 3 = Usuario ////////--}}
             <a href="{{ route('home.controller') }}">Home</a>
-            <a href="#">Perfil</a>
-            <a href="{{ route('usuarios.index') }}">Usuarios</a>
-            <a href="{{ route('metricas.controller') }}">Estadísticas</a>
+            {{-- <a href="#">Perfil</a> --}}
+            @if (Auth::user()->id_rol === '1' || Auth::user()->id_rol === '2')
+                <a href="{{ route('usuarios.index') }}">Usuarios</a>
+            @endif
+            @if (Auth::user()->id_rol === '1')
+                <a href="{{ route('metricas.controller') }}">Estadísticas</a>
+            @endif
             <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
         </div>
     </div>

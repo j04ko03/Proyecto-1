@@ -2,10 +2,12 @@
 .consola {
     position: relative;
     width: 90vw;
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 50px auto;
     padding: 0;
-    aspect-ratio: 2.5 / 1;
+    /*aspect-ratio: 2.5 / 1;*/
+    min-height: 500px;
+    height: 800px;
     background: #090909;
     border-radius: 25px;
     border: 4px solid #0f0;
@@ -22,13 +24,14 @@
 }
 
 .interiorConsola {
+    margin-top: 1.5%;
     display: grid;
     grid-template-columns: 0.5fr 3fr 0.5fr;
     gap: 30px;
     align-items: center;
-    padding: 2% 5% 10% 5%;
+    padding: 2% 5% 2% 5%;
     min-height: 300px;
-    height: auto;
+    height: 450px;
     z-index: 2;
     position: relative;
 }
@@ -57,28 +60,48 @@
     overflow: hidden;
 }
 
+/* PANTALLA DE JUEGO - MODIFICADO PARA RESPONSIVE */
 #pantallaJuego {
     width: 100%;
     height: 100%;
     max-width: 100%;
-    aspect-ratio: 16 / 10;
     background: #000;
     border-radius: 10px;
-    box-shadow:
-        inset 0 0 30px rgba(0, 255, 0, 0.7);
+    box-shadow: inset 0 0 30px rgba(0, 255, 0, 0.7);
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+    position: relative;
 }
 
-/* Que ocupe todo el espacio */
-#pantallaJuego > * {
+/* CANVAS RESPONSIVE - CLAVE */
+#pantallaJuego canvas {
+    display: block;
     max-width: 100%;
     max-height: 100%;
-    width: 100%;
-    height: 100%;
+    width: auto;
+    height: auto;
     object-fit: contain;
-    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+}
+
+/* Estado de carga dentro de la pantalla */
+#pantallaJuego .estado-carga {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #bdc3c7;
+    padding: 20px;
+    z-index: 1;
+}
+
+/* Cuando hay canvas, ocultar estado de carga */
+#pantallaJuego canvas ~ .estado-carga {
+    display: none;
 }
 
 /* D-Pad */
@@ -292,9 +315,9 @@
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
-    padding: 40px 20px;
-    max-width: 1400px;
-    margin: 40px auto;
+    padding-top: -20%;
+    max-width: 1000px;
+    margin: 0px auto 0%;
 }
 
 /* Cartucho */
@@ -321,16 +344,16 @@
 .cartucho-base {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
     display: block;
 }
 
 .cartucho-texto-overlay {
     position: absolute;
-    top: 30%;
+    top: 34%;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
+    width: 50%;
     text-align: center;
     pointer-events: none;
 }
@@ -353,14 +376,6 @@
     line-height: 1.3;
     text-shadow: 0 1px 3px rgba(0,0,0,0.9);
     font-family: 'Fira Code', 'Courier New', monospace;
-}
-
-/* Poner en gris en caso de bloqueo*/
-.cartucho.bloqueado {
-    pointer-events: none;   /* No se puede clicar */
-    opacity: 0.45;          /* Se ve gris */
-    filter: grayscale(100%); 
-    cursor: not-allowed;
 }
 
 /* Badge */
@@ -433,6 +448,20 @@
     left: 0;
 }
 
+.cartucho-texto-overlay {
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center calc(100% - 15px);
+    background-repeat: no-repeat;
+
+    /*background-color: rgba(0,0,0,0.55);*/
+    background-blend-mode: overlay;
+
+    width: 72%;
+    height: 50%;
+    padding: 10px;
+}
+
 .controles-lista {
     display: grid;
     gap: 6px;
@@ -479,113 +508,194 @@
     }
 }
 
-/* RESPONSIVE */
-@media screen and (max-width: 1024px) {
+
+.derecha {
+    display: flex;
+    flex-direction: column; /* uno encima del otro */
+    align-items: center;    /* ambos centrados */
+    gap: 20px;
+}
+
+/* Mover el botón A un poco hacia la derecha */
+.btn-a {
+    transform: translateX(55px); /* ajusta el valor a tu gusto */
+}
+
+/* También puedes usar margen si prefieres */
+.btn-b {
+    transform: translateX(-5px); /* opcional para equilibrar */
+}
+
+.btn-a:hover,
+.btn-a.activo {
+    transform: translateX(55px) scale(1.08);
+}
+
+.btn-a:active {
+    transform: translateX(55px) scale(0.95) translateY(3px);
+}
+
+/* ==================== RESPONSIVE OPTIMIZADO ==================== */
+
+/* Laptop / Tablets grandes */
+@media (max-width: 1024px) {
     .consola {
-        max-width: 950px;
+        width: 95vw;
+        max-width: 900px;
+        aspect-ratio: 2.2 / 1;
     }
-    
+
     .interiorConsola {
-        gap: 40px;
+        gap: 20px;
+        padding: 3% 4%;
     }
-    
-    .d-pad-container {
-        width: 110px;
-        height: 110px;
-    }
-    
-    .d-pad-btn {
-        width: 35px;
-        height: 35px;
-    }
-    
+
+    .d-pad-container { width: 105px; height: 105px; }
+    .d-pad-btn { width: 34px; height: 34px; }
+
     .action-btn {
         width: 65px;
         height: 65px;
         font-size: 20px;
     }
-    
-    .cartucho {
-        width: 180px;
-        height: 252px;
+
+    #pantallaJuego {
+        min-height: 320px;
     }
 }
+@media (max-width: 1000px) {
+    .btn-a {
+        transform: translateX(25px); /* ajusta el valor a tu gusto */
+    }
+    .btn-a:hover,
+    .btn-a.activo {
+        transform: translateX(25px) scale(1.08);
+    }
 
-@media screen and (max-width: 768px) {
-    .consola {
-        max-width: 700px;
+    .btn-a:active {
+        transform: translateX(25px) scale(0.95) translateY(3px);
     }
-    
-    .interiorConsola {
-        gap: 30px;
-        padding: 20% 6% 20% 6%;
-    }
-    
-    .d-pad-container {
-        width: 95px;
-        height: 95px;
-    }
-    
-    .d-pad-btn {
-        width: 30px;
-        height: 30px;
-    }
-    
-    .action-btn {
-        width: 55px;
-        height: 55px;
-        font-size: 18px;
-    }
-    
-    .cartuchos {
-        gap: 25px;
-        padding: 30px 15px;
-    }
-    
-    .cartucho {
-        width: 160px;
-        height: 224px;
-    }
+
 }
 
-@media screen and (max-width: 480px) {
+/* Tablets vertical y móviles grandes */
+@media (max-width: 768px) {
     .consola {
-        max-width: 450px;
-        aspect-ratio: 2 / 1;
+        width: 95vw;
+        aspect-ratio: unset; /* Permite que la altura crezca correctamente */
+        padding-bottom: 20px;
     }
-    
+
     .interiorConsola {
+        display: grid;
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
-        padding: 10% 5% 22% 5%;
-        gap: 10px;
+        justify-items: center;
+        gap: 20px;
     }
-    
+
+    /* Reorganizamos layout */
     .izquierda, .derecha {
         flex-direction: row;
         justify-content: center;
+        gap: 25px;
+        width: 100%;
     }
-    
+
+    #pantallaJuego {
+        min-height: 260px;
+    }
+
+    .d-pad-container { width: 90px; height: 90px; }
+    .d-pad-btn { width: 30px; height: 30px; }
+
+    .action-btn { width: 55px; height: 55px; }
+
+    .cartuchos {
+        padding: 20px 15px;
+        gap: 18px;
+    }
+
+    .cartucho {
+        width: 150px;
+        height: 215px;
+    }
+}
+
+/* Móviles medianos */
+@media (max-width: 480px) {
+    .consola {
+        width: 98vw;
+        border-radius: 18px;
+        border-width: 3px;
+    }
+
+    .interiorConsola {
+        gap: 15px;
+        padding: 5% 3%;
+    }
+
+    #pantallaJuego {
+        min-height: 200px;
+        border-radius: 8px;
+    }
+
+    .d-pad-container { width: 78px; height: 78px; }
+    .d-pad-btn { width: 26px; height: 26px; }
+
+    .action-btn { width: 48px; height: 48px; font-size: 16px; }
+
+    /* Desactivar adornos */
     .consola .corner-detail,
     .consola .side-line {
         display: none;
     }
-    
+
     .cartucho {
-        width: 140px;
-        height: 196px;
+        width: 130px;
+        height: 185px;
     }
-    
-    .cartucho-info {
-        width: 200px;
+}
+
+/* Móviles pequeños */
+@media (max-width: 360px) {
+    .d-pad-container { width: 70px; height: 70px; }
+    .d-pad-btn { width: 22px; height: 22px; }
+
+    .action-btn { width: 45px; height: 45px; }
+
+    #pantallaJuego {
+        min-height: 170px;
+    }
+}
+
+/* Landscape mobile */
+@media (max-height: 550px) and (orientation: landscape) {
+    .consola {
+        width: 98vw;
+        aspect-ratio: 3 / 1;
+        padding: 1% 3%;
     }
 
-    .pantallaConsola {
-        padding: 10px;
+    .interiorConsola {
+        grid-template-columns: 0.8fr 2fr 0.8fr;
+        padding: 2% 2%;
+        gap: 10px;
     }
 
     #pantallaJuego {
-        max-width: 100%;
-        aspect-ratio: 16 / 10;
+        min-height: 140px;
+    }
+
+    .d-pad-container { width: 70px; height: 70px; }
+    .d-pad-btn { width: 22px; height: 22px; }
+
+    .action-btn { width: 45px; height: 45px; }
+}
+
+/* Pantallas muy grandes */
+@media (min-width: 1600px) {
+    .consola {
+        max-width: 1500px;
     }
 }

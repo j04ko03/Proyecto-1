@@ -17,9 +17,9 @@ class HomeController extends Controller
         $filter = $request->codi_buscar;
 
         $query->orderByRaw("
-            CASE 
-                WHEN nombre LIKE ? THEN 0 
-                ELSE 1 
+            CASE
+                WHEN nombre LIKE ? THEN 0
+                ELSE 1
             END
         ", ["%$filter%"]);
 
@@ -42,7 +42,7 @@ class HomeController extends Controller
     {
         $rutasJuegos = [
             1 => route('astro.controller'), // ASTRO
-            // 2 => route('juego2.controller'),
+            2 => route('volamentes.controller'), // VOLAMENTES
             3 => route('capi.controller'), // CAPI MATES
             // 4 => route('juego4.controller'),
         ];
@@ -98,6 +98,9 @@ class HomeController extends Controller
     {
         $etiquetas = [
             1 => 'MATEMÁTICAS',
+            2 => 'INFORMATICA',
+            3 => 'MATEMÁTICAS',
+            4 => 'INFORMATICA'
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';

@@ -11,12 +11,17 @@
         <p>Carregant Pyodide i processant dades... pot trigar uns segons la primera vegada.</p>
 
         <div id="summary" class="metric-box"></div>
-
-        <!-- Todas las imágenes dinámicas -->
+        
+    <div id="contenedor-scroll" class="scrollable-metrics">
+        <div>
+            <h3 style="color: #F28918">Mètriques numèriques</h3>
+            <pre id="metrics_text" style="color: #F28918">Esperant resultats...</pre>
+        </div>
+            <!-- Todas las imágenes dinámicas -->
         <div id="all_images" class="metrics-grid"></div>
+    </div>
 
-        <h3>Mètriques numèriques</h3>
-        <pre id="metrics_text">Esperant resultats...</pre>
+        
     </div>
 
     <!-- Pyodide -->

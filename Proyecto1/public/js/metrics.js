@@ -1,33 +1,35 @@
 async function runMetrics() {
     const status = document.querySelector('#metrics p');
     try {
-        status && (status.textContent = "Carregant Pyodide...");
+        status && (status.textContent = "Carregant Pyodide...", status.style.color = "#F28918");
 
         const pyodide = await loadPyodide({
             indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.2/full/"
         });
 
-        status && (status.textContent = "Instal·lant dependències (micropip)...");
+        // status && (status.style.color = "#F28918");
+
+        status && (status.textContent = "Instal·lant dependències (micropip)...", status.style.color = "#F28918");
         await pyodide.loadPackage(['micropip']);
         const micropip = pyodide.pyimport('micropip');
 
-        status && (status.textContent = "Instal·lant pandas, scikit-learn, matplotlib...");
+        status && (status.textContent = "Instal·lant pandas, scikit-learn, matplotlib...", status.style.color = "#F28918");
         await micropip.install('pandas');
         await micropip.install('scikit-learn');
         await micropip.install('matplotlib');
 
-        status && (status.textContent = "Carregant script ML...");
+        status && (status.textContent = "Carregant script ML...", status.style.color = "#F28918");
         const pyCodeResp = await fetch('/Proyecto-1/Proyecto1/public/js/script_ml.py');
         const pyCode = await pyCodeResp.text();
         pyodide.runPython(pyCode);
 
-        status && (status.textContent = "Obtenint dades del servidor...");
+        status && (status.textContent = "Obtenint dades del servidor...", status.style.color = "#F28918");
         const resp = await fetch('/Proyecto-1/Proyecto1/public/metrics/sessions', {
             headers: { 'Accept': 'application/json' }
         });
         const raw = await resp.json();
 
-        status && (status.textContent = "Executant pipeline Python...");
+        status && (status.textContent = "Executant pipeline Python...", status.style.color = "#F28918");
 
         // 🔥 Conversió correcta: JS Array/Object → Python dict/list
         const pyData = pyodide.toPy(raw);

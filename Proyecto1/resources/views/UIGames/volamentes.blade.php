@@ -1,30 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Volamentes</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/volamentes.css') }}">
-</head>
+<div id="fondo" class="fondo"></div>
 
-<body>
+<div id="contenedor_juego" class="contenedor_juego">
 
-    <div class="area-juego-volamentes">
+    <h1 class="titulo-juego">Volamentes</h1>
 
-        <h3>Volamentes</h3>
-        <p>Selecciona el fragmento correcto para completar el codigo</p>
+    <p id="textoPregunta" class="texto-pregunta">
+        Presione "Siguiente" para comenzar
+    </p>
 
-        <div id="contenedor_pregunta"></div>
+    <div id="opciones" class="opciones"></div>
 
-        <div id="puntaje"></div>
-
-        <button id="btnSiguiente">Siguiente</button>
-
+    <div class="contenedor-botones">
+        <button id="btnSiguiente" class="btn-volamentes">Siguiente</button>
     </div>
 
-    <script src="{{ asset('js/scriptJuegos/volamentes.js') }}"></script>
-</body>
+    <p id="puntaje" class="puntaje"></p>
 
-</html>
+</div>
+
+<script src="{{ asset('js/Volamentes/volamentes.js') }}"></script>

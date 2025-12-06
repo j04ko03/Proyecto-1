@@ -12,12 +12,12 @@
             
             
 
-            <div class="contenedorConForma" style="border: 1px solid green; padding-left: 15%;">
+            <div class="contenedorConForma" style="padding-left: 15%;">
                 <form id="formRegister" method="POST" action="{{ route('usuarios.store') }}">
                     @csrf
 
-                    <div style="border: 1px solid red; height: 100%; display: flex; flex-wrap: wrap;">
-                        <div style="border:1px solid green; width: 50%;">
+                    <div style="height: 100%; display: flex; flex-wrap: wrap;">
+                        <div style="width: 50%;">
                             <label for="nombre">Nombre</label>
                             <input type="text" id="nombre" name="nombre" value="{{ old('nombre') }}">
 
@@ -33,7 +33,7 @@
                                 <div class="alert">{{ $message }}</div>
                             @enderror
                         </div>
-                        <div style="border:1px solid green; width: 50%;">
+                        <div style="width: 50%;">
                             <label for="nickname">Nickname*</label>
                             <input type="text" id="nickname" name="nickname" value="{{ old('nickname') }}" required>
                             @error('nickname')
