@@ -15,7 +15,6 @@
 
 /* NAV RETRO */
 .retro-navbar {
-    height: 70px;
     background: #090909;
     border-bottom: 3px solid #0f0;
     display: flex;
@@ -34,7 +33,8 @@
 }
 
 .iconoEngranaje {
-    width: 150px;
+    margin-top: 10px;
+    width: 140px;
     cursor: pointer;
     height: auto;
     padding-bottom: 13px;
