@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
 {
-     //$query = Cartucho::where('isBlocked', false);
+     
      $query = Cartucho::query();
 
     // FILTRO POR NOMBRE (SI EL USUARIO ESCRIBE ALGO)

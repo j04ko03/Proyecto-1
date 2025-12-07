@@ -378,7 +378,6 @@
     font-family: 'Fira Code', 'Courier New', monospace;
 }
 
-/* Badge */
 .cartucho-badge {
     position: absolute;
     top: 10px;
@@ -393,7 +392,6 @@
     font-family: 'Fira Code', monospace;
 }
 
-/* Información expandible */
 .cartucho-info {
     position: absolute;
     top: 100%;
@@ -453,8 +451,6 @@
     background-size: cover;
     background-position: center calc(100% - 15px);
     background-repeat: no-repeat;
-
-    /*background-color: rgba(0,0,0,0.55);*/
     background-blend-mode: overlay;
 
     width: 72%;
@@ -492,21 +488,18 @@
     font-family: 'Fira Code', monospace;
 }
 
-/* Cartucho insertado/activo */
 .cartucho-insertado {
     animation: cartuchoGlow 2s infinite;
 }
 
-/* Cartucho bloqueado: gris + sin interacción */
 .cartucho.bloqueado {
     filter: grayscale(100%) brightness(0.7);
     cursor: not-allowed !important;
-    pointer-events: none; /* DESACTIVA CLICK COMPLETAMENTE */
+    pointer-events: none;
     transform: none !important;
     opacity: 0.6;
 }
 
-/* Evitar hover y efectos */
 .cartucho.bloqueado:hover {
     transform: none !important;
     filter: grayscale(100%) brightness(0.7) !important;
@@ -531,14 +524,12 @@
     gap: 20px;
 }
 
-/* Mover el botón A un poco hacia la derecha */
 .btn-a {
-    transform: translateX(55px); /* ajusta el valor a tu gusto */
+    transform: translateX(55px);
 }
 
-/* También puedes usar margen si prefieres */
 .btn-b {
-    transform: translateX(-5px); /* opcional para equilibrar */
+    transform: translateX(-5px);
 }
 
 .btn-a:hover,
@@ -552,7 +543,6 @@
 
 /* ==================== RESPONSIVE OPTIMIZADO ==================== */
 
-/* Laptop / Tablets grandes */
 @media (max-width: 1024px) {
     .consola {
         width: 95vw;
@@ -580,7 +570,7 @@
 }
 @media (max-width: 1000px) {
     .btn-a {
-        transform: translateX(25px); /* ajusta el valor a tu gusto */
+        transform: translateX(25px); 
     }
     .btn-a:hover,
     .btn-a.activo {
@@ -593,11 +583,10 @@
 
 }
 
-/* Tablets vertical y móviles grandes */
 @media (max-width: 768px) {
     .consola {
         width: 95vw;
-        aspect-ratio: unset; /* Permite que la altura crezca correctamente */
+        aspect-ratio: unset;
         padding-bottom: 20px;
     }
 
@@ -609,7 +598,6 @@
         gap: 20px;
     }
 
-    /* Reorganizamos layout */
     .izquierda, .derecha {
         flex-direction: row;
         justify-content: center;
@@ -637,7 +625,6 @@
     }
 }
 
-/* Móviles medianos */
 @media (max-width: 480px) {
     .consola {
         width: 98vw;
@@ -672,7 +659,6 @@
     }
 }
 
-/* Móviles pequeños */
 @media (max-width: 360px) {
     .d-pad-container { width: 70px; height: 70px; }
     .d-pad-btn { width: 22px; height: 22px; }
@@ -684,7 +670,6 @@
     }
 }
 
-/* Landscape mobile */
 @media (max-height: 550px) and (orientation: landscape) {
     .consola {
         width: 98vw;
@@ -708,7 +693,6 @@
     .action-btn { width: 45px; height: 45px; }
 }
 
-/* Pantallas muy grandes */
 @media (min-width: 1600px) {
     .consola {
         max-width: 1500px;

@@ -53,7 +53,7 @@
         console.log("Juego cerrado completamente");
     };
 
-    // Función para registrar event listeners que queremos limpiar luego
+    // Función para registrar event listeners que queremos limpiar lugo
     window.registrarListener = function (element, event, handler) {
         element.addEventListener(event, handler);
         juegoActivo.listeners.push({ element, event, handler });
@@ -67,7 +67,7 @@
 
     console.log("Cartuchos encontrados:", cartuchos);
 
-    // Para cada botón/cartucho le ponemos un evento click para cargar el juego correspondiente
+    // Para cada cartucho le ponemos un evento clic para cargar el juego correspondiente
     cartuchos.forEach(element => {
         element.addEventListener("click", async function (e) {
             e.preventDefault(); // Prevenir comportamiento por defecto
@@ -226,6 +226,8 @@ function extreureCookie(clau) {
 
 
 /*
+Os pongo una pequeña explicación para que veáis que hace asi lo entendereis cara a llamar vuestros juegos
+
 Cuando la página carga, se preparan funciones para manejar los juegos activos y limpiar todo al cambiar de juego.
 
 Se detectan todos los botones con clase .cartucho que representan los juegos disponibles.
