@@ -17,12 +17,12 @@ class UsuarioController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->id_rol = 1){
-            $usuario = Usuario::whereIn('id_rol', [2,3])->get();
+        if ($user->id_rol == 1){
+            $usuario = Usuario::whereIn('id_rol', [2,3])->paginate(12);
         }
 
         else if ($user->id_rol == 2){
-            $usuario = Usuario::where('id_rol', 3)->get();
+            $usuario = Usuario::where('id_rol', 3)->paginate(12);
         }
 
         else{
