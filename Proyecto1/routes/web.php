@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Ruta para desbloquear Logros
     Route::post('/logros/desbloquear', [LogroController::class, 'desbloquear'])->name('logros.desbloquear');
+    Route::get('/logros', [LogroController::class, 'index'])->name('logros.controller');
 });
 
 // Route::get('/filtrar', [HomeController::class, 'filtrar'])->name('filtrar.controller');

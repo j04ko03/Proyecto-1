@@ -37,6 +37,9 @@
             @if (Auth::user()->id_rol == 1 || Auth::user()->id_rol == 2)
                 <a href="{{ route('metricas.controller') }}">Estadísticas</a>
             @endif
+            @if (Auth::user()->logros()->count() > 0)
+                <a href="{{ route('logros.controller') }}">Logros</a>
+            @endif
             <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
         </div>
     </div>

@@ -1,0 +1,88 @@
+ .logros-container {
+        width: 1200px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    .logro-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px;
+        margin-bottom: 10px;
+        border-radius: 10px;
+        background: #1c1c1c;
+        border: 1px solid #333;
+        transition: transform .2s;
+    }
+
+    .logro-item:hover {
+        transform: scale(1.02);
+    }
+
+    .logro-icon {
+        font-size: 35px;
+    }
+
+    .logro-info {
+        flex-grow: 1;
+    }
+
+    .logro-nombre {
+        font-size: 1.3em;
+        color: #F28918;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .logro-desc {
+        font-size: 0.9em;
+        color: #ccc;
+        margin: 3px 0 0 0;
+    }
+
+    .logro-locked {
+        opacity: 0.4;
+        filter: grayscale(100%);
+    }
+
+    .logro-check {
+        font-size: 22px;
+        color: #2ecc71;
+        font-weight: bold;
+    }
+
+    #contenedor-scroll {
+        height: 900px; 
+        overflow-y: auto; 
+        margin-top: 20px; 
+        padding: 10px; 
+        border-radius: 8px; 
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    #contenedor-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .logro-avatar-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 80px;
+    }
+
+    .logro-avatar {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;  
+        object-fit: cover;    
+        border: 2px solid #F28918;
+        background: #111;
+    }
+
+    .logro-locked .logro-avatar {
+        filter: grayscale(100%);
+        opacity: 0.4;
+    }

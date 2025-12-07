@@ -61,6 +61,7 @@
                 <li>Juego 2: - {{ $user->maxScoreByGame(2) }}</li>
                 <li>Juego 3: - {{ $user->maxScoreByGame(1002) }}</li>
                 <li>Juego 4: - {{ $user->maxScoreByGame(2002) }}</li>
+                <li>Nº Logros: - {{ $user->logros()->count() }}</li>
             </ul>
         </div>
 
