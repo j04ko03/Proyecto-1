@@ -372,7 +372,7 @@ window.inicializarVolamentes = function () {
     }
 }
 
-    // Inicializamos los textos visible
+    // Inicializamos los textos visible sdvgdsfvbz
     if (puntajeTxt) puntajeTxt.textContent = "Puntaje: " + puntaje;
-    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
+    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar"; 
 };
