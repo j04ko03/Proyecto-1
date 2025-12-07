@@ -1,0 +1,13 @@
+#contenedor-scroll {
+    height: 850px; 
+    overflow-y: auto; 
+    margin-top: 20px; 
+    padding: 10px; 
+    border-radius: 8px; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#contenedor-scroll::-webkit-scrollbar {
+    display: none;
+}

@@ -13,6 +13,15 @@ class LogroController extends Controller
     public function index(Request $request)
     {
         //
+        $usuario = auth()->user();
+
+        // Obtener TODOS los logros del sistema
+        $logros = Logro::with('juego')->get();
+
+        // Obtener IDs de logros del usuario
+        $logrosUsuario = $usuario->logros->pluck('id')->toArray();
+
+        return view('logros', compact('logros', 'logrosUsuario'));
     }
 
     /**
@@ -61,5 +70,26 @@ class LogroController extends Controller
     public function destroy(Logro $logro)
     {
         //
+    }
+
+    public function desbloquear(Request $request){
+        $usuario = auth()->user();
+        $logroId   = $request->logroId;
+
+        // Mira si el usuuario ya tiene el logro
+        if ($usuario->logros()->where('Usuario_Logro.id_logro', $logroId)->exists()) {
+            return response()->json([
+                'nuevo' => false,
+                'message' => 'Logro ya obtenido'
+            ]);
+        }
+
+        // Guardar el logro
+        $usuario->logros()->attach($logroId);
+
+        return response()->json([
+            'nuevo' => true,
+            'message' => 'Logro desbloqueado'
+        ]);
     }
 }

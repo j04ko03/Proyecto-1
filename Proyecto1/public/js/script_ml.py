@@ -12,7 +12,10 @@ from sklearn.model_selection import train_test_split
 # ======================================================================
 # Util: convertir figura actual a base64 (PNG)
 # ======================================================================
-def fig_to_base64():
+def fig_to_base64(width=None, height=None):
+    fig = plt.gcf()  # Obtener la figura actual
+    if width is not None and height is not None:
+        fig.set_size_inches(width, height)
     buf = io.BytesIO()
     plt.savefig(buf, format="png", bbox_inches="tight")
     buf.seek(0)
@@ -72,7 +75,7 @@ def generar_grafics(df, dau, mau):
     plt.title("Distribución de Duración de Sesiones")
     plt.xlabel("Duración (segundos)")
     plt.ylabel("Frecuencia")
-    images["session_length_hist"] = fig_to_base64()
+    images["session_length_hist"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     unique_vals = df["points_scored"].nunique()
@@ -81,14 +84,14 @@ def generar_grafics(df, dau, mau):
     plt.title("Distribución de puntuaciones")
     plt.xlabel("Puntuación")
     plt.ylabel("Frecuencia")
-    images["points_hist"] = fig_to_base64()
+    images["points_hist"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     plt.hist(df["errors"], bins=20, edgecolor="black")
     plt.title("Distribución de errores")
     plt.xlabel("Errores")
     plt.ylabel("Frecuencia")
-    images["errors_hist"] = fig_to_base64()
+    images["errors_hist"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     jitter_x = df["n_attempts"] + np.random.normal(0, 0.05, len(df))
@@ -97,7 +100,7 @@ def generar_grafics(df, dau, mau):
     plt.title("Intentos vs Puntuación (con jitter)")
     plt.xlabel("Intentos")
     plt.ylabel("Puntuación")
-    images["scatter_attempts_points"] = fig_to_base64()
+    images["scatter_attempts_points"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     if df["errors"].sum() == 0:
@@ -109,7 +112,7 @@ def generar_grafics(df, dau, mau):
         plt.title("Errores medios por nivel")
         plt.xlabel("Nivel")
         plt.ylabel("Errores medios")
-    images["errors_per_level"] = fig_to_base64()
+    images["errors_per_level"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     plt.plot(dau.index.astype(str), dau.values, marker="o")
@@ -117,7 +120,7 @@ def generar_grafics(df, dau, mau):
     plt.title("DAU (Daily Active Users)")
     plt.xlabel("Día")
     plt.ylabel("Usuarios activos")
-    images["dau"] = fig_to_base64()
+    images["dau"] = fig_to_base64(width=8, height=4.3)
 
     plt.figure(figsize=(6,4))
     plt.plot(mau.index.astype(str), mau.values, marker="o")
@@ -125,7 +128,7 @@ def generar_grafics(df, dau, mau):
     plt.title("MAU (Monthly Active Users)")
     plt.xlabel("Mes")
     plt.ylabel("Usuarios activos")
-    images["mau"] = fig_to_base64()
+    images["mau"] = fig_to_base64(width=8, height=4.3)
 
     return images
 
@@ -146,7 +149,7 @@ def model_predictiu(df, test_size=0.2, random_state=42):
         plt.figure(figsize=(5,4))
         plt.plot([0,1],[0,1])
         plt.title("ROC no disponible (una sola clase)")
-        images["roc_curve"] = fig_to_base64()
+        images["roc_curve"] = fig_to_base64(width=8, height=5)
         return {"roc_auc": None}, images
 
     X_train, X_test, y_train, y_test = train_test_split(
@@ -161,24 +164,24 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     plt.figure(figsize=(20,10))
     plot_tree(tree, feature_names=features, class_names=["No Churn","Churn"],
               filled=True, rounded=True, fontsize=12)
-    images["decision_tree_plot"] = fig_to_base64()
+    images["decision_tree_plot"] = fig_to_base64(width=20, height=10)
 
-    plt.figure(figsize=(6,4))
-    plt.bar(features, tree.feature_importances_)
-    plt.xticks(rotation=45)
-    plt.title("Feature Importances (Decision Tree)")
-    images["tree_feature_importances"] = fig_to_base64()
+    #plt.figure(figsize=(6,4))
+    #plt.bar(features, tree.feature_importances_)
+    #plt.xticks(rotation=45)
+    #plt.title("Feature Importances (Decision Tree)")
+    #images["tree_feature_importances"] = fig_to_base64()
 
     fpr_t, tpr_t, _ = roc_curve(y_test, y_prob_tree)
     roc_auc_tree = auc(fpr_t, tpr_t)
-    plt.figure(figsize=(6,4))
-    plt.plot(fpr_t, tpr_t, label=f"AUC={roc_auc_tree:.2f}")
-    plt.plot([0,1],[0,1],'k--')
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.title("ROC Curve (Decision Tree)")
-    plt.legend()
-    images["roc_curve_tree"] = fig_to_base64()
+    #plt.figure(figsize=(6,4))
+    #plt.plot(fpr_t, tpr_t, label=f"AUC={roc_auc_tree:.2f}")
+    #plt.plot([0,1],[0,1],'k--')
+    #plt.xlabel("False Positive Rate")
+    #plt.ylabel("True Positive Rate")
+    #plt.title("ROC Curve (Decision Tree)")
+    #plt.legend()
+    #images["roc_curve_tree"] = fig_to_base64()
 
     # Random Forest
     rf = RandomForestClassifier(random_state=random_state)
@@ -191,7 +194,7 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     plt.imshow(cm_rf, cmap="viridis")
     plt.title("Confusion Matrix (Random Forest)")
     plt.colorbar()
-    images["confusion_matrix_rf"] = fig_to_base64()
+    images["confusion_matrix_rf"] = fig_to_base64(width=5, height=4)
 
     fpr_rf, tpr_rf, _ = roc_curve(y_test, y_prob_rf)
     roc_auc_rf = auc(fpr_rf, tpr_rf)
@@ -202,13 +205,13 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     plt.ylabel("True Positive Rate")
     plt.title("ROC Curve (Random Forest)")
     plt.legend()
-    images["roc_curve_rf"] = fig_to_base64()
+    images["roc_curve_rf"] = fig_to_base64(width=8, height=5)
 
     plt.figure(figsize=(6,4))
     plt.bar(features, rf.feature_importances_)
     plt.xticks(rotation=45)
     plt.title("Feature Importances (Random Forest)")
-    images["feature_importances_rf"] = fig_to_base64()
+    images["feature_importances_rf"] = fig_to_base64(width=8, height=4.3)
 
     metrics = {
         "decision_tree": {"roc_auc": float(roc_auc_tree)},

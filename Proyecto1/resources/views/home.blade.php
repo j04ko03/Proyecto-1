@@ -50,6 +50,7 @@
         </div>
     </div>
 </div>
+<div id="logro-toast-contenedor"></div>
 
 {{-- Cartuchos --}}
 <div class="cartuchos">
@@ -62,6 +63,7 @@
     window.usuarioLogeado = {{ auth()->user()->id ?? 'null' }};
 </script>
 <script src="{{ url('/js/homeMusic.js') }}"></script>
+<script src="{{ url('/js/logro.js') }}"></script>
 
 
 @endsection

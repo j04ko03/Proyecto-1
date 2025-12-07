@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SesionUsuario;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioController extends Controller
 {
@@ -16,7 +18,7 @@ class UsuarioController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->id_rol == 1){
+        if ($user->id_rol = 1){
             $usuario = Usuario::whereIn('id_rol', [2,3])->get();
         }
 
@@ -87,6 +89,8 @@ class UsuarioController extends Controller
 
         Auth::login($usuario);
 
+        $this->crearSesionUsuario($usuario->id);
+
         return redirect()->route('home.controller')->with('success', '¡Cuenta creada exitosamente!');
 
     }
@@ -136,10 +140,33 @@ class UsuarioController extends Controller
             ($auth->id_rol == 1 && ($target->id_rol == 2 || $target->id_rol == 3)) ||
             ($auth->id_rol == 2 && $target->id_rol == 3)
         ) {
+            $target->logros()->detach();
+            foreach ($target->sesionUsuario as $sesion) {
+
+                // Recorrer datosSesion de cada sesión
+                foreach ($sesion->datosSesion as $dato) {
+
+                    // Detach de niveles
+                    $dato->niveles()->detach();
+
+                    // Eliminar registro de datosSesion
+                    $dato->delete();
+                }
+
+                // Eliminar registro de sesionUsuario
+                $sesion->delete();
+            }
             $target->delete();
             return back()->with('success', 'Usuario eliminado correctamente.');
         }
 
         return back()->with('error', 'No tienes permiso para eliminar a este usuario.');
+    }
+
+    public function crearSesionUsuario($id_usuario){
+        $sesion = new SesionUsuario();
+        $sesion->id_usuario = $id_usuario;
+        $sesion->fechaSesion = now();
+        $sesion->save();
     }
 }
