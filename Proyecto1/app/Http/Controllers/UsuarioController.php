@@ -6,6 +6,7 @@ use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UsuarioController extends Controller
 {
@@ -136,6 +137,22 @@ class UsuarioController extends Controller
             ($auth->id_rol == 1 && ($target->id_rol == 2 || $target->id_rol == 3)) ||
             ($auth->id_rol == 2 && $target->id_rol == 3)
         ) {
+            $target->logros()->detach();
+            foreach ($target->sesionUsuario as $sesion) {
+
+                // Recorrer datosSesion de cada sesión
+                foreach ($sesion->datosSesion as $dato) {
+
+                    // Detach de niveles
+                    $dato->niveles()->detach();
+
+                    // Eliminar registro de datosSesion
+                    $dato->delete();
+                }
+
+                // Eliminar registro de sesionUsuario
+                $sesion->delete();
+            }
             $target->delete();
             return back()->with('success', 'Usuario eliminado correctamente.');
         }
