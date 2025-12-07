@@ -219,6 +219,7 @@ window.iniciarAstro = function () {
         if(clicksFets <= 3){
             if(puntos >= restohelp){
                 puntos = puntos - restohelp;
+                puntosEl.textContent = puntos;
             }
             mostrarMensaje("Respuesta", respuestaHelp);
             gameActive = true;
