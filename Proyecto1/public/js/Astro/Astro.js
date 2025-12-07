@@ -794,6 +794,38 @@ window.iniciarAstro = function () {
                     //nivel = data.nivel;
                     nivelEl.textContent = nivel;
                     datosSesionIdX = data.datosSesionId;
+                    switch(nivel){
+                        case 1:
+                            mostrarLogro('¡Encendiendo motores!');
+                            if(puntos >= 500){
+                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (1/5)');
+                            }
+                            break;
+                        case 2:
+                            mostrarLogro('¡Estabilizando el vuelo (1/2)!');
+                            if(puntos >= 500){
+                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (2/5)');
+                            }
+                            break;
+                        case 3: 
+                            mostrarLogro('¡Estabilizando el vuelo (2/2)!');
+                            if(puntos >= 500){
+                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (3/5)');
+                            }
+                            break;
+                        case 4:
+                            mostrarLogro('¡Tomando la estación de control!');
+                            if(puntos >= 500){
+                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (4/5)');
+                            }
+                            break;
+                        case 5:
+                            mostrarLogro('¡Despegando!');
+                            if(puntos >= 500){
+                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (5/5)');
+                            }
+                            break;
+                    }
                     if(nivel === 5){
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         reproducirVideoFinal("/Proyecto-1/Proyecto1/Astro/capiFuera1.mp4", () => {
