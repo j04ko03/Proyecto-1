@@ -1,0 +1,122 @@
+    /* Estilos específicos del Bosque */
+    .contenedorJuego {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);
+        font-family: 'Pixelify Sans', monospace;
+    }
+
+    .ui {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        right: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        pointer-events: none;
+        font-size: 12px;
+        z-index: 10;
+    }
+
+    .ui-left, .ui-right {
+        background: rgba(0,0,0,0.7);
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: white;
+        pointer-events: auto;
+        font-family: 'Pixelify Sans', monospace;
+    }
+
+    .contenedorCanvas {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    #canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        image-rendering: pixelated;
+    }
+
+    /* Mensaje modal - IGUAL QUE ASTRO */
+    .mensaje {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.85);
+        padding: 20px 30px;
+        border-radius: 12px;
+        display: none;
+        z-index: 100;
+        max-width: 80%;
+        text-align: center;
+        border: 3px solid #4fc3f7;
+        box-shadow: 0 0 20px rgba(79, 195, 247, 0.5);
+    }
+
+    .msg-title {
+        color: #4fc3f7;
+        margin: 0 0 15px 0;
+        font-size: 24px;
+        font-family: 'Pixelify Sans', monospace;
+    }
+
+    .msg-body {
+        color: white;
+        margin-bottom: 20px;
+        line-height: 1.6;
+        font-family: 'Pixelify Sans', monospace;
+        font-size: 14px;
+    }
+
+    .start-btn {
+        background: #4fc3f7;
+        color: #000;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        font-family: 'Pixelify Sans', monospace;
+        transition: all 0.3s ease;
+    }
+
+    .start-btn:hover {
+        background: #5fd4ff;
+        transform: scale(1.05);
+    }
+
+    /* Botones del modal */
+    #challenge-submit:hover {
+        background: #5fd4ff;
+        transform: scale(1.05);
+    }
+
+    #challenge-cancel:hover {
+        background: #ff6b6b;
+        transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media screen and (max-width: 768px) {
+        #help {
+            font-size: 9px;
+            padding: 6px 12px;
+        }
+        
+        .ui-left, .ui-right {
+            font-size: 10px;
+            padding: 6px 8px;
+        }
+        
+        #modal-challenge {
+            width: 95%;
+            padding: 15px;
+        }
+    }
