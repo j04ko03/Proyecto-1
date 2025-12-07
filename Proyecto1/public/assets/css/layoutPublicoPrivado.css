@@ -16,7 +16,6 @@ main.main-content {
     /* altura de toda la pantalla */
     display: flex;
     flex-direction: column;
-    /* apila verticalmente */
     
 }
 
@@ -33,7 +32,6 @@ h1 {
     font-family: 'Pixelify Sans', sans-serif;
     font-weight: 700;
     font-size: 100px !important;
-    /* relativo al ancho de pantalla */
     background: linear-gradient(135deg, #F28918 32%, #8C4F0E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
