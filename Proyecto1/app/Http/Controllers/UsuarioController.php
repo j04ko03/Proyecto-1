@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SesionUsuario;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 
@@ -88,6 +89,8 @@ class UsuarioController extends Controller
 
         Auth::login($usuario);
 
+        $this->crearSesionUsuario($usuario->id);
+
         return redirect()->route('home.controller')->with('success', '¡Cuenta creada exitosamente!');
 
     }
@@ -158,5 +161,12 @@ class UsuarioController extends Controller
         }
 
         return back()->with('error', 'No tienes permiso para eliminar a este usuario.');
+    }
+
+    public function crearSesionUsuario($id_usuario){
+        $sesion = new SesionUsuario();
+        $sesion->id_usuario = $id_usuario;
+        $sesion->fechaSesion = now();
+        $sesion->save();
     }
 }
