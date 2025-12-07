@@ -16,8 +16,8 @@ class UsuarioController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->id_rol == 1){
-            $usuario = Usuario::whereIn('id_rol', [2,3])->get();
+        if ($user->id_rol = 1){
+            $usuario = Usuario::whereIn('id_rol', [1, 2,3])->get();
         }
 
         else if ($user->id_rol == 2){
