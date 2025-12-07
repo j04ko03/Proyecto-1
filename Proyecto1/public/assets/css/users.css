@@ -2,7 +2,12 @@
     height: 850px; 
     overflow-y: auto; 
     margin-top: 20px; 
-    /* border: 1px solid #ccc;  */
     padding: 10px; 
     border-radius: 8px; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#contenedor-scroll::-webkit-scrollbar {
+    display: none;
 }
