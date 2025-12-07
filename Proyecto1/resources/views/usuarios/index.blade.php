@@ -1,8 +1,12 @@
 @extends('layouts.layoutPrivado')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/users.css') }}">
+@endpush
+
 @section('content')
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+<div id="contenedor-scroll" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 contenedor-scroll" style="border: 1px solid blue">
     
     @foreach($usuario as $user)
 

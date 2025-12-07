@@ -1,0 +1,8 @@
+#contenedor-scroll {
+    height: 850px; 
+    overflow-y: auto; 
+    margin-top: 20px; 
+    /* border: 1px solid #ccc;  */
+    padding: 10px; 
+    border-radius: 8px; 
+}
