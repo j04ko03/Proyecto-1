@@ -53,10 +53,10 @@
             <p class="text-center font-semibold mb-3">Score MAX</p>
 
             <ul class="text-sm space-y-1">
-                <li>Juego 1: -</li>
-                <li>Juego 2: -</li>
-                <li>Juego 3: -</li>
-                <li>Juego 4: -</li>
+                <li>Juego 1: - {{ $user->maxScoreByGame(1) }}</li>
+                <li>Juego 2: - {{ $user->maxScoreByGame(2) }}</li>
+                <li>Juego 3: - {{ $user->maxScoreByGame(1002) }}</li>
+                <li>Juego 4: - {{ $user->maxScoreByGame(2002) }}</li>
             </ul>
         </div>
 

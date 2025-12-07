@@ -5,7 +5,7 @@
         <span class="arroba">@</span> {{ Auth::user()->nickName }}
     </div>
 
-    @if (Auth::user()->id_rol = 3 || Auth::user()->id_rol = 2 || Auth::user()->id_rol = 1)
+    @if (Auth::user()->id_rol == 3 || Auth::user()->id_rol == 2 || Auth::user()->id_rol == 1)
         <!-- BUSCADOR -->
         <form action="{{ route('home.controller') }}" method="get">
             @csrf
@@ -31,10 +31,10 @@
         <div class="dropdown">             {{--//////// Rol: 1 = SuperAdmin, Rol 2 = Admin, Rol 3 = Usuario ////////--}}
             <a href="{{ route('home.controller') }}">Home</a>
             {{-- <a href="#">Perfil</a> --}}
-            @if (Auth::user()->id_rol = '1' || Auth::user()->id_rol = '2')
+            @if (Auth::user()->id_rol == 1 || Auth::user()->id_rol == 2)
                 <a href="{{ route('usuarios.index') }}">Usuarios</a>
             @endif
-            @if (Auth::user()->id_rol = '1' || Auth::user()->id_rol = '2')
+            @if (Auth::user()->id_rol == 1 || Auth::user()->id_rol == 2)
                 <a href="{{ route('metricas.controller') }}">Estadísticas</a>
             @endif
             <a href="{{ route('logout.controller') }}">Cerrar sesión</a>
