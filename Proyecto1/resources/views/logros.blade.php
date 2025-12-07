@@ -25,6 +25,37 @@
                 <small style="color:#aaa;">Juego: {{ $logro->juego->nombre ?? 'General' }}</small>
             </div>
 
+            <div class="logro-avatar-wrapper" style="margin-right: 10px">
+                @php
+                $componente = "../Astro/motor.png";
+                switch($logro->id){
+                    case 1:
+                        $componente = "../Astro/motor.png";
+                        break;
+                    case 2:
+                        $componente = "../Astro/alaD.png";
+                        break;
+                    case 5:
+                        $componente = "../Astro/ala.png";
+                        break;
+                    case 6:
+                        $componente = "../Astro/cabina.png";
+                        break;
+                    case 7:
+                        $componente = "../Astro/sisNav.png";
+                        break;
+                    default:
+                        $componente = "../Astro/motor.png";
+                        break;
+                }
+                @endphp
+                <img 
+                    src="{{ asset($desbloqueado ? $componente : $componente) }}" 
+                    class="logro-avatar"
+                    alt="icono logro"
+                >
+            </div>
+
             <div class="logro-avatar-wrapper">
                 <img 
                     src="{{ asset($desbloqueado ? 'img/capi1.png' : 'img/capi1.png') }}" 
