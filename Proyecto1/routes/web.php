@@ -7,6 +7,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RutasControlador;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\MetricasController;
+use App\Http\Controllers\LogroController;
 
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
 Route::middleware(['auth'])->group(function () {
@@ -76,3 +77,7 @@ Route::post('/juego/desbloquear-volamentes', [JuegoController::class, 'desbloque
 Route::get('/metrics/sessions', [MetricasController::class, 'exportDatosSesionJson']);
 Route::get('/metrics/sessions.csv', [MetricasController::class, 'exportDatosSesionCsv']);
 Route::get('/run-ml', [MetricasController::class, 'runML']);
+
+
+//Ruta para desbloquear Logros
+Route::post('/logros/desbloquear', [LogroController::class, 'desbloquear'])->name('logros.desbloquear');

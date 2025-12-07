@@ -62,6 +62,7 @@ window.iniciarAstro = function () {
     let taxaErrores = 0;
     let numeroIntentos = 0;
     let ayudas = 0;
+    let restohelp = 50;
 
     /* Datos Sesion */
     let datosSesionIdX = 0;
@@ -216,8 +217,15 @@ window.iniciarAstro = function () {
         vieneDeJuego = true;
         clicksFets += 1;
         if(clicksFets <= 3){
+            if(puntos >= restohelp){
+                puntos = puntos - restohelp;
+            }
             mostrarMensaje("Respuesta", respuestaHelp);
             gameActive = true;
+            if(clicksFets === 3){
+                const ccc = document.getElementById('borras');
+                ccc.style.display = "none"; 
+            }
         }else {
             const ccc = document.getElementById('borras');
             ccc.style.display = "none"; 
@@ -796,33 +804,33 @@ window.iniciarAstro = function () {
                     datosSesionIdX = data.datosSesionId;
                     switch(nivel){
                         case 1:
-                            mostrarLogro('¡Encendiendo motores!');
+                            desbloquearLogro(1, '¡Encendiendo motores!');
                             if(puntos >= 500){
-                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (1/5)');
+                                desbloquearLogro(8, '¡Eres us S.P.E.C.I.A.L! (1/5)');
                             }
                             break;
                         case 2:
-                            mostrarLogro('¡Estabilizando el vuelo (1/2)!');
+                            desbloquearLogro(2, '¡Estabilizando el vuelo (1/2)!');
                             if(puntos >= 500){
-                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (2/5)');
+                                desbloquearLogro(9, '¡Eres us S.P.E.C.I.A.L! (2/5)');
                             }
                             break;
                         case 3: 
-                            mostrarLogro('¡Estabilizando el vuelo (2/2)!');
+                            desbloquearLogro(5, '¡Estabilizando el vuelo (2/2)!');
                             if(puntos >= 500){
-                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (3/5)');
+                                desbloquearLogro(10, '¡Eres us S.P.E.C.I.A.L! (3/5)');
                             }
                             break;
                         case 4:
-                            mostrarLogro('¡Tomando la estación de control!');
+                            desbloquearLogro(6, '¡Tomando la estación de control!');
                             if(puntos >= 500){
-                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (4/5)');
+                                desbloquearLogro(11, '¡Eres us S.P.E.C.I.A.L! (4/5)');
                             }
                             break;
                         case 5:
-                            mostrarLogro('¡Despegando!');
+                            desbloquearLogro(7, '¡Despegando!');
                             if(puntos >= 500){
-                                mostrarLogro('¡Eres us S.P.E.C.I.A.L! (5/5)');
+                                desbloquearLogro(12, '¡Eres us S.P.E.C.I.A.L! (5/5)');
                             }
                             break;
                     }
@@ -877,6 +885,27 @@ window.iniciarAstro = function () {
         }
 
         return false;
+    }
+
+    function desbloquearLogro(logroId, nombreLogro) {
+        fetch('/Proyecto-1/Proyecto1/public/logros/desbloquear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ logroId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.nuevo) {
+                // Solo mostrar si es nuevo
+                mostrarLogro(nombreLogro);
+            }
+            console.log(data.message);
+        })
+        .catch(err => console.error("Error desbloqueando logro:", err));
     }
 
 
