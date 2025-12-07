@@ -13,6 +13,15 @@ class LogroController extends Controller
     public function index(Request $request)
     {
         //
+        $usuario = auth()->user();
+
+        // Obtener TODOS los logros del sistema
+        $logros = Logro::with('juego')->get();
+
+        // Obtener IDs de logros del usuario
+        $logrosUsuario = $usuario->logros->pluck('id')->toArray();
+
+        return view('logros', compact('logros', 'logrosUsuario'));
     }
 
     /**
