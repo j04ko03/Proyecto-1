@@ -120,7 +120,7 @@ def generar_grafics(df, dau, mau):
     plt.title("DAU (Daily Active Users)")
     plt.xlabel("Día")
     plt.ylabel("Usuarios activos")
-    images["dau"] = fig_to_base64(width=8, height=5)
+    images["dau"] = fig_to_base64(width=8, height=4.3)
 
     plt.figure(figsize=(6,4))
     plt.plot(mau.index.astype(str), mau.values, marker="o")
@@ -128,7 +128,7 @@ def generar_grafics(df, dau, mau):
     plt.title("MAU (Monthly Active Users)")
     plt.xlabel("Mes")
     plt.ylabel("Usuarios activos")
-    images["mau"] = fig_to_base64(width=8, height=5)
+    images["mau"] = fig_to_base64(width=8, height=4.3)
 
     return images
 
@@ -194,7 +194,7 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     plt.imshow(cm_rf, cmap="viridis")
     plt.title("Confusion Matrix (Random Forest)")
     plt.colorbar()
-    images["confusion_matrix_rf"] = fig_to_base64(width=8, height=5)
+    images["confusion_matrix_rf"] = fig_to_base64(width=5, height=4)
 
     fpr_rf, tpr_rf, _ = roc_curve(y_test, y_prob_rf)
     roc_auc_rf = auc(fpr_rf, tpr_rf)
@@ -211,7 +211,7 @@ def model_predictiu(df, test_size=0.2, random_state=42):
     plt.bar(features, rf.feature_importances_)
     plt.xticks(rotation=45)
     plt.title("Feature Importances (Random Forest)")
-    images["feature_importances_rf"] = fig_to_base64(width=8, height=5)
+    images["feature_importances_rf"] = fig_to_base64(width=8, height=4.3)
 
     metrics = {
         "decision_tree": {"roc_auc": float(roc_auc_tree)},

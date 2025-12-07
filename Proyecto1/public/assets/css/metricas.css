@@ -36,10 +36,10 @@ h1, h2, h3, h4, h5, h6, p, pre, code, span {
 }
 
 .metric-box { 
-    flex: 1 1 calc(33.333% - 12px); /* 3 columnas fijas */
-    max-width: calc(33.333% - 12px); /* asegura que todas tengan el mismo ancho */
+    flex: 1 1 calc(33.333% - 12px);
+    max-width: calc(33.333% - 12px); 
     min-width: 280px; 
-    box-sizing: border-box; /* incluye padding y border en el ancho */
+    box-sizing: border-box;
 }
 
 .metric-box img {
