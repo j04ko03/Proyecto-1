@@ -6,7 +6,7 @@
 
 @section('content')
 
-<div id="contenedor-scroll" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 contenedor-scroll" style="border: 1px solid blue">
+<div id="contenedor-scroll" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 contenedor-scroll">
     
     @foreach($usuario as $user)
 
