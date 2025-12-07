@@ -62,4 +62,25 @@ class LogroController extends Controller
     {
         //
     }
+
+    public function desbloquear(Request $request){
+        $usuario = auth()->user();
+        $logroId   = $request->logroId;
+
+        // Mira si el usuuario ya tiene el logro
+        if ($usuario->logros()->where('Usuario_Logro.id_logro', $logroId)->exists()) {
+            return response()->json([
+                'nuevo' => false,
+                'message' => 'Logro ya obtenido'
+            ]);
+        }
+
+        // Guardar el logro
+        $usuario->logros()->attach($logroId);
+
+        return response()->json([
+            'nuevo' => true,
+            'message' => 'Logro desbloqueado'
+        ]);
+    }
 }

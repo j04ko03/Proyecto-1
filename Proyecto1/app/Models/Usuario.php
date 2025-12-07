@@ -69,4 +69,26 @@ class Usuario extends Authenticatable
     {
         return $this->hasMany(SesionUsuario::class, 'id_usuario');
     }
+
+    public function maxScoreByGame($juegoId)
+    {
+        return $this->datosSesion()
+            ->join('DatosSesion_Nivel', 'DatosSesion.id', '=', 'DatosSesion_Nivel.id_datosSesion')
+            ->join('Nivel', 'DatosSesion_Nivel.id_nivel', '=', 'Nivel.id')
+            ->join('Juego', 'Nivel.id_juego', '=', 'Juego.id')
+            ->where('Juego.id', $juegoId)
+            ->max('DatosSesion.score');
+    }
+
+    public function datosSesion()
+    {
+        return $this->hasManyThrough(
+            DatosSesion::class,
+            SesionUsuario::class,
+            'id_usuario',        // SesionUsuario.id_usuario
+            'id_SesionUsuario',  // DatosSesion.id_SesionUsuario
+            'id',                // Usuario.id
+            'id'                 // SesionUsuario.id
+        );
+    }
 }

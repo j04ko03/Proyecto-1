@@ -1,8 +1,12 @@
 @extends('layouts.layoutPrivado')
 
+@push('styles')
+<link rel="stylesheet" href="{{ asset('assets/css/users.css') }}">
+@endpush
+
 @section('content')
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+<div id="contenedor-scroll" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 contenedor-scroll">
     
     @foreach($usuario as $user)
 
@@ -53,10 +57,10 @@
             <p class="text-center font-semibold mb-3">Score MAX</p>
 
             <ul class="text-sm space-y-1">
-                <li>Juego 1: -</li>
-                <li>Juego 2: -</li>
-                <li>Juego 3: -</li>
-                <li>Juego 4: -</li>
+                <li>Juego 1: - {{ $user->maxScoreByGame(1) }}</li>
+                <li>Juego 2: - {{ $user->maxScoreByGame(2) }}</li>
+                <li>Juego 3: - {{ $user->maxScoreByGame(1002) }}</li>
+                <li>Juego 4: - {{ $user->maxScoreByGame(2002) }}</li>
             </ul>
         </div>
 
