@@ -44,7 +44,7 @@ class HomeController extends Controller
             1 => route('astro.controller'), // ASTRO
             2 => route('volamentes.controller'), // VOLAMENTES
             1002 => route('capi.controller'), // CAPI MATES
-            //2002 => route('juego4.controller'),///Labrynth
+            2002 => route('bosque.controller'),
         ];
 
         $datosAdicionales = [
@@ -110,6 +110,7 @@ class HomeController extends Controller
     {
         $archivos = [
             1 => 'js/scriptJuegos/astro.js',
+            2002 => 'js/scriptJuegos/bosque.js',
         ];
 
         return $archivos[$idJuego] ?? error('No se encontró el juego'); // Insertar una imagen de Capi triste? OPTIONAL
