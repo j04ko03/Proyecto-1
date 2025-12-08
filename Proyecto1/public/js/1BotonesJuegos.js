@@ -175,6 +175,18 @@
                                 };
                                 document.body.appendChild(scriptVolamentes);
                                 break;
+                            case 'Bosque':
+                                const scriptBosque = document.createElement("script");
+                                scriptBosque.src = "./js/Bosque/Bosque.js";
+                                scriptBosque.setAttribute("data-juego", "true");
+                                scriptBosque.onload = () => {
+                                    console.log("Bosque.js cargado, ejecutando bosqueJugable...");
+                                    if (typeof window.bosqueJugable === "function") {
+                                        window.bosqueJugable();
+                                    }
+                                };
+                                document.body.appendChild(scriptBosque);
+                                break;
                             // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
                         }
                     };

@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Nivel extends Model
 {
     //
-    protected $table = 'nivel'; 
+    protected $table = 'Nivel'; 
 
     // Desactiva timestamps si tu tabla no tiene created_at y updated_at
     public $timestamps = false;
