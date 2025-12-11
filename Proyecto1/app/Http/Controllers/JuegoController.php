@@ -7,7 +7,7 @@ use App\Models\Juego;
 use App\Models\Nivel;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log; // ✅ Esto faltaba
+use Illuminate\Support\Facades\Log;
 
 class JuegoController extends Controller
 {
@@ -280,43 +280,24 @@ class JuegoController extends Controller
     {
         DatosSesion::where('id', $request->datosSesionId)
             ->update([
-                'endTime'        => now(),   // importante para marcar finalizado
+                'endTime'        => now(),
                 'score'          => $request->score,
                 'numeroIntentos' => $request->numeroIntentos,
                 'errores'        => $request->errores,
                 'puntuacion'     => $request->puntuacion,
                 'helpclicks'     => $request->helpclicks,
-                //'returningPlayer'=> $request->returningPlayer,
             ]);
 
         return ['status' => 'ok'];
     }
 
-    /**
-     * Guarda los resultados enviados desde el juego Volamentes.
-     *
-     * Payload esperado (JSON):
-     * - datosSesionId (int) : id de la fila en DatosSesion asociada a esta partida (recomendado)
-     * - usuarioId (int) : id del usuario (opcional, pero útil para auditoría)
-     * - juegoId (int) : id del juego (opcional)
-     * - nivelId (int) : id del nivel jugado (opcional)
-     * - score (int) : puntuación total o del nivel
-     * - numeroIntentos (int) : número de intentos en el nivel (opcional)
-     * - errores (int) : cantidad de errores cometidos (opcional)
-     * - puntuacion (int) : (alias/otra métrica) (opcional)
-     * - helpclicks (int) : ayudas usadas (opcional)
-     *
-     * Este método actualiza la fila en `datos_sesion` con los valores enviados y
-     * asocia el `nivelId` (si se proporciona) usando la relación many-to-many `niveles()`.
-     */
     public function guardarVolamentes(Request $request)
     {
-        // registro para depuración
         \Log::info('guardarVolamentes payload', $request->all());
 
         $datosSesionId = $request->input('datosSesionId');
 
-        // Si no envían `datosSesionId` devolvemos error porque es la forma más segura
+        // Si no envían datosSesionId devolvemos error porque es la forma más segura
         if (!$datosSesionId) {
             return response()->json([ 'error' => 'datosSesionId requerido' ], 400);
         }

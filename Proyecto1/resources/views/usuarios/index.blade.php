@@ -2,8 +2,8 @@
 
 @section('content')
 
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
-    
+<div id="contenedor-scroll" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6 contenedor-scroll">
+
     @foreach($usuario as $user)
 
     <div class="user-card-wrapper">
@@ -25,13 +25,13 @@
                 <form method="POST" action="{{ route('usuarios.destroy', $user->id) }}">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="font-semibold hover:underline">
+                    <button type="submit" class="font-semibold hover:underline border-0">
                         Del User
                     </button>
                 </form>
 
                 <button type="button"
-                        class="btn-show-details font-semibold text-orange-500 hover:underline">
+                        class="btn-show-details font-semibold text-orange-500 hover:underline border-0">
                     Details
                 </button>
             </div>
@@ -45,7 +45,7 @@
                 </p>
 
                 <button type="button"
-                        class="btn-hide-details text-sm font-semibold text-orange-500 hover:underline">
+                        class="btn-hide-details text-sm font-semibold text-orange-500 hover:underline border-0">
                     Hide details
                 </button>
             </div>
@@ -63,6 +63,13 @@
     </div>
     @endforeach
 
+</div>
+
+{{-- PAGINACIÓN BOOTSTRAP --}}
+<div class="d-flex justify-content-center mt-4 mb-4">
+    <div>
+        {{ $usuario->links('pagination::bootstrap-5') }}
+    </div>
 </div>
 
 @endsection

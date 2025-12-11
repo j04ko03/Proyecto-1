@@ -1,7 +1,6 @@
 html,
 body {
     height: 100%;
-    margin: 0;
 }
 
 .background {
@@ -9,14 +8,14 @@ body {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    height: 69%;
 }
 
 main.main-content {
-    height: 100vh;
+    height: 80vh;
     /* altura de toda la pantalla */
     display: flex;
     flex-direction: column;
-    /* apila verticalmente */
     
 }
 
@@ -33,7 +32,6 @@ h1 {
     font-family: 'Pixelify Sans', sans-serif;
     font-weight: 700;
     font-size: 100px !important;
-    /* relativo al ancho de pantalla */
     background: linear-gradient(135deg, #F28918 32%, #8C4F0E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

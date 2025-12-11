@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
 {
-     //$query = Cartucho::where('isBlocked', false);
+
      $query = Cartucho::query();
 
     // FILTRO POR NOMBRE (SI EL USUARIO ESCRIBE ALGO)
@@ -26,7 +26,7 @@ class HomeController extends Controller
     }
 
     // ORDENAR SIEMPRE POR NOMBRE
-    $query->orderBy('nombre', 'asc');
+    //$query->orderBy('nombre', 'asc');
 
     $cartuchos = $query->get();
 
@@ -43,8 +43,8 @@ class HomeController extends Controller
         $rutasJuegos = [
             1 => route('astro.controller'), // ASTRO
             2 => route('volamentes.controller'), // VOLAMENTES
-            3 => route('capi.controller'), // CAPI MATES
-            // 4 => route('juego4.controller'),
+            1002 => route('capi.controller'), // CAPI MATES
+            2002 => route('bosque.controller'),
         ];
 
         $datosAdicionales = [
@@ -98,9 +98,9 @@ class HomeController extends Controller
     {
         $etiquetas = [
             1 => 'MATEMÁTICAS',
-            2 => 'INFORMATICA',
-            3 => 'MATEMÁTICAS',
-            4 => 'INFORMATICA'
+            2 => 'PROGRAMACIÓN',
+            1002 => 'MATEMÁTICAS',
+            2002 => 'PROGRAMACIÓN'
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';
@@ -110,6 +110,7 @@ class HomeController extends Controller
     {
         $archivos = [
             1 => 'js/scriptJuegos/astro.js',
+            2002 => 'js/scriptJuegos/bosque.js',
         ];
 
         return $archivos[$idJuego] ?? error('No se encontró el juego'); // Insertar una imagen de Capi triste? OPTIONAL

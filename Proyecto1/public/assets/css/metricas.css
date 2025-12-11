@@ -1,23 +1,52 @@
+h1, h2, h3, h4, h5, h6, p, pre, code, span {
+    color: #F28918;     
+}
+
 #metrics { 
     padding: 20px; 
     font-family: sans-serif; 
 }
 
+#contenedor-scroll {
+    max-height: 600px; 
+    overflow-y: auto; 
+    margin-top: 20px; 
+    /* border: 1px solid #ccc;  */
+    padding: 10px; 
+    border-radius: 8px; 
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+
+#contenedor-scroll::-webkit-scrollbar {
+    display: none;
+}
+
 .metric-img {
-    max-width: 100%; 
+    max-width: 100%;
     margin: 12px 0; 
     border: 1px solid #ddd; 
 }
 
 .metrics-grid { 
-    display:flex; 
-    gap:12px; 
-    flex-wrap:wrap; 
+    display: flex; 
+    flex-wrap: wrap; 
+    gap: 12px;
 }
 
 .metric-box { 
-    flex:1 1 300px; 
+    flex: 1 1 calc(33.333% - 12px);
+    max-width: calc(33.333% - 12px); 
     min-width: 280px; 
+    box-sizing: border-box;
+}
+
+.metric-box img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 pre { 
