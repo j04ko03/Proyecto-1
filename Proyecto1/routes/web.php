@@ -83,24 +83,3 @@ Route::post('/login', [LoginController::class, 'loginF'])->name('login.submit');
 //RUTAS PARA LOS CONTROLADORES CREADOS
 //Si queremos importar todas las metodologías de la classe, se hace así ->
 Route::resource('usuarios', UsuarioController::class);
-
-//Rutas para implementar datos con el juego de Astro
-Route::post('/juegos/astro/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
-Route::post('/juegos/astro/finalizar', [JuegoController::class, 'finalizarNivel']);
-Route::post('/juegos/astro/actualizar', [JuegoController::class, 'actualizaDatosSesionNivel']);
-Route::post('/juegos/astro/desbloquear', [JuegoController::class, 'desbloquearJuego']);
-
-//Rutas para CapiMates
-Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
-Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
-Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
-
-// Rutas para Volamentes (consistentes con los fetch usados en el frontend)
-Route::post('/juego/iniciar-volamentes', [JuegoController::class, 'iniciarJuegoVolamentes']);
-Route::post('/juego/guardar-volamentes', [JuegoController::class, 'guardarVolamentes']);
-Route::post('/juego/desbloquear-volamentes', [JuegoController::class, 'desbloquearJuego']);
-
-//Rutas de las metricas
-Route::get('/metrics/sessions', [MetricasController::class, 'exportDatosSesionJson']);
-Route::get('/metrics/sessions.csv', [MetricasController::class, 'exportDatosSesionCsv']);
-Route::get('/run-ml', [MetricasController::class, 'runML']);
