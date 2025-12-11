@@ -66,8 +66,12 @@ window.inicializarVolamentes = function () {
         const s = document.createElement('style');
         s.id = 'volamentes-styles';
         s.textContent = `
-        .mal { color: #ff3b3b; font-weight: 700; animation: shake 0.8s ease-in-out infinite; }
-        @keyframes shake { 0%{ transform: translateX(0);} 20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} 100%{ transform: translateX(0);} }
+        .mal {
+        color: #ff3b3b;
+        font-weight: 700;
+        animation: shake 0.8s ease-in-out infinite; }
+        @keyframes shake { 0%{ transform: translateX(0);}
+        20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} 100%{ transform: translateX(0);} }
         `;
         document.head.appendChild(s);
     })();
