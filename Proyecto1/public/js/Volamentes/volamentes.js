@@ -45,6 +45,8 @@ window.inicializarVolamentes = function () {
     const POINTS_PER_QUESTION = 100; // cada pregunta vale 100 puntos
     const MIN_TOTAL_TO_PASS = 700;   // mínimo total para poder pasar al siguiente juego
     const TARGET_PUNTOS_POR_NIVEL = Math.ceil(MIN_TOTAL_TO_PASS / niveles.length);
+    // URL del siguiente juego (puede ser configurada desde la página con `window.siguienteJuegoUrl`)
+    const NEXT_GAME_URL = window.siguienteJuegoUrl || window.rutaSiguienteJuego || '/Astro';
     let volverAIntentar = false; // si estamos en último nivel y no alcanzó mínimo
 
     const fondo = document.getElementById("fondo");
@@ -246,30 +248,21 @@ window.inicializarVolamentes = function () {
             // Si este era el último nivel, comprobamos el mínimo total necesario
             if (nivelActual + 1 >= niveles.length) {
                 if (puntaje >= MIN_TOTAL_TO_PASS) {
-                    // El jugador alcanza el mínimo global: mostrar botón Jugar de nuevo
-                    if (!document.getElementById('btnReiniciar')) {
-                        const btn = document.createElement('button');
-                        btn.id = 'btnReiniciar';
-                        btn.className = 'btn-volamentes';
-                        btn.textContent = 'Jugar de nuevo';
-                        btn.style.marginTop = '12px';
-                        btn.addEventListener('click', resetGame);
-                        if (opcionesDiv) opcionesDiv.appendChild(btn);
-                    }
-
-                    // Mostrar botón para desbloquear el siguiente juego
+                    // El jugador alcanza el mínimo global: mostrar sólo el botón para continuar
                     if (!document.getElementById('btnContinuar')) {
                         const btnC = document.createElement('button');
                         btnC.id = 'btnContinuar';
                         btnC.className = 'btn-volamentes';
-                        btnC.textContent = 'Continuar (desbloquear siguiente juego)';
+                        btnC.textContent = 'Continuar al siguiente juego';
                         btnC.style.marginTop = '12px';
-                        btnC.style.marginLeft = '8px';
                         btnC.addEventListener('click', desbloquearSiguienteJuego);
                         if (opcionesDiv) opcionesDiv.appendChild(btnC);
                     }
 
+                    // ocultar el botón Siguiente y cualquier botón de reinicio
                     if (btnSiguiente) btnSiguiente.style.display = 'none';
+                    const rein = document.getElementById('btnReiniciar');
+                    if (rein && rein.parentNode) rein.parentNode.removeChild(rein);
                 } else {
                     // No alcanzó el mínimo global: cambiar botón Continuar por Volver a Intentar
                     if (textoPregunta) textoPregunta.textContent = 'No has llegado al límite requerido';
@@ -332,38 +325,54 @@ window.inicializarVolamentes = function () {
 
     // Acción para desbloquear el siguiente juego cuando se alcanza el mínimo requerido
     function desbloquearSiguienteJuego() {
-        console.log('Solicitando desbloqueo del siguiente juego...');
-        // UI feedback inmediato
-        if (textoPregunta) textoPregunta.textContent = '¡Siguiente juego desbloqueado! Redirigiendo...';
+    console.log('Desbloqueo: redirigiendo al siguiente juego...');
+    if (textoPregunta) textoPregunta.textContent = '¡Siguiente juego desbloqueado! Redirigiendo...';
 
-        // Si quieres notificar al servidor, descomenta el fetch y ajusta la ruta
-        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-        if (window.datosSesionId) {
-            fetch('/juego/desbloquear-volamentes', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': csrf
-                },
-                body: JSON.stringify({ datosSesionId: window.datosSesionId, score: puntaje })
-            }).then(res => res.json()).then(data => {
-                console.log('Servidor respondió desbloqueo:', data);
-                // Si el servidor devuelve una URL para continuar, redirigimos
-                if (data && data.siguienteUrl) {
-                    window.location.href = data.siguienteUrl;
+    const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+    const intentarFetch = Boolean(window.datosSesionId);
+
+    // Obtener ID del juego actual (Volamentes)
+    const juegoActualId = window.juegoActualId || 2; // Ajusta si Volamentes tiene otro id
+
+    if (true) { //* No te entrara nunca en el if.... */
+        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrf
+            },
+            body: JSON.stringify({ juegoId: juegoActualId }) // <--- enviar juegoId al backend
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Respuesta desbloqueo:', data);
+
+            let destino = NEXT_GAME_URL; // URL por defecto
+            if (data && data.juegoDesbloqueado) {
+                // Redirigir al siguiente juego desbloqueado
+                switch(data.juegoDesbloqueado) {
+                    case 3: destino = '/CapiMates'; break; // Ajusta según tu ruta en web.php
+                    case 4: destino = '/Bosque'; break;
+                    case 5: destino = '/Volamentes'; break;
+                    default: destino = NEXT_GAME_URL; break;
                 }
-            }).catch(err => {
-                console.warn('No se pudo notificar al servidor, continúa localmente.', err);
-            });
-        } else {
-            // Fallback: si no hay datosSesionId, simplemente mostrar mensaje.
-            setTimeout(() => {
-                if (textoPregunta) textoPregunta.textContent = 'Puedes continuar al siguiente juego.';
-            }, 800);
-        }
+            }
+            /*window.location.href = destino;ESTOI NO TE VA A FUNCIONAR HAZ UN RELOAD DE LA PAGINA   */
+            /*window.location.href = NEXT_GAME_URL;*/
+            location.reload();
+        })
+        .catch(err => {
+            console.warn('Fetch de desbloqueo falló, redirigiendo localmente.', err);
+            /*window.location.href = NEXT_GAME_URL; ESTOI NO TE VA A FUNCIONAR HAZ UN RELOAD DE LA PAGINA   */
+            location.reload();
+        });
+    } else {
+        window.location.href = NEXT_GAME_URL;
     }
+}
 
-    // Inicializamos los textos visible
+    // Inicializamos los textos visible sdvgdsfvbz
     if (puntajeTxt) puntajeTxt.textContent = "Puntaje: " + puntaje;
-    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
+    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar"; 
 };

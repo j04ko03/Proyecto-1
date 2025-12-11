@@ -8,15 +8,12 @@ function redimensionarCanva(){
     const contenedorCanvas = document.getElementById('contenedorCanvas');
     canvas.width = contenedorCanvas.clientWidth;   
     canvas.height = contenedorCanvas.clientHeight; 
-    canvas.style = "border: 1px solid red";
 
     //Ajustar tamaño del canva en caso de una redimensión de ventana
     function ajustarCanvas() {
-        //canvas.width = contenedorCanvas.clientWidth;
-        //canvas.height = contenedorCanvas.clientHeight;
-        /*canvas.style.width = '100%';
-        canvas.style.height = '100%';*/
-        console.log('Redimensionando...');
+        /*canvas.width = contenedorCanvas.clientWidth;
+        canvas.height = contenedorCanvas.clientHeight;
+        console.log('Redimensionando...');*/
 
         // 🔥 Emitimos un evento indicando que cambió el tamaño
         window.dispatchEvent(

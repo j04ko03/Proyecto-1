@@ -1,7 +1,7 @@
 .contenedorPrincipal {
-    width: 100%;   /* ancho fijo */
-    height: 700px;   /* alto fijo */
-    margin: 0 auto;  /* centrar horizontalmente */
+    width: 100%;  
+    height: 700px;  
+    margin: 0 auto; 
     position: relative;
     overflow: hidden;
 }
@@ -31,10 +31,10 @@
     padding-right: 1%;
 }
 
-/* 🚀 Ajuste del avión para que no quede tan desplazado */
+/* Ajuste del avión para que no quede tan desplazado */
 .avion {
     position: absolute;
-    right: 47%; /* 👈 se fija justo detrás del borde del contenedor blanco */
+    right: 47%; /*se fija justo detrás del borde del contenedor blanco */
     top: 50%;
     transform: translateY(-50%) scaleX(-1); /* mantiene el giro */
     width: 30vw; /* el ancho será un % del viewport */
@@ -70,6 +70,6 @@
 
 @media (max-width: 600px) {
     .avion {
-        display: none; /* oculta la imagen en móviles si no cabe bien */
+        display: none;
     }
 }

@@ -35,9 +35,8 @@ window.iniciarAstro = function () {
         //canvas.width = width;
         //canvas.height = height;
         //canvas.style.width = width + "px";
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-        canvas.style = "border: 1px solid blue";
+        //canvas.style.height = height + "px";
+        //canvas.style = "border: 1px solid blue";
 
         // aquí puedes adaptar tu juego en caliente:
         // actualizar cámara, bounds, físicas, HUD, etc.
@@ -63,6 +62,7 @@ window.iniciarAstro = function () {
     let taxaErrores = 0;
     let numeroIntentos = 0;
     let ayudas = 0;
+    let restohelp = 50;
 
     /* Datos Sesion */
     let datosSesionIdX = 0;
@@ -144,6 +144,9 @@ window.iniciarAstro = function () {
     
     const helpButton = document.getElementById('heelp');
     const cancelHelp = document.getElementById('cancel-btn2');
+    const selectNivel = document.getElementById('nivelSelect');
+    selectNivel.setAttribute('tabindex', '-1'); // no puede recibir foco
+    selectNivel.addEventListener('keydown', e => e.preventDefault()); // bloquea flechas
 
     /* Modal pregunta */
     const modal = document.getElementById('modal');
@@ -217,8 +220,16 @@ window.iniciarAstro = function () {
         vieneDeJuego = true;
         clicksFets += 1;
         if(clicksFets <= 3){
+            if(puntos >= restohelp){
+                puntos = puntos - restohelp;
+                puntosEl.textContent = puntos;
+            }
             mostrarMensaje("Respuesta", respuestaHelp);
             gameActive = true;
+            if(clicksFets === 3){
+                const ccc = document.getElementById('borras');
+                ccc.style.display = "none"; 
+            }
         }else {
             const ccc = document.getElementById('borras');
             ccc.style.display = "none"; 
@@ -743,9 +754,9 @@ window.iniciarAstro = function () {
 
             pausarTimer();
             cancelAnimationFrame(loopId);
-            if(nivel < 5){
+            /*if(nivel < 5){
                 nivel += 1;
-            }
+            }*/
 
             //Guardar los datos del nivel em SesionUsuario
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -795,6 +806,47 @@ window.iniciarAstro = function () {
                     //nivel = data.nivel;
                     nivelEl.textContent = nivel;
                     datosSesionIdX = data.datosSesionId;
+                    switch(nivel){
+                        case 1:
+                            desbloquearLogro(1, '¡Encendiendo motores!');
+                            if(puntos >= 500){
+                                desbloquearLogro(8, '¡Eres us S.P.E.C.I.A.L! (1/5)');
+                            }
+                            break;
+                        case 2:
+                            desbloquearLogro(2, '¡Estabilizando el vuelo (1/2)!');
+                            if(puntos >= 500){
+                                desbloquearLogro(9, '¡Eres us S.P.E.C.I.A.L! (2/5)');
+                            }
+                            break;
+                        case 3: 
+                            desbloquearLogro(5, '¡Estabilizando el vuelo (2/2)!');
+                            if(puntos >= 500){
+                                desbloquearLogro(10, '¡Eres us S.P.E.C.I.A.L! (3/5)');
+                            }
+                            break;
+                        case 4:
+                            desbloquearLogro(6, '¡Tomando la estación de control!');
+                            if(puntos >= 500){
+                                desbloquearLogro(11, '¡Eres us S.P.E.C.I.A.L! (4/5)');
+                            }
+                            break;
+                        case 5:
+                            desbloquearLogro(7, '¡Despegando!');
+                            if(puntos >= 500){
+                                desbloquearLogro(12, '¡Eres us S.P.E.C.I.A.L! (5/5)');
+                            }
+                            break;
+                        default:
+                            desbloquearLogro(1, '¡Encendiendo motores!');
+                            if(puntos >= 500){
+                                desbloquearLogro(8, '¡Eres us S.P.E.C.I.A.L! (1/5)');
+                            }
+                            break;
+                    }
+                    if(nivel < 5){
+                        nivel += 1;
+                    }
                     if(nivel === 5){
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                         reproducirVideoFinal("/Proyecto-1/Proyecto1/Astro/capiFuera1.mp4", () => {
@@ -831,6 +883,10 @@ window.iniciarAstro = function () {
             }).catch(err => {
                 console.error("ERROR EN FETCH:", err);
             });
+            //Nuevo
+            /*if(nivel < 5){
+                nivel += 1;
+            }*/
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -846,6 +902,27 @@ window.iniciarAstro = function () {
         }
 
         return false;
+    }
+
+    function desbloquearLogro(logroId, nombreLogro) {
+        fetch('/Proyecto-1/Proyecto1/public/logros/desbloquear', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ logroId })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.nuevo) {
+                // Solo mostrar si es nuevo
+                mostrarLogro(nombreLogro);
+            }
+            console.log(data.message);
+        })
+        .catch(err => console.error("Error desbloqueando logro:", err));
     }
 
 
@@ -1250,6 +1327,7 @@ window.iniciarAstro = function () {
         .then(res => res.json())
         .then(data => {
             console.log("Controlador ejecutado:", data);
+            
             // Aquí comienzas el juego:
             window.soundS.pause();
             window.soundS.currentTime = 0;
@@ -1260,10 +1338,25 @@ window.iniciarAstro = function () {
             puntos = 0;
             puntosEl.textContent = puntos;
             if(!componenteNave1.obtained){
+                console.log(data);
                 nivel = data.nivel['id'];
             }
             datosSesionIdX = data.datosSesionId;
             nivelEl.textContent = nivel;
+
+            const selectNivel = document.getElementById('nivelSelect');
+            selectNivel.value = nivel;
+            nivelEl.textContent = nivel;
+            Array.from(selectNivel.options).forEach(option => {
+                if (parseInt(option.value) <= parseInt(nivel)) {
+                    option.disabled = false;  // habilitado
+                    option.style.display = 'block'; 
+                } else {
+                    option.disabled = true;   // deshabilitado
+                    option.style.display = 'none'; 
+                }
+            });
+
             componenteNave1.obtained = false;
             vidas = 3;
             erroresEnNivel = 0;
@@ -1280,6 +1373,24 @@ window.iniciarAstro = function () {
         });
 
     }
+    
+    
+    // Evento cuando el usuario cambia de nivel
+    selectNivel.addEventListener('change', (e) => {
+        const nivelSeleccionado = parseInt(e.target.value);
+        console.log("Nivel seleccionado: *******************************************************************", nivelSeleccionado);
+        
+        // Actualizamos el nivel del juego
+        nivel = nivelSeleccionado;
+        nivelEl.textContent = nivel;
+
+        
+        determinarRecursoNave();
+        //Reiniciar juego
+        resetJugador(); 
+        //Crea dinamicamente los juegos en funcion al nivel
+        crearJuego(nivel);
+    });
 
     function crearJuego(nivel){
         switch(nivel){
@@ -1352,7 +1463,7 @@ window.iniciarAstro = function () {
             overlay.style.display = "none";
             video.src = "";
 
-            if (callbackFin) callbackFin(); // Ejecutar lógica final
+            if (callbackFin) callbackFin();
         };
     }
 }

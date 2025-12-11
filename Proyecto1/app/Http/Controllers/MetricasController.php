@@ -76,31 +76,6 @@ class MetricasController extends Controller
                 's.fechaSesion as session_date',
                 'd.startTime',
                 'd.endTime',
-                DB::raw("DATEDIFF(SECOND, d.startTime, d.endTime) as session_length"),
-                'd.score as points_scored',
-                'd.numeroIntentos as n_attempts',
-                'd.errores as errors',
-                'd.helpclicks as help_clicks',
-                'd.returningPlayer'
-            )
-            ->orderBy('u.id')
-            ->get();
-
-        return response()->json($rows);
-    }
-
-    /*public function exportDatosSesionJson(Request $request)
-    {
-        $rows = DB::table('DatosSesion as d')
-            ->join('SesionUsuario as s', 'd.id_SesionUsuario', '=', 's.id')
-            ->join('Usuario as u', 's.id_usuario', '=', 'u.id')
-            ->select(
-                'u.id as user_id',
-                'u.nombre as username',
-                's.id as session_id',
-                's.fechaSesion as session_date',
-                'd.startTime',
-                'd.endTime',
                 DB::raw("TIMESTAMPDIFF(SECOND, d.startTime, d.endTime) as session_length"),
                 'd.score as points_scored',
                 'd.numeroIntentos as n_attempts',
@@ -112,7 +87,7 @@ class MetricasController extends Controller
             ->get();
 
         return response()->json($rows);
-    }*/
+    }
 
     public function exportDatosSesionCsv(Request $request){
 
@@ -126,7 +101,7 @@ class MetricasController extends Controller
                 's.fechaSesion as session_date',
                 'd.startTime',
                 'd.endTime',
-                DB::raw("DATEDIFF(SECOND, d.startTime, d.endTime) as session_length"),
+                DB::raw("TIMESTAMPDIFF(SECOND, d.startTime, d.endTime) as session_length"),
                 'd.score as points_scored',
                 'd.numeroIntentos as n_attempts',
                 'd.errores as errors',
