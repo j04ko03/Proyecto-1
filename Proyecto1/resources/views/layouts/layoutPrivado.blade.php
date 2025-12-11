@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="{{ asset('assets/css/barraNavegacion.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameAstro.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/UIGameCapiMates.css') }}">
-    {{-- <link rel="stylesheet" href="{{ asset('assets/css/users.css') }}"> --}}
+    <link rel="stylesheet" href="{{ asset('assets/css/users.css') }}">
 
     <!-- CSS de vistas hijas -->
     @stack('styles')
