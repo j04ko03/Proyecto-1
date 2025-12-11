@@ -9,7 +9,7 @@ class HomeController extends Controller
 {
     public function index(Request $request)
 {
-     
+
      $query = Cartucho::query();
 
     // FILTRO POR NOMBRE (SI EL USUARIO ESCRIBE ALGO)
@@ -98,9 +98,9 @@ class HomeController extends Controller
     {
         $etiquetas = [
             1 => 'MATEMÁTICAS',
-            2 => 'INFORMATICA',
-            3 => 'MATEMÁTICAS',
-            4 => 'INFORMATICA'
+            2 => 'PROGRAMACIÓN',
+            1002 => 'MATEMÁTICAS',
+            2002 => 'PROGRAMACIÓN'
         ];
 
         return $etiquetas[$idJuego] ?? 'JUEGO';
