@@ -7,6 +7,7 @@
 @endpush
 
 @section('content')
+
 {{-- Consola Gamer --}}
 <div class="consola">
     <div class="led-power"></div>

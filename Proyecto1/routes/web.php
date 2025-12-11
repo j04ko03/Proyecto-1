@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Route to get Logout doLogout
     Route::get('/logout', [LoginController::class, 'doLogout'])->name('logout.controller');
-    
+
     Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
     Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
     Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
