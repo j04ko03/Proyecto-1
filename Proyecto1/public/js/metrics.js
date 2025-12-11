@@ -8,7 +8,7 @@ async function runMetrics() {
         });
 
         // status && (status.style.color = "#F28918");
-
+/*Descargar los paquetes de python */
         status && (status.textContent = "Instal·lant dependències (micropip)...", status.style.color = "#F28918");
         await pyodide.loadPackage(['micropip']);
         const micropip = pyodide.pyimport('micropip');
@@ -17,18 +17,24 @@ async function runMetrics() {
         await micropip.install('pandas');
         await micropip.install('scikit-learn');
         await micropip.install('matplotlib');
+/*------*/
 
+/*Carga el script de python*/
         status && (status.textContent = "Carregant script ML...", status.style.color = "#F28918");
         const pyCodeResp = await fetch('/Proyecto-1/Proyecto1/public/js/script_ml.py');
         const pyCode = await pyCodeResp.text();
         pyodide.runPython(pyCode);
 
+/*Obtener datos del servidor */
         status && (status.textContent = "Obtenint dades del servidor...", status.style.color = "#F28918");
         const resp = await fetch('/Proyecto-1/Proyecto1/public/metrics/sessions', {
             headers: { 'Accept': 'application/json' }
         });
         const raw = await resp.json();
 
+/*Convierte los datos de javaScript en Python, asigna los datos a la varaible gloval raw_json
+y llama a la funcion run_pipeline en
+pyton que devuelve un diccionario con metriscas, graficos y DataFrame limpio*/
         status && (status.textContent = "Executant pipeline Python...", status.style.color = "#F28918");
 
         // 🔥 Conversió correcta: JS Array/Object → Python dict/list
@@ -38,7 +44,8 @@ async function runMetrics() {
         // Executar el pipeline
         pyodide.runPython(`result = run_pipeline(raw_json)`);
 
-        // Convertir Python → JSON JS
+/* Convertir Python → JSON JS y lo parsea (parsed contiene todo lo que genero el pipeline
+imagenes, base64, metricas y datos limpios)*/
         const out_json = pyodide.runPython(`
             import json
             json.dumps(result)
@@ -76,7 +83,8 @@ async function runMetrics() {
         // 🔥 Mantinc els teus <img> existents
         // ============================
         const safe = (name) => parsed.images[name] || "";
-
+/*Actuliza imagenes existente con los graficos especificos
+y evita errores si la imagen no existe en el parse.images*/
         const ids = {
             img_cm: "confusion_matrix_tree",
             img_roc: "roc_curve_tree",
@@ -94,9 +102,12 @@ async function runMetrics() {
         }
 
         // Mostrar mètriques
+/*Convierte las metricas a JSON formateado y las muestra en un elemento metrics_text*/
         document.getElementById('metrics_text').textContent =
             JSON.stringify(parsed.metrics, null, 2);
 
+/*Si algo falla en calquier paso, se captura con catch y ç
+muestra el error en la pantalla y en la consola*/
         status && (status.textContent = "Llisto.");
     } catch (err) {
         console.error("Error en runMetrics:", err);
@@ -106,4 +117,5 @@ async function runMetrics() {
 }
 
 // Crida automàtica
+/*Cargar las metricas */
 runMetrics();

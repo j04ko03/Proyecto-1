@@ -94,15 +94,20 @@ window.inicializarVolamentes = function () {
     }
 
     function cargarPregunta() {
-        const nivel = niveles[nivelActual];
+// Siempre valida datos antes de usarlos.
+// Busca el nivel correspondiente usando el nivelActual
+// (Comprueba que nivel el nivel existe y evita errores si alguien borro o modifico datos de niveles)        const nivel = niveles[nivelActual];
+
         if (!nivel || !Array.isArray(nivel.preguntas)) {
+            //si el elemento no existe, no hacer nada
             textoPregunta && (textoPregunta.textContent = "No hay preguntas para este nivel.");
             opcionesDiv && (opcionesDiv.innerHTML = "");
             return;
         }
-
+// Busca la pregunta, si no existe muestra un mensaje de error y limpia las opciones
         const p = nivel.preguntas[preguntaActual];
         if (!p) {
+            //si el elemento no existe, no hacer nada
             textoPregunta && (textoPregunta.textContent = "Pregunta no encontrada.");
             opcionesDiv && (opcionesDiv.innerHTML = "");
             return;
@@ -114,9 +119,10 @@ window.inicializarVolamentes = function () {
         opcionesDiv.innerHTML = "";
         respuestaSeleccionada = false;
         esperaSiguienteNivel = false;
-        // Asegurar que el botón muestra la etiqueta por defecto
+        // Asegurar que el botón muestra la etiqueta por defecto y lo resetea
         if (btnSiguiente) btnSiguiente.textContent = 'Siguiente';
 
+// Crear un boton para cada opcion, crea un botton por cada respuesta que tenga la pregunta
         p.opciones.forEach((op, index) => {
             const btn = document.createElement("button");
             btn.classList.add("opcion-btn");
@@ -134,6 +140,8 @@ window.inicializarVolamentes = function () {
     }
 
     function seleccionarRespuesta(index) {
+
+//Busca la pregunta actual dentro del nivel(Si no existe no sale la funcion)
         const nivel = niveles[nivelActual];
         const p = nivel && nivel.preguntas && nivel.preguntas[preguntaActual];
         if (!p) return;
@@ -378,5 +386,5 @@ window.inicializarVolamentes = function () {
 
     // Inicializamos los textos visible sdvgdsfvbz
     if (puntajeTxt) puntajeTxt.textContent = "Puntaje: " + puntaje;
-    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar"; 
+    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
 };
