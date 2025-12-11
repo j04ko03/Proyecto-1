@@ -39,11 +39,12 @@ window.inicializarVolamentes = function () {
     let puntaje = 0;
     let respuestaSeleccionada = false;
     let esperaSiguienteNivel = false; // indica que estamos mostrando resumen de nivel
-    const puntajesPorNivel = niveles.map(() => 0);
+    const puntajesPorNivel = niveles.map(() => 0); /*Mismo array pero de 0*/
 
     // Puntos y umbrales globales
     const POINTS_PER_QUESTION = 100; // cada pregunta vale 100 puntos
     const MIN_TOTAL_TO_PASS = 700;   // mínimo total para poder pasar al siguiente juego
+    // Divide los puntos totales enetre los niveles (Se divide el minimo entre niveles)
     const TARGET_PUNTOS_POR_NIVEL = Math.ceil(MIN_TOTAL_TO_PASS / niveles.length);
     // URL del siguiente juego (puede ser configurada desde la página con `window.siguienteJuegoUrl`)
     const NEXT_GAME_URL = window.siguienteJuegoUrl || window.rutaSiguienteJuego || '/Astro';
