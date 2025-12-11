@@ -334,11 +334,12 @@ window.inicializarVolamentes = function () {
     // Obtener ID del juego actual (Volamentes)
     const juegoActualId = window.juegoActualId || 2; // Ajusta si Volamentes tiene otro id
 
-    if (intentarFetch) {
-        fetch('/juego/desbloquear-volamentes', {
+    if (true) { //* No te entrara nunca en el if.... */
+        fetch('/Proyecto-1/Proyecto1/public/juegos/astro/desbloquear', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': csrf
             },
             body: JSON.stringify({ juegoId: juegoActualId }) // <--- enviar juegoId al backend
@@ -357,18 +358,21 @@ window.inicializarVolamentes = function () {
                     default: destino = NEXT_GAME_URL; break;
                 }
             }
-            window.location.href = destino;
+            /*window.location.href = destino;ESTOI NO TE VA A FUNCIONAR HAZ UN RELOAD DE LA PAGINA   */
+            /*window.location.href = NEXT_GAME_URL;*/
+            location.reload();
         })
         .catch(err => {
             console.warn('Fetch de desbloqueo falló, redirigiendo localmente.', err);
-            window.location.href = NEXT_GAME_URL;
+            /*window.location.href = NEXT_GAME_URL; ESTOI NO TE VA A FUNCIONAR HAZ UN RELOAD DE LA PAGINA   */
+            location.reload();
         });
     } else {
         window.location.href = NEXT_GAME_URL;
     }
 }
 
-    // Inicializamos los textos visible
+    // Inicializamos los textos visible sdvgdsfvbz
     if (puntajeTxt) puntajeTxt.textContent = "Puntaje: " + puntaje;
-    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
+    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar"; 
 };

@@ -1,6 +1,7 @@
 <div id="contenedorJuego" class="contenedorJuego" style="height: 100%">
     <div id="ui" class="ui">
         <div class="ui-left" style="display: flex; flex-wrap: wrap; width: 150px;">
+            
             <div style="width: 30%;">
                 Nivel: <span id="nivel">1</span>
             </div>
@@ -22,8 +23,29 @@
             <button id="heelp" class="pixel-btn">Ayuda</button>
         </div>
         <div class="ui-right">
-            Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Tiempo: <span id="mejor">0</span>
+        Puntos: <span id="puntos">0</span> &nbsp; | &nbsp; Tiempo: <span id="mejor">0</span>
+
+        <!-- Div para el select debajo de los puntos -->
+        <div id="seleccionNivel" style="margin-top: 8px;">
+            <label for="nivelSelect" style="color:black; margin-right: 5px;">Selecciona Nivel:</label>
+            <select id="nivelSelect" style="
+                background-color: transparent; /* fondo transparente */
+                color: black;                  /* texto blanco */
+                border: 1px solid white;       /* borde blanco */
+                padding: 2px 6px;
+                -webkit-appearance: none;      /* quitar estilo por defecto Chrome/Safari */
+                -moz-appearance: none;         /* quitar estilo Firefox */
+                appearance: none;              /* quitar estilo general */
+                outline: none;                 /* quitar foco */
+            ">
+                <option value="1" style="color: black">Nivel 1</option>
+                <option value="2" style="color: black">Nivel 2</option>
+                <option value="3" style="color: black">Nivel 3</option>
+                <option value="4" style="color: black">Nivel 4</option>
+                <option value="5" style="color: black">Nivel 5</option>
+            </select>
         </div>
+    </div>
     </div>
 
     <!-- canva elemento html5 Lienzo donde para dibujar gráficos dinámicos usando el JavaScript -->
@@ -37,6 +59,9 @@
         <div id="msg-body" class="msg-body" style="color: white">
             Llega al final del nivel resolviendo las sumas. Presiona <strong>JUGAR</strong> para empezar.
         </div>
+        
+        
+        
         <div style="margin-top:8px; display: flex; justify-content: center; align-items: center">
             <button class="small cancel" id="cancel-btn1" style="none">CANCELAR</button>
             <button id="start-btn" class="start-btn" style="color: white">JUGAR</button>

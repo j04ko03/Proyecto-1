@@ -144,6 +144,9 @@ window.iniciarAstro = function () {
     
     const helpButton = document.getElementById('heelp');
     const cancelHelp = document.getElementById('cancel-btn2');
+    const selectNivel = document.getElementById('nivelSelect');
+    selectNivel.setAttribute('tabindex', '-1'); // no puede recibir foco
+    selectNivel.addEventListener('keydown', e => e.preventDefault()); // bloquea flechas
 
     /* Modal pregunta */
     const modal = document.getElementById('modal');
@@ -751,9 +754,9 @@ window.iniciarAstro = function () {
 
             pausarTimer();
             cancelAnimationFrame(loopId);
-            if(nivel < 5){
+            /*if(nivel < 5){
                 nivel += 1;
-            }
+            }*/
 
             //Guardar los datos del nivel em SesionUsuario
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -834,6 +837,15 @@ window.iniciarAstro = function () {
                                 desbloquearLogro(12, '¡Eres us S.P.E.C.I.A.L! (5/5)');
                             }
                             break;
+                        default:
+                            desbloquearLogro(1, '¡Encendiendo motores!');
+                            if(puntos >= 500){
+                                desbloquearLogro(8, '¡Eres us S.P.E.C.I.A.L! (1/5)');
+                            }
+                            break;
+                    }
+                    if(nivel < 5){
+                        nivel += 1;
                     }
                     if(nivel === 5){
                         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -871,6 +883,10 @@ window.iniciarAstro = function () {
             }).catch(err => {
                 console.error("ERROR EN FETCH:", err);
             });
+            //Nuevo
+            /*if(nivel < 5){
+                nivel += 1;
+            }*/
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -1311,6 +1327,7 @@ window.iniciarAstro = function () {
         .then(res => res.json())
         .then(data => {
             console.log("Controlador ejecutado:", data);
+            
             // Aquí comienzas el juego:
             window.soundS.pause();
             window.soundS.currentTime = 0;
@@ -1321,10 +1338,25 @@ window.iniciarAstro = function () {
             puntos = 0;
             puntosEl.textContent = puntos;
             if(!componenteNave1.obtained){
+                console.log(data);
                 nivel = data.nivel['id'];
             }
             datosSesionIdX = data.datosSesionId;
             nivelEl.textContent = nivel;
+
+            const selectNivel = document.getElementById('nivelSelect');
+            selectNivel.value = nivel;
+            nivelEl.textContent = nivel;
+            Array.from(selectNivel.options).forEach(option => {
+                if (parseInt(option.value) <= parseInt(nivel)) {
+                    option.disabled = false;  // habilitado
+                    option.style.display = 'block'; 
+                } else {
+                    option.disabled = true;   // deshabilitado
+                    option.style.display = 'none'; 
+                }
+            });
+
             componenteNave1.obtained = false;
             vidas = 3;
             erroresEnNivel = 0;
@@ -1341,6 +1373,24 @@ window.iniciarAstro = function () {
         });
 
     }
+    
+    
+    // Evento cuando el usuario cambia de nivel
+    selectNivel.addEventListener('change', (e) => {
+        const nivelSeleccionado = parseInt(e.target.value);
+        console.log("Nivel seleccionado: *******************************************************************", nivelSeleccionado);
+        
+        // Actualizamos el nivel del juego
+        nivel = nivelSeleccionado;
+        nivelEl.textContent = nivel;
+
+        
+        determinarRecursoNave();
+        //Reiniciar juego
+        resetJugador(); 
+        //Crea dinamicamente los juegos en funcion al nivel
+        crearJuego(nivel);
+    });
 
     function crearJuego(nivel){
         switch(nivel){
@@ -1413,7 +1463,7 @@ window.iniciarAstro = function () {
             overlay.style.display = "none";
             video.src = "";
 
-            if (callbackFin) callbackFin(); // Ejecutar lógica final
+            if (callbackFin) callbackFin();
         };
     }
 }
