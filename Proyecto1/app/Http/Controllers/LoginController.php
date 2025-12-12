@@ -7,6 +7,8 @@ use App\Models\Usuario;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\QueryException;
+use App\Clases\Utilitat;
 
 class LoginController extends Controller
 {
@@ -16,44 +18,63 @@ class LoginController extends Controller
     }
 
     public function loginF(Request $request) {
-        $usuari = Usuario::where('email', $request->input('correo'))->first();
-        if($usuari){
-            if($usuari && Hash::check($request->input('password'), $usuari->password)){
-                Auth::login($usuari);
-                $this->crearSesionUsuario($usuari->id);
-                $response = redirect('/home'); 
+        try{
+            $usuari = Usuario::where('email', $request->input('correo'))->first();
+            if($usuari){
+                if($usuari && Hash::check($request->input('password'), $usuari->password)){
+                    Auth::login($usuari);
+                    $this->crearSesionUsuario($usuari->id);
+                    $response = redirect('/home'); 
+                    session()->flash('success', 'Login con email realizado');
+                }else{
+                    //session()->flash('error', 'Credenciales Incorrectas');
+                    $response = redirect()->back()->with('Error', 'Credenciales Incorrectas. Recuerda en poner tu correo o nickName')->withInput();
+                }
             }else{
-                //session()->flash('error', 'Credenciales Incorrectas');
-                $response = redirect()->back()->with('Error', 'Credenciales Incorrectas. Recuerda en poner tu correo o nickName')->withInput();
+                $usuari = Usuario::where('nickName', $request->input('correo'))->first();
+                if($usuari && Hash::check($request->input('password'), $usuari->password)){
+                    Auth::login($usuari);
+                    $this->crearSesionUsuario($usuari->id);
+                    $response = redirect('/home'); 
+                    session()->flash('success', 'Login con nickname  realizado');
+                }else{
+                    //session()->flash('error', 'Credenciales Incorrectas');
+                    $response = redirect()->back()->with('Error', 'Credenciales Incorrectas. Recuerda en poner tu correo o nickName')->withInput();
+                }
             }
-        }else{
-            $usuari = Usuario::where('nickName', $request->input('correo'))->first();
-            if($usuari && Hash::check($request->input('password'), $usuari->password)){
-                Auth::login($usuari);
-                $this->crearSesionUsuario($usuari->id);
-                $response = redirect('/home'); 
-            }else{
-                //session()->flash('error', 'Credenciales Incorrectas');
-                $response = redirect()->back()->with('Error', 'Credenciales Incorrectas. Recuerda en poner tu correo o nickName')->withInput();
-            }
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No es poden obtenir les dades indicades' . ' - ' . $missatge);
+            $response = redirect('/home'); 
         }
-        
 
         return $response;
 
     }
 
     public function doLogout(){
-        Auth::logout();
-        return redirect(route('login.controller'));
+        try{
+            Auth::logout();
+            $response = redirect(route('login.controller'));
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se ha podido salir de la sesion' . ' - ' . $missatge);
+            $response = redirect()->back()->with('Error', 'Error al hacer Logout, intentalo de nuevo')->withInput();
+        }
+        return $response;
     }
 
     //Funcion para llamar al controlador de SesionUsuario y crear una nueva sesion
     public function crearSesionUsuario($id_usuario){
-        $sesion = new SesionUsuario();
-        $sesion->id_usuario = $id_usuario;
-        $sesion->fechaSesion = now();
-        $sesion->save();
+        try{
+            $sesion = new SesionUsuario();
+            $sesion->id_usuario = $id_usuario;
+            $sesion->fechaSesion = now();
+            $sesion->save();
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se ha podido crear el usuario' . ' - ' . $missatge);
+        }
     }
 
 }

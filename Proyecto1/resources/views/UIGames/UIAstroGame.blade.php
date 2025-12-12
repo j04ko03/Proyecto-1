@@ -1,3 +1,4 @@
+@include('errores2')
 <div id="contenedorJuego" class="contenedorJuego" style="height: 100%">
     <div id="ui" class="ui">
         <div class="ui-left" style="display: flex; flex-wrap: wrap; width: 150px;">

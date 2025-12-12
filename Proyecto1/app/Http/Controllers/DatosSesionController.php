@@ -6,6 +6,8 @@ use App\Models\DatosSesion;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use function PHPUnit\Framework\isNull;
+use Illuminate\Database\QueryException;
+use App\Clases\Utilitat;
 
 class DatosSesionController extends Controller
 {
@@ -60,11 +62,25 @@ class DatosSesionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    /**
+     * Undocumented function
+     *
+     * @param DatosSesion $datosSesion
+     * @return void
+     */
     public function destroy(DatosSesion $datosSesion)
     {
         //
-        $datosSesion->delete();
+        try{
+            $datosSesion->delete();
+            session()->flash('success', 'Se borra correctamente los datos de sesión' . ' - ' . $datosSesion.id);
+            $response = response()->json(['message' => 'Registros vacíos eliminados correctamente.']);
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se puede borrar el registro' . ' - ' . $missatge);
+            $response = redirect()->back();
+        }
 
-        return response()->json(['message' => 'Registros vacíos eliminados correctamente.']);
+        return $response;
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Logro;
 use Illuminate\Http\Request;
+use Illuminate\Database\QueryException;
+use App\Clases\Utilitat;
 
 class LogroController extends Controller
 {
@@ -13,13 +15,21 @@ class LogroController extends Controller
     public function index(Request $request)
     {
         //
-        $usuario = auth()->user();
+        try{
+            $usuario = auth()->user();
 
-        $logros = Logro::with('juego')->get();
+            $logros = Logro::with('juego')->get();
 
-        $logrosUsuario = $usuario->logros->pluck('id')->toArray();
+            $logrosUsuario = $usuario->logros->pluck('id')->toArray();
 
-        return view('logros', compact('logros', 'logrosUsuario'));
+            $response = view('logros', compact('logros', 'logrosUsuario'));
+            session()->flash('success', 'Logros extraídos');
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se ha podido inicializar Logros' . ' - ' . $missatge);
+            $response = redirect()->back();
+        }
+        return $response;
     }
 
     /**
@@ -71,23 +81,31 @@ class LogroController extends Controller
     }
 
     public function desbloquear(Request $request){
-        $usuario = auth()->user();
-        $logroId   = $request->logroId;
+        try{   
+            $usuario = auth()->user();
+            $logroId   = $request->logroId;
 
-        // Mira si el usuuario ya tiene el logro
-        if ($usuario->logros()->where('Usuario_Logro.id_logro', $logroId)->exists()) {
-            return response()->json([
-                'nuevo' => false,
-                'message' => 'Logro ya obtenido'
+            // Mira si el usuuario ya tiene el logro
+            if ($usuario->logros()->where('Usuario_Logro.id_logro', $logroId)->exists()) {
+                return response()->json([
+                    'nuevo' => false,
+                    'message' => 'Logro ya obtenido'
+                ]);
+            }
+
+            // Guardar el logro
+            $usuario->logros()->attach($logroId);
+
+            $response = response()->json([
+                'nuevo' => true,
+                'message' => 'Logro desbloqueado'
             ]);
+            session()->flash('success', 'Logro desbloqueado');
+        }catch(QueryException $e){
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se ha podido desbloquear Logro' . ' - ' . $missatge);
+            $response = redirect()->back();
         }
-
-        // Guardar el logro
-        $usuario->logros()->attach($logroId);
-
-        return response()->json([
-            'nuevo' => true,
-            'message' => 'Logro desbloqueado'
-        ]);
+        return $response;
     }
 }
