@@ -63,10 +63,15 @@ class DatosSesionController extends Controller
      * Remove the specified resource from storage.
      */
     /**
-     * Undocumented function
+     * Elimina un registro específico de DatosSesion del almacenamiento.
      *
-     * @param DatosSesion $datosSesion
-     * @return void
+     * Intenta borrar el registro proporcionado. En caso de éxito, devuelve una
+     * respuesta JSON y almacena un mensaje flash de confirmación. Si ocurre un
+     * error de base de datos (QueryException), captura la excepción, genera un
+     * mensaje de error y redirige a la vista anterior.
+     *
+     * @param  \App\Models\DatosSesion  $datosSesion  Instancia del registro a eliminar.
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse  Respuesta según el resultado.
      */
     public function destroy(DatosSesion $datosSesion)
     {

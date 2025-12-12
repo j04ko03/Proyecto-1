@@ -16,6 +16,15 @@ class UsuarioController extends Controller
     /**
      * Display a listing of the resource.
      */
+    /**
+     * Muestra un listado de usuarios según el rol del usuario autenticado.
+     *
+     * - Rol 1 (Admin): puede ver usuarios con rol 2 y 3.
+     * - Rol 2 (Moderador): puede ver usuarios con rol 3.
+     * - Rol 3 (Usuario): no tiene permisos, retorna colección vacía.
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function index()
     {
         try{
@@ -47,6 +56,11 @@ class UsuarioController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    /**
+     * Muestra el formulario de registro de un nuevo usuario.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
         //Enviamos a la vista del registro
@@ -55,6 +69,18 @@ class UsuarioController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     */
+    /**
+     * Almacena un nuevo usuario en la base de datos.
+     *
+     * - Valida los datos del formulario.
+     * - Determina el rol según admin_secret.
+     * - Hashea la contraseña.
+     * - Crea la sesión del usuario recién registrado.
+     * - Inicia sesión automáticamente.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request)
     {
@@ -116,6 +142,7 @@ class UsuarioController extends Controller
     /**
      * Display the specified resource.
      */
+    
     public function show(Usuario $usuario)
     {
         //
@@ -139,6 +166,16 @@ class UsuarioController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     */
+    /**
+     * Elimina un usuario del sistema.
+     *
+     * - Solo permite eliminar usuarios con rol inferior al del usuario autenticado.
+     * - No permite eliminarse a sí mismo.
+     * - Desasocia logros y datos de sesiones antes de eliminar.
+     *
+     * @param  int  $id  ID del usuario a eliminar
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy($id)
     {
@@ -189,6 +226,14 @@ class UsuarioController extends Controller
         return $response;
     }
 
+    /**
+     * Crea una nueva sesión de usuario (SesionUsuario).
+     *
+     * Se llama al registrar o iniciar sesión un usuario.
+     *
+     * @param  int  $id_usuario  ID del usuario autenticado
+     * @return void
+     */
     public function crearSesionUsuario($id_usuario){
         try{
             $sesion = new SesionUsuario();

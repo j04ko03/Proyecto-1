@@ -12,6 +12,15 @@ class LogroController extends Controller
     /**
      * Display a listing of the resource.
      */
+    /**
+     * Muestra un listado de logros disponibles y los logros obtenidos por el usuario autenticado.
+     *
+     * Carga todos los logros con su relación a juegos y determina cuáles
+     * ya tiene el usuario.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response|\Illuminate\View\View
+     */
     public function index(Request $request)
     {
         //
@@ -80,6 +89,15 @@ class LogroController extends Controller
         //
     }
 
+    /**
+     * Desbloquea un logro para el usuario autenticado.
+     *
+     * Verifica si el usuario ya tiene el logro. Si no lo tiene,
+     * lo asocia al usuario y devuelve un JSON indicando que es nuevo.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function desbloquear(Request $request){
         try{   
             $usuario = auth()->user();

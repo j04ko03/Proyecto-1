@@ -69,6 +69,15 @@ class JuegoController extends Controller
         //
     }
 
+      /**
+     * Inicia una partida del juego Astro.
+     *
+     * Recibe usuarioId y juegoId. Crea un nuevo DatosSesion, limpia
+     * sesiones incompletas previas, asigna nivel y marca returningPlayer.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|array
+     */
     public function iniciarJuegoAstro(Request $request)
     {
         try{
@@ -142,6 +151,15 @@ class JuegoController extends Controller
      * Recibe JSON con: usuarioId, juegoId
      * Devuelve: datosSesionId y nivel (objeto nivel o null)
      */
+    /**
+     * Inicia una partida del juego Volamentes.
+     *
+     * Funciona igual que iniciarJuegoAstro pero para un juego distinto.
+     * Recibe usuarioId y juegoId y devuelve datosSesionId y nivel.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function iniciarJuegoVolamentes(Request $request)
     {
         try{
@@ -206,6 +224,14 @@ class JuegoController extends Controller
         return $response;
     }
 
+    /**
+     * Obtiene la última DatosSesion del usuario y devuelve su nivel actual.
+     *
+     * Retorna datosSesionId y nivel id (o null si no existe nivel asociado).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
     public function actualizaDatosSesionNivel(Request $request){
         try{
             $usuarioId = $request->input('usuarioId');
@@ -250,6 +276,17 @@ class JuegoController extends Controller
         return $response;
     }
 
+    /**
+     * Obtiene el siguiente nivel disponible para un usuario según el juego.
+     *
+     * Analiza todos los niveles ya jugados y devuelve:
+     * - El primer nivel no jugado.
+     * - Si ya jugó todos, retorna el último nivel.
+     *
+     * @param  int  $usuarioId
+     * @param  int  $juegoId
+     * @return \App\Models\Nivel|\Illuminate\Http\RedirectResponse
+     */
     public function obtenerNivelDelUsuario($usuarioId, $juegoId)
     {
         try{
@@ -298,6 +335,13 @@ class JuegoController extends Controller
         return $response;
     }
 
+    /**
+     * Borra todos los DatosSesion incompletos (sin endTime y sin score)
+     * para un usuario, incluyendo sus relaciones pivot.
+     *
+     * @param  int  $usuarioId
+     * @return void
+     */
     public function borrarDatosSesionIncompletos($usuarioId)
     {
         try{
@@ -318,6 +362,15 @@ class JuegoController extends Controller
         }
     }
 
+    /**
+     * Finaliza un nivel guardando endTime, score y datos de desempeño.
+     *
+     * Recibe datosSesionId y campos opcionales:
+     * score, numeroIntentos, errores, puntuacion, helpclicks.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
     public function finalizarNivel(Request $request)
     {
         try{
@@ -342,6 +395,16 @@ class JuegoController extends Controller
         return $response;
     }
 
+    /**
+     * Guarda los resultados del juego Volamentes.
+     *
+     * Actualiza score, errores, intentos y demás datos.
+     * Cierra la sesión marcando endTime.
+     * Si incluye nivelId, lo asocia a DatosSesion.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function guardarVolamentes(Request $request)
     {
         \Log::info('guardarVolamentes payload', $request->all());
@@ -388,6 +451,15 @@ class JuegoController extends Controller
         return response()->json([ 'status' => 'ok', 'datosSesionId' => $datosSesion->id ]);
     }
 
+    /**
+     * Desbloquea el siguiente juego en la secuencia.
+     *
+     * Busca el juego inmediatamente posterior (por id),
+     * valida su estado y lo desbloquea si estaba bloqueado.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function  desbloquearJuego(Request $request)  {
         try{
             $juegoActualId = $request->input('juegoId');

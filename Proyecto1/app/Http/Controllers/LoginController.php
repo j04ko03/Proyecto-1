@@ -13,10 +13,27 @@ use App\Clases\Utilitat;
 class LoginController extends Controller
 {
     //Lo puedo Borrar XQ NO LA USARE
+    /**
+     * Muestra el formulario de inicio de sesión.
+     *
+     * (Actualmente no se utiliza, pero se mantiene por compatibilidad.)
+     *
+     * @return \Illuminate\View\View
+     */
     public function showLoginForm(){
         return view('auth.login');
     }
 
+    /**
+     * Procesa el login de un usuario.
+     *
+     * Intenta autenticar usando email o nickname.
+     * Si las credenciales son válidas, inicia sesión y crea una nueva
+     * entrada en SesionUsuario. En caso contrario redirige con error.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function loginF(Request $request) {
         try{
             $usuari = Usuario::where('email', $request->input('correo'))->first();
@@ -52,6 +69,14 @@ class LoginController extends Controller
 
     }
 
+    /**
+     * Cierra la sesión del usuario autenticado.
+     *
+     * Realiza logout utilizando Auth::logout() y redirige a la ruta login.
+     * Si ocurre un error, redirige atrás con mensaje.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function doLogout(){
         try{
             Auth::logout();
@@ -65,6 +90,14 @@ class LoginController extends Controller
     }
 
     //Funcion para llamar al controlador de SesionUsuario y crear una nueva sesion
+    /**
+     * Crea una nueva sesión de usuario (SesionUsuario) al iniciar sesión.
+     *
+     * Inserta un registro indicando la fecha y el usuario que inicia sesión.
+     *
+     * @param  int  $id_usuario  ID del usuario autenticado.
+     * @return void
+     */
     public function crearSesionUsuario($id_usuario){
         try{
             $sesion = new SesionUsuario();
