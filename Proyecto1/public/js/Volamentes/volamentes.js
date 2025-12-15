@@ -258,6 +258,7 @@ window.inicializarVolamentes = function () {
                 }
             }
 
+            /* Comprovacion del ultimo nivel */
             // Si este era el último nivel, comprobamos el mínimo total necesario
             if (nivelActual + 1 >= niveles.length) {
                 if (puntaje >= MIN_TOTAL_TO_PASS) {
@@ -303,14 +304,18 @@ window.inicializarVolamentes = function () {
         if (btnSiguiente) btnSiguiente.style.display = 'none';
     }
 
+
+    /* Resetear el Juego */
     // Reinicia las variables del juego y UI para jugar de nuevo
     function resetGame() {
+        
         // reset valores
         nivelActual = 0;
         preguntaActual = 0;
         puntaje = 0;
         respuestaSeleccionada = false;
         esperaSiguienteNivel = false;
+
         // reset puntajes por nivel
         for (let i = 0; i < puntajesPorNivel.length; i++) puntajesPorNivel[i] = 0;
         volverAIntentar = false;

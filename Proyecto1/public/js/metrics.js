@@ -118,4 +118,5 @@ muestra el error en la pantalla y en la consola*/
 
 // Crida automàtica
 /*Cargar las metricas */
+
 runMetrics();
