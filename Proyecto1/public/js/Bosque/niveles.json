@@ -1,0 +1,83 @@
+[
+    {
+        "name": "Secuencias Básicas",
+        "obstacles": [
+            {
+                "x": 300,
+                "type": "puente",
+                "solved": false,
+                "challenge": {
+                    "title": "Repara el Puente",
+                    "text": "Completa la secuencia:\nAVANZAR → SALTAR → ___",
+                    "answer": "AVANZAR",
+                    "hint": "Pista: Después de saltar..."
+                }
+            },
+            {
+                "x": 600,
+                "type": "arbol",
+                "solved": false,
+                "challenge": {
+                    "title": "Árbol Bloqueando",
+                    "text": "¿Cuántos pasos para rodear un árbol de 3 metros?",
+                    "answer": "3",
+                    "hint": "Pista: 1 paso = 1 metro"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Repeticiones",
+        "obstacles": [
+            {
+                "x": 250,
+                "type": "roca",
+                "solved": false,
+                "challenge": {
+                    "title": "Rocas en el Camino",
+                    "text": "Si repites 'MOVER_ROCA' 5 veces, ¿cuántas quedan?",
+                    "answer": "0",
+                    "hint": "Pista: Mueves todas"
+                }
+            },
+            {
+                "x": 550,
+                "type": "flor",
+                "solved": false,
+                "challenge": {
+                    "title": "Recolecta Flores",
+                    "text": "REPETIR ___ VECES { RECOGER_FLOR } para 4 flores",
+                    "answer": "4",
+                    "hint": "Pista: ¿Cuántas veces?"
+                }
+            }
+        ]
+    },
+    {
+        "name": "Condicionales",
+        "obstacles": [
+            {
+                "x": 350,
+                "type": "rio",
+                "solved": false,
+                "challenge": {
+                    "title": "Cruzar el Río",
+                    "text": "SI hay_puente ENTONCES cruzar. ¿Hay puente? (SI/NO)",
+                    "answer": "SI",
+                    "hint": "Pista: Mira la imagen"
+                }
+            },
+            {
+                "x": 650,
+                "type": "cueva",
+                "solved": false,
+                "challenge": {
+                    "title": "Entrada a la Cueva",
+                    "text": "SI tienes_linterna ___ entrar",
+                    "answer": "ENTONCES",
+                    "hint": "Pista: Condición y acción"
+                }
+            }
+        ]
+    }
+]
