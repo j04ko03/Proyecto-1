@@ -16,7 +16,6 @@ main.main-content {
     /* altura de toda la pantalla */
     display: flex;
     flex-direction: column;
-    /* apila verticalmente */
     
 }
 
@@ -33,7 +32,6 @@ h1 {
     font-family: 'Pixelify Sans', sans-serif;
     font-weight: 700;
     font-size: 100px !important;
-    /* relativo al ancho de pantalla */
     background: linear-gradient(135deg, #F28918 32%, #8C4F0E 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -49,4 +47,53 @@ h1 {
     -webkit-text-fill-color: transparent;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/*-------------------------------------------------------------------*/
+/* TOAST NOTIFICATION */
+.alert-alert {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    max-width: 350px;
+    width: 100%;
+    min-height: 50px;
+    max-height: 100px;
+    color: var(--color-white);
+    border: none;
+    border-radius: 10px;
+    z-index: 100;
+    padding: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: notification 3s forwards;
+}
+
+.alert-success {
+    background-color: #24b22e;
+}
+
+.alert-error {
+    background-color: #d42d20;
+}
+
+@keyframes notification {
+    25% {
+        opacity: 1;
+        transform: translate(-50%, 30px);
+    }
+
+    60% {
+        opacity: 1;
+        transform: translate(-50%, 30px);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -30px);
+    }
 }

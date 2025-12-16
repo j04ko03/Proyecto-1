@@ -40,7 +40,7 @@
 
         <div class="quiz-header">
           <span class="quiz-title">Preguntas del bosque</span>
-          <span id="cerrar-popup" class="quiz-close" onclick="cerrarPopUp()">✖</span>
+          <span id="cerrar-popup" class="quiz-close">✖</span>
         </div>
 
         <div class="quiz-body">

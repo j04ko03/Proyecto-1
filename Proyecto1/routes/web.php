@@ -32,7 +32,7 @@ Route::middleware(['auth'])->group(function () {
 
     //Route to get Logout doLogout
     Route::get('/logout', [LoginController::class, 'doLogout'])->name('logout.controller');
-    
+
     Route::post('/juegos/capimates/iniciar', [JuegoController::class, 'iniciarJuegoAstro']);
     Route::post('/juegos/capimates/finalizar', [JuegoController::class, 'finalizarNivel']);
     Route::post('/juegos/capimates/desbloquear', [JuegoController::class, 'desbloquearJuego']);
@@ -81,5 +81,5 @@ Route::post('/login', [LoginController::class, 'loginF'])->name('login.submit');
 
 
 //RUTAS PARA LOS CONTROLADORES CREADOS
-    //Si queremos importar todas las metodologías de la classe, se hace así ->
+//Si queremos importar todas las metodologías de la classe, se hace así ->
 Route::resource('usuarios', UsuarioController::class);

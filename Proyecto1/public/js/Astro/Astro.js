@@ -1463,7 +1463,7 @@ window.iniciarAstro = function () {
             overlay.style.display = "none";
             video.src = "";
 
-            if (callbackFin) callbackFin(); // Ejecutar lógica final
+            if (callbackFin) callbackFin();
         };
     }
 }
