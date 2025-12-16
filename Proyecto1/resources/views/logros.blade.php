@@ -5,6 +5,7 @@
 @endpush
 
 @section('content')
+@include('errores2')
 <div id="contenedor-scroll" class="logros-container">
 
     <h1>Tus Logros</h1>

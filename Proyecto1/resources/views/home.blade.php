@@ -8,6 +8,7 @@
 
 @section('content')
 
+@include('errores2')
 {{-- Consola Gamer --}}
 <div class="consola">
     <div class="led-power"></div>
