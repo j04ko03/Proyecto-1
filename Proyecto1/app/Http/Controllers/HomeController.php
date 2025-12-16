@@ -43,8 +43,8 @@ class HomeController extends Controller
         $rutasJuegos = [
             1 => route('astro.controller'), // ASTRO
             2 => route('volamentes.controller'), // VOLAMENTES
-            3 => route('capi.controller'), // CAPI MATES
-            2002 => route('bosque.controller'),
+            1002 => route('capi.controller'), // CAPI MATES
+            2002 => route('bosque.controller'), // BOSQUE
         ];
 
         $datosAdicionales = [

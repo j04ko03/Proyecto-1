@@ -407,33 +407,33 @@ function loadImages() {
     /* ============================================
        DIBUJAR ESCENARIO
     ============================================ */
-    function drawScene() {
-        const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-        gradient.addColorStop(0, '#87CEEB');
-        gradient.addColorStop(0.6, '#98D8C8');
-        gradient.addColorStop(1, '#90EE90');
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    // function drawScene() {
+    //     const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+    //     gradient.addColorStop(0, '#87CEEB');
+    //     gradient.addColorStop(0.6, '#98D8C8');
+    //     gradient.addColorStop(1, '#90EE90');
+    //     ctx.fillStyle = gradient;
+    //     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-        ctx.fillStyle = '#8B7355';
-        ctx.fillRect(0, GROUND_Y + player.height, CANVAS_W, CANVAS_H);
+    //     ctx.fillStyle = '#8B7355';
+    //     ctx.fillRect(0, GROUND_Y + player.height, CANVAS_W, CANVAS_H);
 
-        ctx.fillStyle = '#228B22';
-        ctx.fillRect(0, GROUND_Y + player.height - 5, CANVAS_W, 5);
+    //     ctx.fillStyle = '#228B22';
+    //     ctx.fillRect(0, GROUND_Y + player.height - 5, CANVAS_W, 5);
 
-        for (let i = 0; i < 6; i++) {
-            drawBackgroundTree(100 + i * 150, 180);
-        }
-    }
+    //     for (let i = 0; i < 6; i++) {
+    //         drawBackgroundTree(100 + i * 150, 180);
+    //     }
+    // }
 
-    function drawBackgroundTree(x, y) {
-        ctx.fillStyle = '#654321';
-        ctx.fillRect(x, y, 15, 70);
-        ctx.fillStyle = '#2d5016';
-        ctx.beginPath();
-        ctx.arc(x + 7.5, y - 10, 25, 0, Math.PI * 2);
-        ctx.fill();
-    }
+    // function drawBackgroundTree(x, y) {
+    //     ctx.fillStyle = '#654321';
+    //     ctx.fillRect(x, y, 15, 70);
+    //     ctx.fillStyle = '#2d5016';
+    //     ctx.beginPath();
+    //     ctx.arc(x + 7.5, y - 10, 25, 0, Math.PI * 2);
+    //     ctx.fill();
+    // }
 
     /* ============================================
        DIBUJAR JUGADOR
@@ -717,7 +717,7 @@ function actualizarUI() {
     function gameLoop() {
         ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
         
-        drawScene();
+        // drawScene();
         drawObstacles();
         drawPlayer();
         

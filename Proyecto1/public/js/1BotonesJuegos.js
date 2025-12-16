@@ -121,6 +121,8 @@
                     window.astroJugable();
                 }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
                     window.capiJugable();
+                }else if (this.dataset.juego === 'Bosque' && typeof window.bosqueJugable === 'function') {
+                    window.bosqueJugable();
                 }
 
 

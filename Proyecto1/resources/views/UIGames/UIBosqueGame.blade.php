@@ -1,4 +1,4 @@
-<div id="contenedorJuego" class="contenedorJuego" style="position: relative; width: 100%; height: 100%; background: linear-gradient(180deg, #87CEEB 0%, #90EE90 100%);">
+<div id="contenedorJuego" class="contenedorJuego"">
     
     {{-- UI Superior - Información del juego --}}
     <div id="ui" class="ui" style="position: absolute; left: 8px; top: 8px; right: 8px; display: flex; justify-content: space-between; align-items: center; pointer-events: none; font-size: 12px; z-index: 10;">
@@ -7,11 +7,9 @@
         <div class="ui-left" style="background: rgba(0,0,0,0.7); padding: 8px 12px; border-radius: 8px; color: white; pointer-events: auto; font-family: 'Pixelify Sans', monospace;">
             <div style="display: flex; gap: 15px; align-items: center;">
                 <div style="display: flex; align-items: center; gap: 5px;">
-                    <span style="font-size: 16px;">🌲</span>
                     <span>Nivel: <strong id="nivel">1</strong></span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
-                    <span style="font-size: 16px;">⭐</span>
                     <span>Resueltos: <strong id="score">0</strong></span>
                 </div>
             </div>
