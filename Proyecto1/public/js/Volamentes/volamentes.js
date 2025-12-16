@@ -39,11 +39,12 @@ window.inicializarVolamentes = function () {
     let puntaje = 0;
     let respuestaSeleccionada = false;
     let esperaSiguienteNivel = false; // indica que estamos mostrando resumen de nivel
-    const puntajesPorNivel = niveles.map(() => 0);
+    const puntajesPorNivel = niveles.map(() => 0); /*Mismo array pero de 0*/
 
     // Puntos y umbrales globales
     const POINTS_PER_QUESTION = 100; // cada pregunta vale 100 puntos
     const MIN_TOTAL_TO_PASS = 700;   // mínimo total para poder pasar al siguiente juego
+    // Divide los puntos totales enetre los niveles (Se divide el minimo entre niveles)
     const TARGET_PUNTOS_POR_NIVEL = Math.ceil(MIN_TOTAL_TO_PASS / niveles.length);
     // URL del siguiente juego (puede ser configurada desde la página con `window.siguienteJuegoUrl`)
     const NEXT_GAME_URL = window.siguienteJuegoUrl || window.rutaSiguienteJuego || '/Astro';
@@ -66,8 +67,12 @@ window.inicializarVolamentes = function () {
         const s = document.createElement('style');
         s.id = 'volamentes-styles';
         s.textContent = `
-        .mal { color: #ff3b3b; font-weight: 700; animation: shake 0.8s ease-in-out infinite; }
-        @keyframes shake { 0%{ transform: translateX(0);} 20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} 100%{ transform: translateX(0);} }
+        .mal {
+        color: #ff3b3b;
+        font-weight: 700;
+        animation: shake 0.8s ease-in-out infinite; }
+        @keyframes shake { 0%{ transform: translateX(0);}
+        20%{ transform: translateX(-8px);} 40%{ transform: translateX(8px);} 60%{ transform: translateX(-6px);} 80%{ transform: translateX(6px);} 100%{ transform: translateX(0);} }
         `;
         document.head.appendChild(s);
     })();
@@ -90,15 +95,20 @@ window.inicializarVolamentes = function () {
     }
 
     function cargarPregunta() {
-        const nivel = niveles[nivelActual];
+// Siempre valida datos antes de usarlos.
+// Busca el nivel correspondiente usando el nivelActual
+// (Comprueba que nivel el nivel existe y evita errores si alguien borro o modifico datos de niveles)        const nivel = niveles[nivelActual];
+
         if (!nivel || !Array.isArray(nivel.preguntas)) {
+            //si el elemento no existe, no hacer nada
             textoPregunta && (textoPregunta.textContent = "No hay preguntas para este nivel.");
             opcionesDiv && (opcionesDiv.innerHTML = "");
             return;
         }
-
+// Busca la pregunta, si no existe muestra un mensaje de error y limpia las opciones
         const p = nivel.preguntas[preguntaActual];
         if (!p) {
+            //si el elemento no existe, no hacer nada
             textoPregunta && (textoPregunta.textContent = "Pregunta no encontrada.");
             opcionesDiv && (opcionesDiv.innerHTML = "");
             return;
@@ -110,9 +120,10 @@ window.inicializarVolamentes = function () {
         opcionesDiv.innerHTML = "";
         respuestaSeleccionada = false;
         esperaSiguienteNivel = false;
-        // Asegurar que el botón muestra la etiqueta por defecto
+        // Asegurar que el botón muestra la etiqueta por defecto y lo resetea
         if (btnSiguiente) btnSiguiente.textContent = 'Siguiente';
 
+// Crear un boton para cada opcion, crea un botton por cada respuesta que tenga la pregunta
         p.opciones.forEach((op, index) => {
             const btn = document.createElement("button");
             btn.classList.add("opcion-btn");
@@ -130,6 +141,8 @@ window.inicializarVolamentes = function () {
     }
 
     function seleccionarRespuesta(index) {
+
+//Busca la pregunta actual dentro del nivel(Si no existe no sale la funcion)
         const nivel = niveles[nivelActual];
         const p = nivel && nivel.preguntas && nivel.preguntas[preguntaActual];
         if (!p) return;
@@ -245,6 +258,7 @@ window.inicializarVolamentes = function () {
                 }
             }
 
+            /* Comprovacion del ultimo nivel */
             // Si este era el último nivel, comprobamos el mínimo total necesario
             if (nivelActual + 1 >= niveles.length) {
                 if (puntaje >= MIN_TOTAL_TO_PASS) {
@@ -290,14 +304,18 @@ window.inicializarVolamentes = function () {
         if (btnSiguiente) btnSiguiente.style.display = 'none';
     }
 
+
+    /* Resetear el Juego */
     // Reinicia las variables del juego y UI para jugar de nuevo
     function resetGame() {
+        
         // reset valores
         nivelActual = 0;
         preguntaActual = 0;
         puntaje = 0;
         respuestaSeleccionada = false;
         esperaSiguienteNivel = false;
+
         // reset puntajes por nivel
         for (let i = 0; i < puntajesPorNivel.length; i++) puntajesPorNivel[i] = 0;
         volverAIntentar = false;
@@ -374,5 +392,5 @@ window.inicializarVolamentes = function () {
 
     // Inicializamos los textos visible sdvgdsfvbz
     if (puntajeTxt) puntajeTxt.textContent = "Puntaje: " + puntaje;
-    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar"; 
+    if (textoPregunta) textoPregunta.textContent = "Pulsa 'Siguiente' para empezar";
 };
