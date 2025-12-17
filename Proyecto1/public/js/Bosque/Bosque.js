@@ -257,6 +257,7 @@ window.iniciarBosque = function () {
 
         nivel = levelNum;
         Fisicas.resetPlayer();
+        Fisicas.resetControls(); // Detener movimiento automático
 
         if (levels[levelNum - 1]) {
             levels[levelNum - 1].obstacles.forEach(obs => obs.solved = false);
@@ -318,6 +319,7 @@ window.iniciarBosque = function () {
 
     function hideChallenge() {
         if (UI.modalChallenge) UI.modalChallenge.style.display = 'none';
+        if (UI.challengeInput) UI.challengeInput.value = ''; // Limpiar input
         modalOpen = false;
         window.BosqueFisicas.setModalOpen(false);
         gameActive = true;

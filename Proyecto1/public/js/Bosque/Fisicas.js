@@ -51,6 +51,10 @@
             // No updateramos DOM aquí, se hará en el loop
         },
 
+        resetControls: function () {
+            keys = {};
+        },
+
         setupControls: function () {
             window.addEventListener('keydown', (e) => {
                 keys[e.code] = true;

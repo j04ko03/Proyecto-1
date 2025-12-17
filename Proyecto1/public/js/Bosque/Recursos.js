@@ -42,7 +42,7 @@
          */
         loadImages: function () {
             return new Promise((resolve) => {
-                const baseUrl = window.assetBaseUrl || '/';
+                const baseUrl = window.assetBaseUrl || '';
 
                 const imagesToLoad = [
                     // Personaje
