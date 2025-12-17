@@ -1,226 +1,239 @@
 // document.addEventListener("DOMContentLoaded", function () {
 
-    // Objeto para guardar cosas que necesitamos limpiar cuando cambiamos de juego
-    window.juegoActivo = {
-        intervals: [],  // Guarda los IDs de setInterval
-        timeouts: [],   // Guarda los IDs de setTimeout
-        listeners: [],  // Guarda los event listeners para poder quitarlos
-        cleanup: []     // Guarda funciones extras para limpiar
-    };
+// Objeto para guardar cosas que necesitamos limpiar cuando cambiamos de juego
+window.juegoActivo = {
+    intervals: [],  // Guarda los IDs de setInterval
+    timeouts: [],   // Guarda los IDs de setTimeout
+    listeners: [],  // Guarda los event listeners para poder quitarlos
+    cleanup: []     // Guarda funciones extras para limpiar
+};
 
-    // Funciones para registrar cada tipo de recurso para limpiar después
-    window.registrarInterval = function (id) {
-        juegoActivo.intervals.push(id);
-    };
+// Funciones para registrar cada tipo de recurso para limpiar después
+window.registrarInterval = function (id) {
+    juegoActivo.intervals.push(id);
+};
 
-    window.registrarTimeout = function (id) {
-        juegoActivo.timeouts.push(id);
-    };
+window.registrarTimeout = function (id) {
+    juegoActivo.timeouts.push(id);
+};
 
-    window.registrarCleanup = function (fn) {
-        juegoActivo.cleanup.push(fn);
-    };
+window.registrarCleanup = function (fn) {
+    juegoActivo.cleanup.push(fn);
+};
 
-    // Esta función cierra el juego actual: limpia timers, listeners, scripts y borra la pantalla
-    window.cerrarJuego = function () {
-        console.log("Cerrando juego anterior...");
+// Esta función cierra el juego actual: limpia timers, listeners, scripts y borra la pantalla
+window.cerrarJuego = function () {
+    console.log("Cerrando juego anterior...");
 
-        // Limpiar todos los intervalos activos
-        juegoActivo.intervals.forEach(id => clearInterval(id));
-        juegoActivo.intervals = [];
+    // Limpiar todos los intervalos activos
+    juegoActivo.intervals.forEach(id => clearInterval(id));
+    juegoActivo.intervals = [];
 
-        // Limpiar todos los timeouts activos
-        juegoActivo.timeouts.forEach(id => clearTimeout(id));
-        juegoActivo.timeouts = [];
+    // Limpiar todos los timeouts activos
+    juegoActivo.timeouts.forEach(id => clearTimeout(id));
+    juegoActivo.timeouts = [];
 
-        // Ejecutar funciones de limpieza extra si hay
-        juegoActivo.cleanup.forEach(fn => fn());
-        juegoActivo.cleanup = [];
+    // Ejecutar funciones de limpieza extra si hay
+    juegoActivo.cleanup.forEach(fn => fn());
+    juegoActivo.cleanup = [];
 
-        // Quitar todos los event listeners añadidos
-        juegoActivo.listeners.forEach(({ element, event, handler }) => {
-            element.removeEventListener(event, handler);
-        });
-        juegoActivo.listeners = [];
+    // Quitar todos los event listeners añadidos
+    juegoActivo.listeners.forEach(({ element, event, handler }) => {
+        element.removeEventListener(event, handler);
+    });
+    juegoActivo.listeners = [];
 
-        // Quitar scripts de juegos cargados para evitar duplicados
-        document.querySelectorAll("script[data-juego]").forEach(script => script.remove());
+    // Quitar scripts de juegos cargados para evitar duplicados
+    document.querySelectorAll("script[data-juego]").forEach(script => script.remove());
 
-        // Limpiar contenido de la pantalla del juego
-        const pantalla = document.getElementById("pantallaJuego");
-        if (pantalla) pantalla.innerHTML = "";
-
-        console.log("Juego cerrado completamente");
-    };
-
-    // Función para registrar event listeners que queremos limpiar lugo
-    window.registrarListener = function (element, event, handler) {
-        element.addEventListener(event, handler);
-        juegoActivo.listeners.push({ element, event, handler });
-    };
-
-    // Obtenemos el contenedor donde cargaremos el juego
+    // Limpiar contenido de la pantalla del juego
     const pantalla = document.getElementById("pantallaJuego");
+    if (pantalla) pantalla.innerHTML = "";
 
-    // Seleccionamos todos los botones o cartuchos que cargan juegos
-    const cartuchos = document.querySelectorAll('.cartucho');
+    console.log("Juego cerrado completamente");
+};
 
-    console.log("Cartuchos encontrados:", cartuchos);
+// Función para registrar event listeners que queremos limpiar lugo
+window.registrarListener = function (element, event, handler) {
+    element.addEventListener(event, handler);
+    juegoActivo.listeners.push({ element, event, handler });
+};
 
-    // Para cada cartucho le ponemos un evento clic para cargar el juego correspondiente
-    cartuchos.forEach(element => {
-        element.addEventListener("click", async function (e) {
-            e.preventDefault(); // Prevenir comportamiento por defecto
+// Obtenemos el contenedor donde cargaremos el juego
+const pantalla = document.getElementById("pantallaJuego");
 
-            if (this.dataset.bloqueado === "1") {
-                console.log("Cartucho bloqueado. No se puede jugar.");
-                return; // No hacer nada
-            }
+// Seleccionamos todos los botones o cartuchos que cargan juegos
+const cartuchos = document.querySelectorAll('.cartucho');
 
-            if (window.homeS) {
-                window.homeS.pause();
-                window.homeS.currentTime = 0;
-            }
+console.log("Cartuchos encontrados:", cartuchos);
 
-            console.log("Se clickeó el juego:", this.dataset.juego);
+// Para cada cartucho le ponemos un evento clic para cargar el juego correspondiente
+cartuchos.forEach(element => {
+    element.addEventListener("click", async function (e) {
+        e.preventDefault(); // Prevenir comportamiento por defecto
 
-            try {
-                //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
-                const usuarioLogeado = window.usuarioLogeado;
-                const JuegoActual = this.dataset.cartucho;
-                guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
-                const dades = extreureCookie("user");
-                console.log(dades.user);
-                console.log(dades.game);
+        if (this.dataset.bloqueado === "1") {
+            console.log("Cartucho bloqueado. No se puede jugar.");
+            return; // No hacer nada
+        }
 
-                // Antes de cargar un juego nuevo, cerramos el anterior
-                cerrarJuego();
+        if (window.homeS) {
+            window.homeS.pause();
+            window.homeS.currentTime = 0;
+        }
 
-                // Obtenemos la URL y el script del juego desde atributos data-route y data-script
-                const url = this.dataset.route;
-                const scriptJs = this.dataset.script;
+        console.log("Se clickeó el juego:", this.dataset.juego);
 
-                console.log("Cargando juego desde URL:", url);
-                console.log("Script del juego:", scriptJs);
+        try {
+            //Guardamos las cookies para saber desde JS que usuario hay y en qué juego a clicado
+            const usuarioLogeado = window.usuarioLogeado;
+            const JuegoActual = this.dataset.cartucho;
+            guardarCookie("user", { user: usuarioLogeado, game: JuegoActual }, 1);  // 1 día de duración
+            const dades = extreureCookie("user");
+            console.log(dades.user);
+            console.log(dades.game);
 
-                // Hacemos una petición para obtener el contenido HTML del juego
-                const response = await fetch(url, {
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest" // Identificamos como petición AJAX
-                    }
-                });
+            // Antes de cargar un juego nuevo, cerramos el anterior
+            cerrarJuego();
 
-                const html = await response.text();
+            // Obtenemos la URL y el script del juego desde atributos data-route y data-script
+            const url = this.dataset.route;
+            const scriptJs = this.dataset.script;
 
-                // Ponemos el contenido del juego dentro del contenedor pantalla
-                pantalla.innerHTML = html;
+            console.log("Cargando juego desde URL:", url);
+            console.log("Script del juego:", scriptJs);
 
-
-                // ahora sí el DOM tiene #PROVA
-                if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
-                    window.astroJugable();
-                }else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
-                    window.capiJugable();
-                }else if (this.dataset.juego === 'Bosque' && typeof window.bosqueJugable === 'function') {
-                    window.bosqueJugable();
+            // Hacemos una petición para obtener el contenido HTML del juego
+            const response = await fetch(url, {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest" // Identificamos como petición AJAX
                 }
+            });
+
+            const html = await response.text();
+
+            // Ponemos el contenido del juego dentro del contenedor pantalla
+            pantalla.innerHTML = html;
 
 
-                // Revisamos si el script del juego ya está cargado para no cargarlo dos veces
-                if (!document.querySelector(`script[src="${scriptJs}"]`)) {
-                    // Si no está cargado, lo creamos y lo agregamos al body
-                    const script = document.createElement("script");
-                    script.src = scriptJs;
-                    script.setAttribute("data-juego", "true");
-
-                    script.onload = async () => {
-                        if (typeof window.redimensionador === "function") {
-                            window.redimensionador();
-                        }
-                        // Ahora sí cargamos Astro si corresponde
-                        switch (this.dataset.juego) {
-                            case 'Astro':
-                                const scriptAstro = document.createElement("script");
-                                scriptAstro.src = "./js/Astro/Astro.js";
-                                scriptAstro.setAttribute("data-juego", "true");
-                                scriptAstro.onload = () => {
-                                    console.log("Astro.js cargado, ejecutando astroJugable...");
-                                    if (typeof window.astroJugable === "function") {
-                                        window.astroJugable();
-                                    }
-                                };
-                                document.body.appendChild(scriptAstro);
-                                break;
-                            case 'CapiMates':
-                                const scriptCapi = document.createElement("script");
-                                scriptCapi.src = "./js/CapiMates/CapiMates.js";
-                                scriptCapi.setAttribute("data-juego", "true");
-                                scriptCapi.onload = () => {
-                                    console.log("CapiMates.js cargado, ejecutando inicializadorCapiMates...");
-                                    if (typeof window.capiJugable === "function") {
-                                        window.capiJugable();
-                                    }
-                                };
-                                document.body.appendChild(scriptCapi);
-                                break
-                            case 'Volamentes':
-                                // Cargar el script específico de Volamentes correctamente
-                                const scriptVolamentes = document.createElement("script");
-                                scriptVolamentes.src = "./js/Volamentes/volamentes.js";
-                                scriptVolamentes.setAttribute("data-juego", "true");
-                                scriptVolamentes.onload = () => {
-                                    console.log("volamentes.js cargado");
-                                    // Si el script define un inicializador global, llamarlo
-                                    if (typeof window.inicializarVolamentes === "function") {
-                                        try { window.inicializarVolamentes(); } catch (e) { console.error(e); }
-                                    }
-                                };
-                                document.body.appendChild(scriptVolamentes);
-                                break;
-                            case 'Bosque':
-                                const scriptBosque = document.createElement("script");
-                                scriptBosque.src = "./js/Bosque/Bosque.js";
-                                scriptBosque.setAttribute("data-juego", "true");
-                                scriptBosque.onload = () => {
-                                    console.log("Bosque.js cargado, ejecutando bosqueJugable...");
-                                    if (typeof window.bosqueJugable === "function") {
-                                        window.bosqueJugable();
-                                    }
-                                };
-                                document.body.appendChild(scriptBosque);
-                                break;
-                            // Aquí se pueden añadir más casos para otros juegos si necesitan inicialización
-                        }
-                    };
-
-                    document.body.appendChild(script);
+            // ahora sí el DOM tiene #PROVA
+            if (this.dataset.juego === 'Astro' && typeof window.astroJugable === 'function') {
+                window.astroJugable();
+            } else if (this.dataset.juego === 'CapiMates' && typeof window.capiJugable === 'function') {
+                window.capiJugable();
+            } else if (this.dataset.juego === 'Bosque' && typeof window.bosqueJugable === 'function') {
+                window.bosqueJugable();
+            }
 
 
+            // Función auxiliar para cargar la lógica específica del juego
+            const cargarLogicaEspecificaJuego = (nombreJuego) => {
+                console.log("Cargando lógica específica para:", nombreJuego);
 
-                } else {
-                    // Si ya está cargado, solo llamamos a redimensionador si existe
-                    console.log("El script ya estaba cargado:", scriptJs);
+                // Verificar si el script específico ya existe para evitar duplicados
+                // (Aunque los scripts específicos se limpian en cerrarJuego, es buena práctica)
+                const scriptId = `script-juego-${nombreJuego}`;
+                if (document.getElementById(scriptId)) return;
+
+                switch (nombreJuego) {
+                    case 'Astro':
+                        const scriptAstro = document.createElement("script");
+                        scriptAstro.src = "./js/Astro/Astro.js";
+                        scriptAstro.id = scriptId;
+                        scriptAstro.setAttribute("data-juego", "true");
+                        scriptAstro.onload = () => {
+                            console.log("Astro.js cargado, ejecutando astroJugable...");
+                            if (typeof window.astroJugable === "function") {
+                                window.astroJugable();
+                            }
+                        };
+                        document.body.appendChild(scriptAstro);
+                        break;
+                    case 'CapiMates':
+                        const scriptCapi = document.createElement("script");
+                        scriptCapi.src = "./js/CapiMates/CapiMates.js";
+                        scriptCapi.id = scriptId;
+                        scriptCapi.setAttribute("data-juego", "true");
+                        scriptCapi.onload = () => {
+                            console.log("CapiMates.js cargado, ejecutando inicializadorCapiMates...");
+                            if (typeof window.capiJugable === "function") {
+                                window.capiJugable();
+                            }
+                        };
+                        document.body.appendChild(scriptCapi);
+                        break;
+                    case 'Volamentes':
+                        const scriptVolamentes = document.createElement("script");
+                        scriptVolamentes.src = "./js/Volamentes/volamentes.js";
+                        scriptVolamentes.id = scriptId;
+                        scriptVolamentes.setAttribute("data-juego", "true");
+                        scriptVolamentes.onload = () => {
+                            console.log("volamentes.js cargado");
+                            if (typeof window.inicializarVolamentes === "function") {
+                                try { window.inicializarVolamentes(); } catch (e) { console.error(e); }
+                            }
+                        };
+                        document.body.appendChild(scriptVolamentes);
+                        break;
+                    case 'Bosque':
+                        const scriptBosque = document.createElement("script");
+                        scriptBosque.src = "./js/Bosque/Bosque.js";
+                        scriptBosque.id = scriptId;
+                        scriptBosque.setAttribute("data-juego", "true");
+                        scriptBosque.onload = () => {
+                            console.log("Bosque.js cargado, ejecutando bosqueJugable...");
+                            if (typeof window.bosqueJugable === "function") {
+                                window.bosqueJugable();
+                            }
+                        };
+                        document.body.appendChild(scriptBosque);
+                        break;
+                }
+            };
+
+            // Revisamos si el script del juego (loader general) ya está cargado
+            if (!document.querySelector(`script[src="${scriptJs}"]`)) {
+                // Si no está cargado, lo creamos
+                const script = document.createElement("script");
+                script.src = scriptJs;
+                script.setAttribute("data-juego", "true");
+
+                script.onload = async () => {
                     if (typeof window.redimensionador === "function") {
                         window.redimensionador();
                     }
+                    // Cargar lógica específica
+                    cargarLogicaEspecificaJuego(this.dataset.juego);
+                };
+
+                document.body.appendChild(script);
+
+            } else {
+                // Si ya está cargado
+                console.log("El script base ya estaba cargado:", scriptJs);
+                if (typeof window.redimensionador === "function") {
+                    window.redimensionador();
                 }
-
-            } catch (error) {
-                // Si falla la carga del juego, mostramos un mensaje de error
-                console.error("Error cargando el juego:", error);
-                pantalla.innerHTML = "<p style='color:red;'>Error al cargar el juego.</p>";
+                // IMPORTANTE: Cargar lógica específica también aquí
+                cargarLogicaEspecificaJuego(this.dataset.juego);
             }
-        });
+
+        } catch (error) {
+            // Si falla la carga del juego, mostramos un mensaje de error
+            console.error("Error cargando el juego:", error);
+            pantalla.innerHTML = "<p style='color:red;'>Error al cargar el juego.</p>";
+        }
     });
+});
 
 
 
-function guardarCookie(nom, valors, dies){
+function guardarCookie(nom, valors, dies) {
     const valorG = JSON.stringify(valors);
     let expiracio = "";
     if (dies) {
         const date = new Date();
-        date.setTime(date.getTime() + (dies*24*60*60*1000));
+        date.setTime(date.getTime() + (dies * 24 * 60 * 60 * 1000));
         expiracio = "; expires=" + date.toUTCString();
     }
     document.cookie = nom + "=" + (valorG || "") + expiracio + "; path=/";
@@ -231,7 +244,7 @@ function extreureCookie(clau) {
     let vuelta = null;
     for (let c of cookies) {
         const [key, value] = c.split('=');
-        if (key === clau){
+        if (key === clau) {
             vuelta = JSON.parse(value);
         }
     }
