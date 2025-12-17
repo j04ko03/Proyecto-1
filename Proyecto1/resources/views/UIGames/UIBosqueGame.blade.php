@@ -39,8 +39,8 @@
 
 {{-- Controles (opcional - se muestra en móviles) --}}
 <div id="help"
-    style="position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-family: 'Lato', sans-serif; pointer-events: none; z-index: 10;">
-    Controles: ← → mover · Espacio saltar · E interactuar
+    style="position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 8px 16px; border-radius: 20px; font-size: 11px; font-family: 'Lato', sans-serif; pointer-events: none; z-index: 10;">
+    Controles: ← →/a d · Espacio/W saltar
 </div>
 
 {{-- Mensaje de inicio/fin de nivel (oculto por defecto) --}}

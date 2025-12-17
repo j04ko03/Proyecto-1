@@ -282,12 +282,16 @@ window.iniciarBosque = function () {
 
             if (nivel < levels.length) {
                 setTimeout(() => {
-                    if (confirm(`¡Nivel ${nivel} completado! 🎉\n¿Siguiente nivel?`)) {
+                    if (confirm(`¡Nivel ${nivel} completado!\n¿Siguiente nivel?`)) {
                         loadLevel(nivel + 1);
                     }
                 }, 500);
             } else {
-                mostrarMensaje("¡Victoria!", "Has completado todos los niveles 🏆");
+                mostrarMensaje("¡Victoria!", "Has completado todos los niveles :)");
+                if (UI.startBtn) {
+                    UI.startBtn.textContent = "Cerrar Juego";
+                    UI.startBtn.onclick = () => location.reload();
+                }
             }
         }
     }
@@ -342,7 +346,7 @@ window.iniciarBosque = function () {
                 erroresEnNivel++;
                 puntos = Math.max(0, puntos - 25);
                 actualizarUI();
-                alert('❌ Incorrecto. ¡Inténtalo de nuevo!');
+                alert('Incorrecto. ¡Inténtalo de nuevo!');
                 UI.challengeInput.value = '';
                 UI.challengeInput.focus();
             }
@@ -394,8 +398,8 @@ window.iniciarBosque = function () {
                 helpclicks: ayudas
             })
         }).then(res => res.json())
-            .then(data => console.log("✅ Progreso guardado:", data))
-            .catch(err => console.error("❌ Error guardando:", err));
+            .then(data => console.log("Progreso guardado:", data))
+            .catch(err => console.error("Error guardando:", err));
     }
 
     function iniciarBosqueConBD() {
@@ -403,7 +407,7 @@ window.iniciarBosque = function () {
 
         const dades = extreureCookie("user");
         if (!dades) {
-            console.warn("⚠️ Modo Offline");
+            console.warn("Modo Offline");
             gameActive = true;
             if (!loopId) gameLoop();
             return;
@@ -416,7 +420,7 @@ window.iniciarBosque = function () {
         })
             .then(res => res.json())
             .then(data => {
-                console.log("✅ Sesión DB:", data);
+                console.log("Sesión DB:", data);
                 datosSesionIdX = data.datosSesionId;
                 if (data.nivel) nivel = data.nivel.id;
 
