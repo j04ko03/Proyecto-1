@@ -12,8 +12,7 @@
                 @csrf
                 <div style="display: flex; flex-wrap: wrap; justify-content: space-around;">
                     <div class="buscador">
-                        <input type="text" id="searchInput" name="codi_buscar" value=""
-                            placeholder="Buscar juego...">
+                        <input type="text" id="searchInput" name="codi_buscar" value="" placeholder="Buscar juego...">
                     </div>
                     <div class="col-2 pt-2">
                         <button type="submit" class="btn btn-primary" style="color: white">Filtrar</button>

@@ -69,7 +69,7 @@
                 this.images.totalImages = imagesToLoad.length;
                 this.images.loadedImages = 0;
 
-                // Si no hay imágenes, resolver inmediatamente
+                // Si no hay imágenes, resolver la promesa inmediatamente
                 if (imagesToLoad.length === 0) {
                     console.log("No hay imágenes para cargar");
                     this.images.loaded = false;

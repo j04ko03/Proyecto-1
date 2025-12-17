@@ -1,389 +1,234 @@
 /**
  * AVENTURA DE PROGRAMACIÓN EN EL BOSQUE
- * Versión con espera inteligente del DOM
+ * Lógica principal del juego (Versión DOM).
+ * Integra Recursos.js y Fisicas.js.
  */
 
 window.iniciarBosque = function () {
-    console.log("🌲 Iniciando proceso de carga del Bosque...");
+    console.log("Iniciando Bosque");
 
-    // 🔥 FUNCIÓN QUE ESPERA HASTA QUE EL CANVAS EXISTA
-    function esperarCanvas(callback, intentos = 0) {
-        const canvas = document.getElementById('canvas');
-        const maxIntentos = 50; // 5 segundos máximo (50 * 100ms)
-        
-        if (canvas) {
-            console.log("✅ Canvas encontrado, iniciando juego...");
-            callback();
-        } else if (intentos < maxIntentos) {
-            console.log(`⏳ Esperando canvas... (intento ${intentos + 1})`);
-            setTimeout(() => esperarCanvas(callback, intentos + 1), 100);
-        } else {
-            console.error("❌ Timeout: Canvas no apareció después de 5 segundos");
-        }
+    // helper para cargar scrips
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            // Verificar si ya está cargado por nombre de archivo
+            if (document.querySelector(`script[src*="${src}"]`)) {
+                // Pequeño timeout por si está en proceso de carga
+                setTimeout(resolve, 100);
+                return;
+            }
+            const script = document.createElement('script');
+            script.src = window.assetBaseUrl + 'js/Bosque/' + src;
+            script.onload = resolve;
+            script.onerror = () => reject(new Error(`Error cargando ${src}`));
+            document.body.appendChild(script);
+        });
     }
 
-    // 🔥 LLAMAR A LA FUNCIÓN DE ESPERA
-    esperarCanvas(iniciarJuego);
-};
-
-// 🔥 ESTA ES LA FUNCIÓN REAL DEL JUEGO
-function iniciarJuego() {
-    console.log("🎮 Juego del Bosque iniciado");
-
-    /* ============================================
-       CANVAS Y CONTEXTO
-    ============================================ */
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-
-    if (!canvas || !ctx) {
-        console.error("❌ Error crítico: Canvas o contexto no disponible");
+    // CONTENEDOR DOM
+    const gameContainer = document.querySelector('#game-container');
+    if (!gameContainer) {
+        console.error("Contenedor de juego '#game-container' no encontrado.");
         return;
     }
 
-    // 🔥 CSRF Token
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '';
+    // Configuración CSRF
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
 
-    /* ============================================
-       CONFIGURACIÓN DEL CANVAS
-    ============================================ */
-    const CANVAS_W = 900;
-    const CANVAS_H = 380;
-
-    canvas.width = CANVAS_W;
-    canvas.height = CANVAS_H;
-
-    // Funciones de escalado
-    function toScreenX(x) { return x * (canvas.width / CANVAS_W); }
-    function toScreenY(y) { return y * (canvas.height / CANVAS_H); }
-    function toScreenW(w) { return w * (canvas.width / CANVAS_W); }
-    function toScreenH(h) { return h * (canvas.height / CANVAS_H); }
-
-    // Event listener para redimensionamiento
-    window.addEventListener('contenedorResize', (e) => {
-        const { width, height } = e.detail;
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-    });
-
-    /* ============================================
-       CONSTANTES DE FÍSICA
-    ============================================ */
-    const GRAVITY = 0.6;
-    const FRICTION = 0.85;
-    const PLAYER_SPEED = 2;
-    const JUMP_POWER = -10;
-    const GROUND_Y = 260;
-
-    /* ============================================
-       ESTADO DEL JUEGO
-    ============================================ */
+    // ESTADO DEL JUEGO
     let loopId;
+    let gameActive = false;
+    let modalOpen = false;
+
+    // Estadísticas
     let puntos = 0;
     let vidas = 3;
     let nivel = 1;
     let erroresEnNivel = 0;
     let numeroIntentos = 0;
     let ayudas = 0;
-    
     let datosSesionIdX = 0;
-    let isReturningPlayer = false;
-    
-    let keys = {};
-    let modalOpen = false;
-    let gameActive = false;
+
+    // Estado del nivel actual
+    let levels = []; // Se cargará desde JSON
     let plataformaActual = null;
+    let obstacleElements = []; // Referencias DOM de obstáculos
 
-    /* ============================================
-       UI REFERENCIAS
-    ============================================ */
-    const msg = document.getElementById('mensaje');
-    const startBtn = document.getElementById('start-btn');
-    const nivelEl = document.getElementById('nivel');
-    const scoreEl = document.getElementById('score');
-    const nombreNivelEl = document.getElementById('nivel-nombre');
-    
-    // Modal de desafíos
-    const modalChallenge = document.getElementById('modal-challenge');
-    const challengeTitle = document.getElementById('challenge-title');
-    const challengeText = document.getElementById('challenge-text');
-    const challengeInput = document.getElementById('challenge-input');
-    const challengeCancel = document.getElementById('challenge-cancel');
-    const challengeSubmit = document.getElementById('challenge-submit');
+    // UI ELEMENTOS
+    const UI = {
+        msg: document.getElementById('mensaje'),
+        startBtn: document.getElementById('start-btn'),
+        nivelEl: document.getElementById('nivel'),
+        scoreEl: document.getElementById('score'),
+        nombreNivelEl: document.getElementById('nivel-nombre'),
+        modalChallenge: document.getElementById('modal-challenge'),
+        challengeTitle: document.getElementById('challenge-title'),
+        challengeText: document.getElementById('challenge-text'),
+        challengeInput: document.getElementById('challenge-input'),
+        challengeCancel: document.getElementById('challenge-cancel'),
+        challengeSubmit: document.getElementById('challenge-submit'),
 
-    /* ============================================
-       IMÁGENES
-    ============================================ */
-const images = {
-    // Personaje
-    personajeIdleDerecha: null,
-    personajeIdleIzquierda: null,
-    personajeCaminarDerecha: null,
-    personajeCaminarIzquierda: null,
-    personajeSaltoDerecha: null,
-    personajeSaltoIzquierda: null,
-    
-    // Obstáculos
-    puente: null,
-    arbol: null,
-    roca: null,
-    flor: null,
-    rio: null,
-    cueva: null,
-    
-    // UI
-    corazonLleno: null,
-    corazonVacio: null,
-    
-    // Control de carga
-    loaded: false,
-    totalImages: 0,
-    loadedImages: 0
-};
-
-function loadImages() {
-    return new Promise((resolve) => {
-        const imagesToLoad = [
-            // Personaje
-            { key: 'personajeIdleDerecha', src: '/img/juegos/bosque/personaje/idle-derecha.png' },
-            { key: 'personajeIdleIzquierda', src: '/img/juegos/bosque/personaje/idle-izquierda.png' },
-            { key: 'personajeCaminarDerecha', src: '/img/juegos/bosque/personaje/caminar-derecha.png' },
-            { key: 'personajeCaminarIzquierda', src: '/img/juegos/bosque/personaje/caminar-izquierda.png' },
-            { key: 'personajeSaltoDerecha', src: '/img/juegos/bosque/personaje/salto-derecha.png' },
-            { key: 'personajeSaltoIzquierda', src: '/img/juegos/bosque/personaje/salto-izquierda.png' },
-            
-            // Obstáculos
-            { key: 'puente', src: '/img/juegos/bosque/obstaculos/puente.png' },
-            { key: 'arbol', src: '/img/juegos/bosque/obstaculos/arbol.png' },
-            { key: 'roca', src: '/img/juegos/bosque/obstaculos/roca.png' },
-            { key: 'flor', src: '/img/juegos/bosque/obstaculos/flor.png' },
-            { key: 'rio', src: '/img/juegos/bosque/obstaculos/rio.png' },
-            { key: 'cueva', src: '/img/juegos/bosque/obstaculos/cueva.png' },
-            
-            // UI
-            { key: 'corazonLleno', src: '/img/juegos/bosque/ui/corazon-lleno.png' },
-            { key: 'corazonVacio', src: '/img/juegos/bosque/ui/corazon-vacio.png' }
-        ];
-
-        images.totalImages = imagesToLoad.length;
-        images.loadedImages = 0;
-
-        // Si no hay imágenes, resolver inmediatamente
-        if (imagesToLoad.length === 0) {
-            console.log("⚠️ No hay imágenes para cargar");
-            images.loaded = false;
-            resolve();
-            return;
-        }
-
-        imagesToLoad.forEach(imgData => {
-            const img = new Image();
-            
-            img.onload = () => {
-                images.loadedImages++;
-                console.log(`✅ Imagen cargada: ${imgData.key} (${images.loadedImages}/${images.totalImages})`);
-                
-                if (images.loadedImages === images.totalImages) {
-                    images.loaded = true;
-                    console.log("✅ Todas las imágenes cargadas");
-                    resolve();
-                }
-            };
-            
-            img.onerror = () => {
-                images.loadedImages++;
-                console.warn(`⚠️ Error cargando: ${imgData.src}`);
-                
-                if (images.loadedImages === images.totalImages) {
-                    images.loaded = true; // Continuar aunque falten imágenes
-                    console.log("✅ Carga de imágenes completada (con errores)");
-                    resolve();
-                }
-            };
-            
-            img.src = imgData.src;
-            images[imgData.key] = img;
-        });
-    });
-}
-
-    /* ============================================
-       JUGADOR
-    ============================================ */
-    const player = {
-        x: 50,
-        y: GROUND_Y,
-        width: 40,
-        height: 60,
-        vx: 0,
-        vy: 0,
-        onGround: false
+        cor1: document.getElementById('cor1'),
+        cor2: document.getElementById('cor2'),
+        cor3: document.getElementById('cor3')
     };
 
-    function resetPlayer() {
-        player.x = 50;
-        player.y = GROUND_Y;
-        player.vx = 0;
-        player.vy = 0;
-        player.onGround = false;
+    /* ============================================
+       CARGA DE DATOS (NIVELES)
+    ============================================ */
+    function loadLevelData() {
+        return fetch(window.assetBaseUrl + 'js/Bosque/niveles.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                levels = data;
+                console.log("✅ Niveles cargados:", levels.length);
+            })
+            .catch(err => {
+                console.error("❌ Error cargando niveles.json:", err);
+                mostrarMensaje("Error", "No se pudieron cargar los niveles.");
+            });
     }
 
     /* ============================================
-       NIVELES
+       FUNCIONES DE JUEGO (Definiciones)
     ============================================ */
-    const levels = [
-        {
-            name: "Secuencias Básicas",
-            obstacles: [
-                {
-                    x: 300,
-                    type: 'puente',
-                    solved: false,
-                    challenge: {
-                        title: "Repara el Puente",
-                        text: "Completa la secuencia:\nAVANZAR → SALTAR → ___",
-                        answer: "AVANZAR",
-                        hint: "Pista: Después de saltar, continúas..."
-                    }
-                },
-                {
-                    x: 600,
-                    type: 'arbol',
-                    solved: false,
-                    challenge: {
-                        title: "Árbol Bloqueando",
-                        text: "¿Cuántos pasos para rodear un árbol de 3 metros?",
-                        answer: "3",
-                        hint: "Pista: 1 paso = 1 metro"
-                    }
-                }
-            ]
-        },
-        {
-            name: "Repeticiones",
-            obstacles: [
-                {
-                    x: 250,
-                    type: 'rocas',
-                    solved: false,
-                    challenge: {
-                        title: "Rocas en el Camino",
-                        text: "Si repites 'MOVER_ROCA' 5 veces, ¿cuántas quedan?",
-                        answer: "0",
-                        hint: "Pista: Mueves todas"
-                    }
-                },
-                {
-                    x: 550,
-                    type: 'flores',
-                    solved: false,
-                    challenge: {
-                        title: "Recolecta Flores",
-                        text: "REPETIR ___ VECES { RECOGER_FLOR } para 4 flores",
-                        answer: "4",
-                        hint: "Pista: ¿Cuántas veces?"
-                    }
-                }
-            ]
-        },
-        {
-            name: "Condicionales",
-            obstacles: [
-                {
-                    x: 350,
-                    type: 'rio',
-                    solved: false,
-                    challenge: {
-                        title: "Cruzar el Río",
-                        text: "SI hay_puente ENTONCES cruzar. ¿Hay puente? (SI/NO)",
-                        answer: "SI",
-                        hint: "Pista: Mira la imagen"
-                    }
-                },
-                {
-                    x: 650,
-                    type: 'cueva',
-                    solved: false,
-                    challenge: {
-                        title: "Entrada a la Cueva",
-                        text: "SI tienes_linterna ___ entrar",
-                        answer: "ENTONCES",
-                        hint: "Pista: Conecta condición y acción"
-                    }
-                }
-            ]
-        }
-    ];
 
-    /* ============================================
-       CONTROLES
-    ============================================ */
-    function setupControls() {
-        window.addEventListener('keydown', (e) => {
-            keys[e.code] = true;
-            
-            if (!modalOpen && gameActive) {
-                if ((e.code === 'Space' || e.code === 'ArrowUp') && player.onGround) {
-                    player.vy = JUMP_POWER;
-                    player.onGround = false;
+    function iniciarJuego() {
+        const Fisicas = window.BosqueFisicas;
+        const Recursos = window.BosqueRecursos;
+
+        console.log("🎮 Inicializando juego...");
+        Fisicas.setupControls();
+        loadLevel(1);
+
+        mostrarMensaje("🌲 Aventura del Bosque 🌲", "Usa ← → para moverte\nEspacio para saltar\n\n¿Comenzar?");
+
+        if (UI.startBtn) {
+            UI.startBtn.onclick = () => {
+                iniciarBosqueConBD();
+            };
+        }
+    }
+
+    function gameLoop() {
+        const Fisicas = window.BosqueFisicas;
+
+        if (gameActive && !modalOpen) {
+            Fisicas.updatePlayer(
+                900, // Ancho container fijo por ahora
+                380, // Alto container fijo
+                () => quitarVida() // Callback onFall
+            );
+            checkObstacleCollision();
+        }
+
+        loopId = requestAnimationFrame(gameLoop);
+    }
+
+    function initObstaclesDOM() {
+        const Recursos = window.BosqueRecursos;
+        const Fisicas = window.BosqueFisicas;
+
+        if (!levels[nivel - 1]) return;
+
+        // Limpiar anteriores
+        obstacleElements.forEach(el => el.remove());
+        obstacleElements = [];
+
+        const currentObstacles = levels[nivel - 1].obstacles;
+        const images = Recursos.images;
+
+        currentObstacles.forEach((obstacle, index) => {
+            if (!obstacle.solved) {
+                const obstY = Fisicas.CONSTANTS.GROUND_Y;
+                const obstX = obstacle.x;
+
+                let width = 60, height = 60;
+                let src = null;
+
+                // Configurar tipo
+                if (images.loaded && images[obstacle.type]) {
+                    src = images[obstacle.type].src;
+                    switch (obstacle.type) {
+                        case 'puente': width = 80; height = 40; break;
+                        case 'arbol': width = 60; height = 80; break;
+                        case 'roca': width = 50; height = 40; break;
+                        case 'rio': width = 80; height = 50; break;
+                        case 'flor': width = 30; height = 40; break;
+                        case 'cueva': width = 90; height = 80; break;
+                    }
+                }
+
+                // Crear elemento
+                const el = document.createElement(src ? 'img' : 'div');
+                el.style.position = 'absolute';
+                el.style.left = obstX + 'px';
+                el.style.top = (obstY - height + 60) + 'px';
+                el.style.width = width + 'px';
+                el.style.height = height + 'px';
+                el.style.zIndex = '50';
+
+                if (src) {
+                    el.src = src;
+                } else {
+                    el.textContent = '🚧';
+                    el.style.fontSize = '30px';
+                    el.style.textAlign = 'center';
+                }
+
+                gameContainer.appendChild(el);
+                obstacleElements.push({ data: obstacle, element: el });
+            }
+        });
+    }
+
+    function removeObstacleDOM(obstacleData) {
+        const index = obstacleElements.findIndex(o => o.data === obstacleData);
+        if (index !== -1) {
+            obstacleElements[index].element.remove();
+            obstacleElements.splice(index, 1);
+        }
+    }
+
+    function checkObstacleCollision() {
+        if (modalOpen) return;
+        if (!levels[nivel - 1]) return;
+
+        const Fisicas = window.BosqueFisicas;
+        const p = Fisicas.player;
+
+        levels[nivel - 1].obstacles.forEach(obstacle => {
+            if (!obstacle.solved) {
+                const collision =
+                    p.x + p.width > obstacle.x &&
+                    p.x < obstacle.x + 60 &&
+                    Math.abs(p.y - Fisicas.CONSTANTS.GROUND_Y) < 10;
+
+                if (collision) {
+                    abriDesafio(obstacle);
                 }
             }
         });
-
-        window.addEventListener('keyup', (e) => {
-            keys[e.code] = false;
-        });
     }
 
-    /* ============================================
-       ACTUALIZACIÓN DEL JUGADOR
-    ============================================ */
-    function updatePlayer() {
-        if (modalOpen) return;
-
-        if (keys['ArrowLeft'] || keys['KeyA']) {
-            player.vx = -PLAYER_SPEED;
-        } else if (keys['ArrowRight'] || keys['KeyD']) {
-            player.vx = PLAYER_SPEED;
-        } else {
-            player.vx *= FRICTION;
-        }
-
-        player.vy += GRAVITY;
-
-        let nextX = player.x + player.vx;
-        let nextY = player.y + player.vy;
-
-        if (nextY >= GROUND_Y) {
-            nextY = GROUND_Y;
-            player.vy = 0;
-            player.onGround = true;
-        } else {
-            player.onGround = false;
-        }
-
-        if (nextX < 0) nextX = 0;
-        if (nextX + player.width > CANVAS_W) nextX = CANVAS_W - player.width;
-
-        player.x = nextX;
-        player.y = nextY;
-
-        if (player.y > CANVAS_H + 50) {
-            resetPlayer();
-            quitarVida();
-        }
+    function abriDesafio(obstacle) {
+        modalOpen = true;
+        window.BosqueFisicas.setModalOpen(true);
+        plataformaActual = obstacle;
+        showChallenge(obstacle.challenge);
     }
 
-    /* ============================================
-       VIDAS
-    ============================================ */
     function quitarVida() {
         vidas--;
         erroresEnNivel++;
         puntos = Math.max(0, puntos - 50);
         actualizarUI();
 
-        if (vidas === 0) {
+        if (vidas <= 0) {
             gameActive = false;
             numeroIntentos++;
             guardarDatosNivel();
@@ -396,301 +241,48 @@ function loadImages() {
 
     function reiniciarNivel() {
         vidas = 3;
-        puntos = 0;
         erroresEnNivel = 0;
-        resetPlayer();
-        levels[nivel - 1].obstacles.forEach(obs => obs.solved = false);
-        gameActive = true;
+        if (levels[nivel - 1]) {
+            levels[nivel - 1].obstacles.forEach(obs => obs.solved = false);
+        }
+
+        loadLevel(nivel);
+        ocultarMensaje();
+        iniciarBosqueConBD();
+    }
+
+    function loadLevel(levelNum) {
+        const Fisicas = window.BosqueFisicas;
+        if (!levels.length) return;
+
+        nivel = levelNum;
+        Fisicas.resetPlayer();
+
+        if (levels[levelNum - 1]) {
+            levels[levelNum - 1].obstacles.forEach(obs => obs.solved = false);
+        }
+
+        // Recrear DOM
+        Fisicas.initPlayerDOM(gameContainer);
+        initObstaclesDOM();
+
         actualizarUI();
-    }
-
-    /* ============================================
-       DIBUJAR ESCENARIO
-    ============================================ */
-    // function drawScene() {
-    //     const gradient = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
-    //     gradient.addColorStop(0, '#87CEEB');
-    //     gradient.addColorStop(0.6, '#98D8C8');
-    //     gradient.addColorStop(1, '#90EE90');
-    //     ctx.fillStyle = gradient;
-    //     ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
-
-    //     ctx.fillStyle = '#8B7355';
-    //     ctx.fillRect(0, GROUND_Y + player.height, CANVAS_W, CANVAS_H);
-
-    //     ctx.fillStyle = '#228B22';
-    //     ctx.fillRect(0, GROUND_Y + player.height - 5, CANVAS_W, 5);
-
-    //     for (let i = 0; i < 6; i++) {
-    //         drawBackgroundTree(100 + i * 150, 180);
-    //     }
-    // }
-
-    // function drawBackgroundTree(x, y) {
-    //     ctx.fillStyle = '#654321';
-    //     ctx.fillRect(x, y, 15, 70);
-    //     ctx.fillStyle = '#2d5016';
-    //     ctx.beginPath();
-    //     ctx.arc(x + 7.5, y - 10, 25, 0, Math.PI * 2);
-    //     ctx.fill();
-    // }
-
-    /* ============================================
-       DIBUJAR JUGADOR
-    ============================================ */
-/* ============================================
-   DIBUJAR JUGADOR CON ANIMACIÓN
-============================================ */
-let playerDirection = 'derecha'; // 'derecha' o 'izquierda'
-let playerState = 'idle'; // 'idle', 'caminar', 'saltar'
-let animationFrame = 0;
-let frameCounter = 0;
-
-function drawPlayer() {
-    // Determinar dirección
-    if (player.vx > 0) playerDirection = 'derecha';
-    if (player.vx < 0) playerDirection = 'izquierda';
-    
-    // Determinar estado
-    if (!player.onGround) {
-        playerState = 'saltar';
-    } else if (Math.abs(player.vx) > 0.1) {
-        playerState = 'caminar';
-    } else {
-        playerState = 'idle';
-    }
-    
-    // Seleccionar imagen según estado y dirección
-    let imgToUse = null;
-    
-    if (images.loaded) {
-        if (playerState === 'saltar') {
-            imgToUse = playerDirection === 'derecha' 
-                ? images.personajeSaltoDerecha 
-                : images.personajeSaltoIzquierda;
-        } else if (playerState === 'caminar') {
-            imgToUse = playerDirection === 'derecha' 
-                ? images.personajeCaminarDerecha 
-                : images.personajeCaminarIzquierda;
-        } else {
-            imgToUse = playerDirection === 'derecha' 
-                ? images.personajeIdleDerecha 
-                : images.personajeIdleIzquierda;
-        }
-    }
-    
-    // Dibujar
-    if (imgToUse) {
-        ctx.drawImage(imgToUse, player.x, player.y, player.width, player.height);
-    } else {
-        // Fallback si no hay imagen
-        ctx.fillStyle = '#3498db';
-        ctx.fillRect(player.x, player.y, player.width, player.height);
-        ctx.fillStyle = '#f39c12';
-        ctx.beginPath();
-        ctx.arc(player.x + 20, player.y - 10, 15, 0, Math.PI * 2);
-        ctx.fill();
-    }
-}
-
-    /* ============================================
-       DIBUJAR OBSTÁCULOS
-    ============================================ */
-/* ============================================
-   DIBUJAR OBSTÁCULOS CON IMÁGENES
-============================================ */
-function drawObstacles() {
-    const currentObstacles = levels[nivel - 1].obstacles;
-    
-    currentObstacles.forEach(obstacle => {
-        if (!obstacle.solved) {
-            const obstY = GROUND_Y;
-            const obstX = obstacle.x;
-            
-            // Usar imágenes si están cargadas, sino emojis
-            if (images.loaded) {
-                let imgToUse = null;
-                let width = 60;
-                let height = 60;
-                
-                switch(obstacle.type) {
-                    case 'puente':
-                        imgToUse = images.puente;
-                        width = 80;
-                        height = 40;
-                        break;
-                    case 'arbol':
-                        imgToUse = images.arbol;
-                        width = 60;
-                        height = 80;
-                        break;
-                    case 'rocas':
-                        imgToUse = images.roca;
-                        width = 50;
-                        height = 40;
-                        break;
-                    case 'rio':
-                        imgToUse = images.rio;
-                        width = 80;
-                        height = 50;
-                        break;
-                    case 'flores':
-                        imgToUse = images.flor;
-                        width = 30;
-                        height = 40;
-                        break;
-                    case 'cueva':
-                        imgToUse = images.cueva;
-                        width = 90;
-                        height = 80;
-                        break;
-                }
-                
-                if (imgToUse) {
-                    ctx.drawImage(imgToUse, obstX, obstY - height + 30, width, height);
-                } else {
-                    // Fallback: emoji
-                    dibujarObstaculoEmoji(obstacle.type, obstX, obstY);
-                }
-            } else {
-                // Sin imágenes: usar emojis
-                dibujarObstaculoEmoji(obstacle.type, obstX, obstY);
-            }
-        }
-    });
-}
-
-function dibujarObstaculoEmoji(type, x, y) {
-    const emojis = {
-        'puente': '🌉',
-        'arbol': '🌳',
-        'rocas': '🪨',
-        'rio': '🌊',
-        'flores': '🌸',
-        'cueva': '🏔️',
-        'hongos': '🍄',
-        'animales': '🦊',
-        'tesoro': '💎'
-    };
-    
-    ctx.font = '40px Arial';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(emojis[type] || '❓', x + 30, y + 30);
-
-    /* ============================================
-       COLISIONES
-    ============================================ */
-    function checkObstacleCollision() {
-        const currentObstacles = levels[nivel - 1].obstacles;
-        
-        currentObstacles.forEach(obstacle => {
-            if (!obstacle.solved) {
-                const collision = 
-                    player.x + player.width > obstacle.x &&
-                    player.x < obstacle.x + 60 &&
-                    Math.abs(player.y - GROUND_Y) < 10;
-                
-                if (collision && !modalOpen) {
-                    modalOpen = true;
-                    plataformaActual = obstacle;
-                    showChallenge(obstacle.challenge);
-                }
-            }
-        });
-    }
-
-    /* ============================================
-       SISTEMA DE DESAFÍOS
-    ============================================ */
-    function showChallenge(challenge) {
-        gameActive = false;
-        
-        if (challengeTitle) challengeTitle.textContent = challenge.title;
-        if (challengeText) challengeText.textContent = `${challenge.text}\n\n💡 ${challenge.hint}`;
-        if (challengeInput) {
-            challengeInput.value = '';
-            challengeInput.focus();
-        }
-        if (modalChallenge) modalChallenge.style.display = 'block';
-    }
-
-    function hideChallenge() {
-        if (modalChallenge) modalChallenge.style.display = 'none';
-        modalOpen = false;
         gameActive = true;
     }
 
-    if (challengeSubmit) {
-        challengeSubmit.addEventListener('click', () => {
-            const userAnswer = challengeInput.value.trim().toUpperCase();
-            const correctAnswer = plataformaActual.challenge.answer.toUpperCase();
-            
-            if (userAnswer === correctAnswer) {
-                puntos += 100;
-                plataformaActual.solved = true;
-                actualizarUI();
-                hideChallenge();
-                checkLevelComplete();
-            } else {
-                erroresEnNivel++;
-                puntos = Math.max(0, puntos - 25);
-                actualizarUI();
-                alert('❌ Incorrecto. ¡Inténtalo de nuevo!');
-                challengeInput.value = '';
-                challengeInput.focus();
-            }
-        });
-    }
-
-    if (challengeCancel) {
-        challengeCancel.addEventListener('click', () => {
-            hideChallenge();
-        });
-    }
-
-    /* ============================================
-       ACTUALIZAR UI
-    ============================================ */
-function actualizarUI() {
-    if (nivelEl) nivelEl.textContent = nivel;
-    if (scoreEl) scoreEl.textContent = puntos;
-    if (nombreNivelEl) nombreNivelEl.textContent = levels[nivel - 1].name;
-    
-    // 🔥 Actualizar corazones (si existen los elementos)
-    const cor1 = document.getElementById('cor1');
-    const cor2 = document.getElementById('cor2');
-    const cor3 = document.getElementById('cor3');
-    
-    if (cor1 && cor2 && cor3 && images.loaded) {
-        cor1.src = vidas >= 1 
-            ? '/img/juegos/bosque/ui/corazon-lleno.png' 
-            : '/img/juegos/bosque/ui/corazon-vacio.png';
-        cor2.src = vidas >= 2 
-            ? '/img/juegos/bosque/ui/corazon-lleno.png' 
-            : '/img/juegos/bosque/ui/corazon-vacio.png';
-        cor3.src = vidas >= 3 
-            ? '/img/juegos/bosque/ui/corazon-lleno.png' 
-            : '/img/juegos/bosque/ui/corazon-vacio.png';
-    }
-}
-
-    /* ============================================
-       NIVEL COMPLETADO
-    ============================================ */
     function checkLevelComplete() {
+        if (!levels[nivel - 1]) return;
         const currentObstacles = levels[nivel - 1].obstacles;
         const allSolved = currentObstacles.every(obs => obs.solved);
-        
+
         if (allSolved) {
             gameActive = false;
             guardarDatosNivel();
-            
+
             if (nivel < levels.length) {
                 setTimeout(() => {
                     if (confirm(`¡Nivel ${nivel} completado! 🎉\n¿Siguiente nivel?`)) {
-                        nivel++;
-                        loadLevel(nivel);
+                        loadLevel(nivel + 1);
                     }
                 }, 500);
             } else {
@@ -699,34 +291,78 @@ function actualizarUI() {
         }
     }
 
-    /* ============================================
-       CARGAR NIVEL
-    ============================================ */
-    function loadLevel(levelNum) {
-        nivel = levelNum;
-        resetPlayer();
-        levels[levelNum - 1].obstacles.forEach(obs => obs.solved = false);
-        erroresEnNivel = 0;
-        actualizarUI();
+    function actualizarUI() {
+        const Recursos = window.BosqueRecursos;
+        if (UI.nivelEl) UI.nivelEl.textContent = nivel;
+        if (UI.scoreEl) UI.scoreEl.textContent = puntos;
+        if (UI.nombreNivelEl && levels[nivel - 1]) UI.nombreNivelEl.textContent = levels[nivel - 1].name;
+
+        // Corazones
+        const imgFull = Recursos && Recursos.images.corazonLleno ? Recursos.images.corazonLleno.src : '/img/juegos/bosque/ui/corazon-lleno.png';
+        const imgEmpty = Recursos && Recursos.images.corazonVacio ? Recursos.images.corazonVacio.src : '/img/juegos/bosque/ui/corazon-vacio.png';
+
+        if (UI.cor1) UI.cor1.src = vidas >= 1 ? imgFull : imgEmpty;
+        if (UI.cor2) UI.cor2.src = vidas >= 2 ? imgFull : imgEmpty;
+        if (UI.cor3) UI.cor3.src = vidas >= 3 ? imgFull : imgEmpty;
+    }
+
+    function showChallenge(challenge) {
+        if (UI.challengeTitle) UI.challengeTitle.textContent = challenge.title;
+        if (UI.challengeText) UI.challengeText.textContent = `${challenge.text}\n\n💡 ${challenge.hint}`;
+        if (UI.challengeInput) {
+            UI.challengeInput.value = '';
+            UI.challengeInput.focus();
+        }
+        if (UI.modalChallenge) UI.modalChallenge.style.display = 'block';
+    }
+
+    function hideChallenge() {
+        if (UI.modalChallenge) UI.modalChallenge.style.display = 'none';
+        modalOpen = false;
+        window.BosqueFisicas.setModalOpen(false);
         gameActive = true;
     }
 
-    /* ============================================
-       LOOP PRINCIPAL
-    ============================================ */
-    function gameLoop() {
-        ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
-        
-        // drawScene();
-        drawObstacles();
-        drawPlayer();
-        
-        if (gameActive && !modalOpen) {
-            updatePlayer();
-            checkObstacleCollision();
+    // Event Listeners
+    if (UI.challengeSubmit) {
+        UI.challengeSubmit.onclick = () => {
+            const userAnswer = UI.challengeInput.value.trim().toUpperCase();
+            const correctAnswer = plataformaActual.challenge.answer.toUpperCase();
+
+            if (userAnswer === correctAnswer) {
+                puntos += 100;
+                plataformaActual.solved = true;
+                removeObstacleDOM(plataformaActual);
+                actualizarUI();
+                hideChallenge();
+                checkLevelComplete();
+            } else {
+                erroresEnNivel++;
+                puntos = Math.max(0, puntos - 25);
+                actualizarUI();
+                alert('❌ Incorrecto. ¡Inténtalo de nuevo!');
+                UI.challengeInput.value = '';
+                UI.challengeInput.focus();
+            }
+        };
+    }
+
+    if (UI.challengeCancel) {
+        UI.challengeCancel.onclick = () => hideChallenge();
+    }
+
+    function mostrarMensaje(title, body) {
+        if (UI.msg) {
+            UI.msg.style.display = 'block';
+            const titleEl = document.getElementById('msg-title');
+            const bodyEl = document.getElementById('msg-body');
+            if (titleEl) titleEl.textContent = title;
+            if (bodyEl) bodyEl.textContent = body;
         }
-        
-        loopId = requestAnimationFrame(gameLoop);
+    }
+
+    function ocultarMensaje() {
+        if (UI.msg) UI.msg.style.display = 'none';
     }
 
     /* ============================================
@@ -742,18 +378,11 @@ function actualizarUI() {
     }
 
     function guardarDatosNivel() {
-        if (!csrfToken) {
-            console.warn("⚠️ No hay CSRF token, no se puede guardar");
-            return;
-        }
+        if (!csrfToken) return;
 
         fetch('/juegos/bosque/finalizar', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
             body: JSON.stringify({
                 datosSesionId: datosSesionIdX,
                 score: puntos,
@@ -762,97 +391,72 @@ function actualizarUI() {
                 puntuacion: puntos,
                 helpclicks: ayudas
             })
-        })
-        .then(res => res.json())
-        .then(data => console.log("✅ Datos guardados:", data))
-        .catch(err => console.error("❌ Error guardando:", err));
+        }).then(res => res.json())
+            .then(data => console.log("✅ Progreso guardado:", data))
+            .catch(err => console.error("❌ Error guardando:", err));
     }
 
     function iniciarBosqueConBD() {
+        ocultarMensaje();
+
         const dades = extreureCookie("user");
         if (!dades) {
-            console.warn("⚠️ No hay cookie de usuario");
+            console.warn("⚠️ Modo Offline");
             gameActive = true;
-            gameLoop();
+            if (!loopId) gameLoop();
             return;
         }
 
-        const usuarioIdx = dades.user;
-        const juegoIdx = parseInt(dades.game);
-
         fetch('/juegos/bosque/iniciar', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({
-                usuarioId: usuarioIdx,
-                juegoId: juegoIdx
-            })
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+            body: JSON.stringify({ usuarioId: dades.user, juegoId: parseInt(dades.game) })
         })
-        .then(res => res.json())
-        .then(data => {
-            console.log("✅ Sesión iniciada:", data);
-            datosSesionIdX = data.datosSesionId;
-            nivel = data.nivel ? data.nivel.id : 1;
-            actualizarUI();
-            gameActive = true;
-            gameLoop();
+            .then(res => res.json())
+            .then(data => {
+                console.log("✅ Sesión DB:", data);
+                datosSesionIdX = data.datosSesionId;
+                if (data.nivel) nivel = data.nivel.id;
+
+                // Cargar nivel y arrancar
+                loadLevel(nivel);
+
+                gameActive = true;
+                if (!loopId) gameLoop();
+            })
+            .catch(err => {
+                console.error("❌ Error conexión DB:", err);
+                gameActive = true;
+                if (!loopId) gameLoop();
+            });
+    }
+
+    // ARRANQUE - Carga dependencias primero, luego recursos y datos
+    const initDeps = [];
+    if (!window.BosqueRecursos) initDeps.push(loadScript('Recursos.js'));
+    if (!window.BosqueFisicas) initDeps.push(loadScript('Fisicas.js'));
+
+    Promise.all(initDeps)
+        .then(() => {
+            console.log("Deps cargadas, cargando recursos y niveles...");
+            const Recursos = window.BosqueRecursos;
+
+            return Promise.all([
+                Recursos ? Recursos.loadImages() : Promise.reject("Recursos no disponible"),
+                loadLevelData()
+            ]);
+        })
+        .then(() => {
+            console.log("✅ Sistema listo. Esperando usuario...");
+            if (!window.BosqueRecursos || !window.BosqueFisicas) {
+                throw new Error("Módulos no inicializados tras carga");
+            }
+            iniciarJuego();
         })
         .catch(err => {
-            console.error("❌ Error iniciando:", err);
-            gameActive = true;
-            gameLoop();
+            console.error("❌ Error crítico iniciando:", err);
+            mostrarMensaje("Error de Carga", "No se han podido cargar los archivos del juego.\n" + err.message);
         });
-    }
+};
 
-    /* ============================================
-       MENSAJES
-    ============================================ */
-    function mostrarMensaje(title, body) {
-        if (msg) {
-            msg.style.display = 'block';
-            const titleEl = document.getElementById('msg-title');
-            const bodyEl = document.getElementById('msg-body');
-            if (titleEl) titleEl.textContent = title;
-            if (bodyEl) bodyEl.textContent = body;
-        }
-    }
-
-    function ocultarMensaje() {
-        if (msg) msg.style.display = 'none';
-    }
-
-    /* ============================================
-       INICIALIZACIÓN
-    ============================================ */
-    async function init() {
-        console.log("🎮 Inicializando Bosque...");
-        
-        await loadImages();
-        setupControls();
-        loadLevel(1);
-        
-        if (startBtn) {
-            startBtn.addEventListener('click', () => {
-                ocultarMensaje();
-                iniciarBosqueConBD();
-            });
-        }
-        
-        setTimeout(() => {
-            mostrarMensaje(
-                "🌲 Aventura del Bosque 🌲",
-                "Usa ← → para moverte\nEspacio para saltar\n\n¿Comenzar?"
-            );
-        }, 500);
-    }
-
-    init();
-}
-
-// 🔥 EXPORTAR (igual que tus compañeros)
 window.bosqueJugable = window.iniciarBosque;
-console.log("✅ Bosque.js cargado y listo");
