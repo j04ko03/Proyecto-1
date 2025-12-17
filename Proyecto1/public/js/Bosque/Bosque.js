@@ -17,7 +17,7 @@ window.iniciarBosque = function () {
                 return;
             }
             const script = document.createElement('script');
-            script.src = window.assetBaseUrl + 'js/Bosque/' + src;
+            script.src = (window.assetBaseUrl || '') + 'js/Bosque/' + src;
             script.onload = resolve;
             script.onerror = () => reject(new Error(`Error cargando ${src}`));
             document.body.appendChild(script);
@@ -76,7 +76,7 @@ window.iniciarBosque = function () {
        CARGA DE DATOS (NIVELES)
     ============================================ */
     function loadLevelData() {
-        return fetch(window.assetBaseUrl + 'js/Bosque/niveles.json')
+        return fetch((window.assetBaseUrl || '') + 'js/Bosque/niveles.json')
             .then(response => {
                 if (!response.ok) {
                     throw new Error("HTTP " + response.status);
