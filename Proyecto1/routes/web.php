@@ -11,7 +11,7 @@ use App\Http\Controllers\LogroController;
 
 //Rutas en las que podremos entrar en caso de conectar-nos previamente con el login/auth
 Route::middleware(['auth'])->group(function () {
-//Route to get Home
+    //Route to get Home
     Route::get('/home', [HomeController::class, 'index'])->name('home.controller');
 
     Route::get('/metricas', [RutasControlador::class, 'metricasView'])->name('metricas.controller');
@@ -21,6 +21,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/CapiMates', [RutasControlador::class, 'juego3View'])->name('capi.controller');
 
     Route::get('/Bosque', [RutasControlador::class, 'juego4View'])->name('bosque.controller');
+    Route::post('/juegos/bosque/iniciar', [JuegoController::class, 'iniciarJuegoBosque']);
+    Route::post('/juegos/bosque/finalizar', [JuegoController::class, 'finalizarNivel']);
 
     Route::get('/Volamentes', [RutasControlador::class, 'juego2View'])->name('volamentes.controller');
 

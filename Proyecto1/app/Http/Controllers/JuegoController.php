@@ -69,7 +69,7 @@ class JuegoController extends Controller
         //
     }
 
-      /**
+    /**
      * Inicia una partida del juego Astro.
      *
      * Recibe usuarioId y juegoId. Crea un nuevo DatosSesion, limpia
@@ -80,11 +80,11 @@ class JuegoController extends Controller
      */
     public function iniciarJuegoAstro(Request $request)
     {
-        try{
+        try {
             $isReturningPLayer = 0;
             //Obtener
             $usuarioId = $request->input('usuarioId');
-            $juegoId   = $request->input('juegoId');
+            $juegoId = $request->input('juegoId');
             \Log::info("Iniciar juego Astro: usuarioId={$usuarioId}, juegoId={$juegoId}");
 
 
@@ -117,7 +117,7 @@ class JuegoController extends Controller
                 $conteo += $sesion->datosSesion->count();
             }
 
-            if($conteo > 2){
+            if ($conteo > 2) {
                 $datosSesion->returningPlayer = 1;
             }
 
@@ -134,12 +134,90 @@ class JuegoController extends Controller
                 \Log::warning("No hay niveles disponibles para usuario {$usuarioId}");
             }
 
-            $response = ['datosSesionId' => $datosSesion->id,
-            'nivel' => $nivelActual];
+            $response = [
+                'datosSesionId' => $datosSesion->id,
+                'nivel' => $nivelActual
+            ];
             session()->flash('success', 'Se ha iniciado Astro');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido inicializar Astro' . ' - ' . $missatge);
+            $response = redirect()->back();
+        }
+
+        return $response;
+    }
+
+    /**
+     * Inicia una partida del juego Bosque.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|array
+     */
+    public function iniciarJuegoBosque(Request $request)
+    {
+        try {
+            $isReturningPLayer = 0;
+            //Obtener
+            $usuarioId = $request->input('usuarioId');
+            $juegoId = $request->input('juegoId');
+            \Log::info("Iniciar juego Bosque: usuarioId={$usuarioId}, juegoId={$juegoId}");
+
+
+            //Obtener Sesion activa del usuario
+            $sesionActiva = \App\Models\SesionUsuario::where('id_usuario', $usuarioId)
+                ->orderBy('fechaSesion', 'desc')
+                ->first();
+
+            \Log::info("Sesion activa:", ['sesion' => $sesionActiva]);
+
+            if (!$sesionActiva) {
+                return response()->json([
+                    'error' => 'El usuario no tiene una sesión activa registrada.'
+                ], 400);
+            }
+
+            //En caso que el usuario haga refresh de la página, borraremos Los DatosSesion sin completar endtime y score
+            $this->borrarDatosSesionIncompletos($usuarioId);
+
+            //Crear datos de juego en DatosSesion con el id_usuari y el startTime
+            $datosSesion = new DatosSesion();
+            $datosSesion->id_SesionUsuario = $sesionActiva->id;
+            $datosSesion->startTime = now();
+            $datosSesion->returningPlayer = $isReturningPLayer;
+
+            //Se controla cuantas Datos sesion tiene el usuario
+            $usuarioDS = Usuario::with('sesionUsuario.datosSesion')->find($usuarioId);
+            $conteo = 0;
+            foreach ($usuarioDS->sesionUsuario as $sesion) {
+                $conteo += $sesion->datosSesion->count();
+            }
+
+            if ($conteo > 2) {
+                $datosSesion->returningPlayer = 1;
+            }
+
+            $datosSesion->save();
+
+            //Obtener en que nivel está el usuario en el juego Bosque
+            $nivelActual = $this->obtenerNivelDelUsuario($usuarioId, $juegoId);
+            \Log::info("Nivel actual:", ['nivel' => $nivelActual]);
+
+            //Guardar el nivel actual en la sesion de juego
+            if ($nivelActual) {
+                $datosSesion->niveles()->attach($nivelActual->id);
+            } else {
+                \Log::warning("No hay niveles disponibles para usuario {$usuarioId}");
+            }
+
+            $response = [
+                'datosSesionId' => $datosSesion->id,
+                'nivel' => $nivelActual
+            ];
+            session()->flash('success', 'Se ha iniciado Bosque');
+        } catch (QueryException $e) {
+            $missatge = Utilitat::errorMessage($e);
+            session()->flash('error', 'No se ha podido inicializar Bosque' . ' - ' . $missatge);
             $response = redirect()->back();
         }
 
@@ -162,10 +240,10 @@ class JuegoController extends Controller
      */
     public function iniciarJuegoVolamentes(Request $request)
     {
-        try{
+        try {
             $isReturningPLayer = 0;
             $usuarioId = $request->input('usuarioId');
-            $juegoId   = $request->input('juegoId');
+            $juegoId = $request->input('juegoId');
 
             \Log::info("Iniciar juego Volamentes: usuarioId={$usuarioId}, juegoId={$juegoId}");
 
@@ -215,7 +293,7 @@ class JuegoController extends Controller
                 'datosSesionId' => $datosSesion->id,
                 'nivel' => $nivelActual
             ]);
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido inicializar Volamentes' . ' - ' . $missatge);
             $response = redirect()->back();
@@ -232,8 +310,9 @@ class JuegoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
-    public function actualizaDatosSesionNivel(Request $request){
-        try{
+    public function actualizaDatosSesionNivel(Request $request)
+    {
+        try {
             $usuarioId = $request->input('usuarioId');
 
             \Log::info("Obteniendo última sesión Astro para usuario {$usuarioId}");
@@ -264,10 +343,10 @@ class JuegoController extends Controller
 
             $response = response()->json([
                 'datosSesionId' => $ultimaDatosSesion->id,
-                'nivel'         => $nivel ? $nivel->id : null
+                'nivel' => $nivel ? $nivel->id : null
             ]);
             session()->flash('success', 'Se ha actualizado Datos de sesión');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido actualizar los datos de sesión' . ' - ' . $missatge);
             $response = redirect()->back();
@@ -289,10 +368,10 @@ class JuegoController extends Controller
      */
     public function obtenerNivelDelUsuario($usuarioId, $juegoId)
     {
-        try{
+        try {
             // Cargar relaciones usando los nombres EXACTOS de tus modelos
             $usuario = Usuario::with('sesionUsuario.datosSesion.niveles')
-                            ->find($usuarioId);
+                ->find($usuarioId);
 
             $nivelesJugados = [];
 
@@ -301,7 +380,8 @@ class JuegoController extends Controller
 
                 foreach ($sesionUsuario->datosSesion ?? [] as $datosSesion) {
 
-                    if ($datosSesion->endTime === null) continue;
+                    if ($datosSesion->endTime === null)
+                        continue;
 
                     foreach ($datosSesion->niveles ?? [] as $nivel) {
 
@@ -315,8 +395,8 @@ class JuegoController extends Controller
             $nivelesJugados = array_unique($nivelesJugados);
 
             $niveles = Nivel::where('id_juego', $juegoId)
-                            ->orderBy('dificultad')
-                            ->get();
+                ->orderBy('dificultad')
+                ->get();
 
             foreach ($niveles as $nivel) {
                 if (!in_array($nivel->id, $nivelesJugados)) {
@@ -326,7 +406,7 @@ class JuegoController extends Controller
 
             $response = $niveles->last();
             session()->flash('success', 'Se ha obtenido el nivel del usuario');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido obtener el nivel del usuario' . ' - ' . $missatge);
             $response = redirect()->back();
@@ -344,7 +424,7 @@ class JuegoController extends Controller
      */
     public function borrarDatosSesionIncompletos($usuarioId)
     {
-        try{
+        try {
             $usuarioDatosSesion = Usuario::with('sesionUsuario.datosSesion')->find($usuarioId);
 
             foreach ($usuarioDatosSesion->sesionUsuario as $sesion) {
@@ -356,7 +436,7 @@ class JuegoController extends Controller
                 }
             }
             session()->flash('success', 'Se ha borrado los datos de sessión incompletos');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido borrar los datos de sesión incompletos' . ' - ' . $missatge);
         }
@@ -373,20 +453,20 @@ class JuegoController extends Controller
      */
     public function finalizarNivel(Request $request)
     {
-        try{
+        try {
             DatosSesion::where('id', $request->datosSesionId)
                 ->update([
-                    'endTime'        => now(),
-                    'score'          => $request->score,
+                    'endTime' => now(),
+                    'score' => $request->score,
                     'numeroIntentos' => $request->numeroIntentos,
-                    'errores'        => $request->errores,
-                    'puntuacion'     => $request->puntuacion,
-                    'helpclicks'     => $request->helpclicks,
+                    'errores' => $request->errores,
+                    'puntuacion' => $request->puntuacion,
+                    'helpclicks' => $request->helpclicks,
                 ]);
 
             $response = ['status' => 'ok'];
             session()->flash('success', 'Se han podido guardar los datos de sesión restantes');
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido guardar los datos de sesión restantes' . ' - ' . $missatge);
             $response = ['status' => 'No ok'];
@@ -413,22 +493,27 @@ class JuegoController extends Controller
 
         // Si no envían datosSesionId devolvemos error porque es la forma más segura
         if (!$datosSesionId) {
-            return response()->json([ 'error' => 'datosSesionId requerido' ], 400);
+            return response()->json(['error' => 'datosSesionId requerido'], 400);
         }
 
         $datosSesion = DatosSesion::find($datosSesionId);
 
         if (!$datosSesion) {
-            return response()->json([ 'error' => 'DatosSesion no encontrado' ], 404);
+            return response()->json(['error' => 'DatosSesion no encontrado'], 404);
         }
 
         // Actualizamos campos permitidos
         $update = [];
-        if ($request->has('score')) $update['score'] = $request->input('score');
-        if ($request->has('numeroIntentos')) $update['numeroIntentos'] = $request->input('numeroIntentos');
-        if ($request->has('errores')) $update['errores'] = $request->input('errores');
-        if ($request->has('puntuacion')) $update['puntuacion'] = $request->input('puntuacion');
-        if ($request->has('helpclicks')) $update['helpclicks'] = $request->input('helpclicks');
+        if ($request->has('score'))
+            $update['score'] = $request->input('score');
+        if ($request->has('numeroIntentos'))
+            $update['numeroIntentos'] = $request->input('numeroIntentos');
+        if ($request->has('errores'))
+            $update['errores'] = $request->input('errores');
+        if ($request->has('puntuacion'))
+            $update['puntuacion'] = $request->input('puntuacion');
+        if ($request->has('helpclicks'))
+            $update['helpclicks'] = $request->input('helpclicks');
 
         // Siempre marcamos endTime cuando guardamos el resultado final del nivel
         $update['endTime'] = now();
@@ -448,7 +533,7 @@ class JuegoController extends Controller
             }
         }
 
-        return response()->json([ 'status' => 'ok', 'datosSesionId' => $datosSesion->id ]);
+        return response()->json(['status' => 'ok', 'datosSesionId' => $datosSesion->id]);
     }
 
     /**
@@ -460,8 +545,9 @@ class JuegoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function  desbloquearJuego(Request $request)  {
-        try{
+    public function desbloquearJuego(Request $request)
+    {
+        try {
             $juegoActualId = $request->input('juegoId');
 
             // Buscar el siguiente juego en orden
@@ -493,7 +579,7 @@ class JuegoController extends Controller
                 'message' => 'Juego desbloqueado correctamente.',
                 'juegoDesbloqueado' => $siguiente->id
             ]);
-        }catch(QueryException $e){
+        } catch (QueryException $e) {
             $missatge = Utilitat::errorMessage($e);
             session()->flash('error', 'No se ha podido guardar los datos de sesión restantes' . ' - ' . $missatge);
             $response = response()->json([
